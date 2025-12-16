@@ -1,0 +1,94 @@
+/* src/responsive-layout.css */
+
+/* ===================================================================
+   ESTILOS RESPONSIVE PARA LAYOUT 50/50
+   ================================================================= */
+
+/* Desktop: Ambas columnas 50% cada una */
+.main-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.calculators-column {
+  flex: 1; /* 50% */
+  min-width: 0;
+}
+
+.info-column {
+  flex: 1; /* 50% */
+  min-width: 0;
+}
+
+/* Tablets (1024px o menos) - Apilar verticalmente */
+@media (max-width: 1024px) {
+  .main-layout {
+    flex-direction: column-reverse !important; /* Info arriba, calculadoras abajo */
+    gap: 1.5rem;
+  }
+  
+  .calculators-column,
+  .info-column {
+    flex: 1 !important;
+    width: 100% !important;
+  }
+}
+
+/* Móviles (768px o menos) */
+@media (max-width: 768px) {
+  /* Reducir padding del main */
+  main {
+    padding: 1rem 1rem 3rem !important;
+  }
+  
+  /* Ocultar menú en móviles (agregar hamburger después) */
+  nav > div:last-child {
+    display: none;
+  }
+  
+  /* Reducir gaps */
+  .main-layout {
+    gap: 1rem;
+  }
+  
+  .calculators-column {
+    gap: 1rem !important;
+  }
+}
+
+/* Móviles pequeños (480px o menos) */
+@media (max-width: 480px) {
+  main {
+    padding: 0.75rem 0.75rem 2rem !important;
+  }
+  
+  /* Reducir tamaños de texto */
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* ===================================================================
+   ASEGURAR QUE TODO USE EL ANCHO COMPLETO
+   ================================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
