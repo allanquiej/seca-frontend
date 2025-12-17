@@ -1,187 +1,166 @@
 // src/components/IndemnizacionCalculator.tsx
-import { FormEvent, useState } from "react";
-import {
-  IndemnizacionRequest,
-  IndemnizacionResponse,
-  RespuestaApi,
-} from "../types/calculadoras";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { calcularIndemnizacion } from "../services/calculadorasService";
+import type { 
+  IndemnizacionResponse, 
+  RespuestaApi 
+} from "../types/calculadoras";
 
-/**
- * Componente que muestra el formulario y el resultado
- * de la calculadora de indemnización.
- */
-const IndemnizacionCalculator: React.FC = () => {
-  // Estado para los campos del formulario
-  const [form, setForm] = useState<IndemnizacionRequest>({
-    salarioMensual: 0,
-    aniosTrabajados: 0,
-  });
-
-  // Estado para loading, error y resultado
-  const [loading, setLoading] = useState(false);
+function IndemnizacionCalculator() {
+  const [salario, setSalario] = useState(0);
+  const [anios, setAnios] = useState(0);
+  const [resultado, setResultado] = useState<IndemnizacionResponse | null>(null);
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resultado, setResultado] =
-    useState<RespuestaApi<IndemnizacionResponse> | null>(null);
 
-  /**
-   * Actualiza el estado cuando el usuario escribe
-   * en los inputs numéricos.
-   */
-  const handleChange =
-    (field: keyof IndemnizacionRequest) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseFloat(e.target.value);
-      setForm((prev) => ({
-        ...prev,
-        [field]: isNaN(value) ? 0 : value,
-      }));
-    };
-
-  /**
-   * Maneja el envío del formulario.
-   */
-  const handleSubmit = async (e: FormEvent) => {
+  const handleCalcular = async (e: FormEvent) => {
     e.preventDefault();
 
-    setLoading(true);
+    if (salario <= 0 || anios <= 0) {
+      setError("Por favor ingresa valores válidos");
+      return;
+    }
+
+    setCargando(true);
     setError(null);
     setResultado(null);
 
     try {
-      const res = await calcularIndemnizacion(form);
-      setResultado(res);
+      const respuesta: RespuestaApi<IndemnizacionResponse> = await calcularIndemnizacion({
+        salarioMensual: salario,
+        aniosTrabajados: anios,
+      });
+
+      if (respuesta.exito && respuesta.datos) {
+        setResultado(respuesta.datos);
+      } else {
+        setError(respuesta.mensaje || "Error en el cálculo");
+      }
     } catch (err: any) {
-      setError(err.message ?? "Ocurrió un error al calcular la indemnización.");
+      setError(err.message || "Error al conectar con el servidor");
     } finally {
-      setLoading(false);
+      setCargando(false);
     }
   };
 
   return (
     <div
       style={{
-        background:
-          "linear-gradient(135deg, rgba(37,99,235,0.18), rgba(59,130,246,0.1))",
-        borderRadius: "0.75rem",
+        background: "white",
         padding: "1.5rem",
-        border: "1px solid rgba(59,130,246,0.5)",
-        marginTop: "2rem",
+        borderRadius: "1rem",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
       }}
     >
-      <h2 style={{ marginBottom: "0.5rem" }}>Calculadora de Indemnización</h2>
-      <p style={{ marginBottom: "1rem" }}>
-        Ingresa el salario mensual y los años trabajados para estimar la
-        indemnización.
+      <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>
+        Calculadora de Indemnización
+      </h3>
+      <p style={{ marginTop: 0, marginBottom: "1rem", fontSize: "0.9rem", color: "#4b5563" }}>
+        Ingresa el salario mensual y los años trabajados para estimar la indemnización.
       </p>
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleCalcular}
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "0.75rem",
-          maxWidth: 400,
+          gap: "1rem",
         }}
       >
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          Salario mensual (Q):
+        <div>
+          <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.9rem" }}>
+            Salario mensual (Q):
+          </label>
           <input
             type="number"
+            value={salario}
+            onChange={(e) => setSalario(Number(e.target.value))}
+            min="0"
             step="0.01"
-            value={form.salarioMensual}
-            onChange={handleChange("salarioMensual")}
-            required
             style={{
+              width: "100%",
+              padding: "0.5rem",
               borderRadius: "0.5rem",
-              border: "1px solid #4b5563",
-              padding: "0.4rem 0.6rem",
-              backgroundColor: "#020617",
-              color: "white",
+              border: "1px solid #d1d5db",
+              fontSize: "1rem",
             }}
           />
-        </label>
+        </div>
 
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          Años trabajados:
+        <div>
+          <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.9rem" }}>
+            Años trabajados:
+          </label>
           <input
             type="number"
-            step="0.1"
-            value={form.aniosTrabajados}
-            onChange={handleChange("aniosTrabajados")}
-            required
+            value={anios}
+            onChange={(e) => setAnios(Number(e.target.value))}
+            min="0"
             style={{
+              width: "100%",
+              padding: "0.5rem",
               borderRadius: "0.5rem",
-              border: "1px solid #4b5563",
-              padding: "0.4rem 0.6rem",
-              backgroundColor: "#020617",
-              color: "white",
+              border: "1px solid #d1d5db",
+              fontSize: "1rem",
             }}
           />
-        </label>
+        </div>
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={cargando}
           style={{
-            marginTop: "0.5rem",
-            padding: "0.6rem 1.2rem",
+            padding: "0.6rem",
             borderRadius: "999px",
             border: "none",
-            cursor: "pointer",
+            cursor: cargando ? "not-allowed" : "pointer",
             fontWeight: 600,
-            background:
-              "linear-gradient(135deg, #1d4ed8, #38bdf8)", // azules corporativos
+            background: cargando
+              ? "#9ca3af"
+              : "linear-gradient(135deg, #1d4ed8, #38bdf8)",
             color: "white",
+            fontSize: "1rem",
           }}
         >
-          {loading ? "Calculando..." : "Calcular indemnización"}
+          {cargando ? "Calculando..." : "Calcular indemnización"}
         </button>
       </form>
 
-      {/* Mensaje de error */}
+      {resultado && (
+        <div
+          style={{
+            marginTop: "1rem",
+            padding: "1rem",
+            borderRadius: "0.5rem",
+            background: "rgba(34, 197, 94, 0.1)",
+          }}
+        >
+          <p style={{ marginTop: "0.5rem" }}>
+            <strong>Monto Indemnización:</strong>{" "}
+            Q{resultado.montoIndemnizacion.toFixed(2)}
+          </p>
+          <p>
+            <strong>Detalle:</strong> {resultado.detalleCalculo}
+          </p>
+        </div>
+      )}
+
       {error && (
         <div
           style={{
             marginTop: "1rem",
-            padding: "0.75rem",
+            padding: "1rem",
             borderRadius: "0.5rem",
-            backgroundColor: "#7f1d1d",
+            background: "rgba(239, 68, 68, 0.1)",
+            color: "#991b1b",
           }}
         >
           <strong>Error:</strong> {error}
         </div>
       )}
-
-      {/* Resultado devuelto por la API */}
-      {resultado && (
-        <div
-          style={{
-            marginTop: "1rem",
-            padding: "0.75rem",
-            borderRadius: "0.5rem",
-            backgroundColor: "#022c22",
-          }}
-        >
-          <p>
-            <strong>Mensaje:</strong> {resultado.mensaje}
-          </p>
-
-          {resultado.exito && resultado.datos && (
-            <>
-              <p style={{ marginTop: "0.5rem" }}>
-                <strong>Monto indemnización:</strong>{" "}
-                Q {resultado.datos.montoIndemnizacion.toFixed(2)}
-              </p>
-              <p>
-                <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
-              </p>
-            </>
-          )}
-        </div>
-      )}
     </div>
   );
-};
+}
 
 export default IndemnizacionCalculator;
