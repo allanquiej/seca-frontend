@@ -58,14 +58,11 @@ export type ISRLaboralResponse = {
   detalleCalculo: string;
 };
 
-// ===============================
 // ISR EMPRESA MENSUAL
-// (ajustado a ingresosMensuales / costosMensuales / gastosMensuales)
-// ===============================
 export type ISREmpresaMensualRequest = {
   ingresosMensuales: number;
-  costosMensuales: number;
-  gastosMensuales: number;
+  costosMensuales?: number;  // ✅ opcional
+  gastosMensuales?: number;  // ✅ opcional
 };
 
 export type ISREmpresaMensualResponse = {
@@ -73,28 +70,21 @@ export type ISREmpresaMensualResponse = {
   detalleCalculo: string;
 };
 
-// ===============================
 // ISR EMPRESA TRIMESTRAL
-// (ajustado a ingresosTrimestrales / costosTrimestrales / gastosTrimestrales)
-// ===============================
 export type ISREmpresaTrimestralRequest = {
   ingresosTrimestrales: number;
-  costosTrimestrales: number;
-  gastosTrimestrales: number;
+  costosTrimestrales?: number; // ✅ opcional
+  gastosTrimestrales?: number; // ✅ opcional
 };
-
 export type ISREmpresaTrimestralResponse = {
   isrCalculado: number;
   detalleCalculo: string;
 };
 
-// ===============================
 // ISO TRIMESTRAL
-// (ajustado a ingresosTrimestrales / activoNeto)
-// ===============================
 export type ISOTrimestralRequest = {
   ingresosTrimestrales: number;
-  activoNeto: number;
+  activoNeto?: number; // ✅ opcional
 };
 
 export type ISOTrimestralResponse = {
