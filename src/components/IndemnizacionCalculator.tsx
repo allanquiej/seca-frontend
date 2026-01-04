@@ -184,15 +184,18 @@ const handleDateChange =
       )}
 
       {/* Resultado devuelto por la API */}
-      {resultado && (
-        <div
-          style={{
-            marginTop: "1rem",
-            padding: "0.75rem",
-            borderRadius: "0.5rem",
-            backgroundColor: "#022c22",
-          }}
-        >
+{resultado && (
+  <div
+    style={{
+      marginTop: "1rem",
+      padding: "0.9rem",
+      borderRadius: "0.75rem",
+      background: "linear-gradient(135deg, #1e40af, #2563eb)",
+      color: "white",
+      boxShadow: "0 10px 25px rgba(37, 99, 235, 0.35)",
+    }}
+  >
+
           <p>
             <strong>Mensaje:</strong> {resultado.mensaje}
           </p>
