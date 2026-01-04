@@ -77,7 +77,7 @@ function App() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#0f172a",
+          backgroundColor: "#0F0E3B", // SECA navy (oficial)
           boxShadow: "0 6px 20px rgba(15,23,42,0.4)",
         }}
       >
@@ -86,10 +86,35 @@ function App() {
             padding: "0.75rem 2rem",
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
             color: "white",
           }}
         >
-          <strong>SECA</strong>
+          {/* LOGO (blanco) */}
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("inicio");
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.6rem",
+              textDecoration: "none",
+              color: "white",
+            }}
+          >
+            <img
+              src="/images/logo3.png"
+              alt="SECA"
+              style={{
+                height: 34,
+                width: "auto",
+                display: "block",
+              }}
+            />
+          </a>
 
           <div style={{ display: "flex", gap: "1rem" }}>
             {[
@@ -106,6 +131,7 @@ function App() {
                   border: "none",
                   color: "white",
                   cursor: "pointer",
+                  fontWeight: 600,
                 }}
               >
                 {item.label}
@@ -120,21 +146,43 @@ function App() {
         {/* INICIO */}
         <section id="inicio">
           <div
-            style={{
-              background: "linear-gradient(135deg, #1d4ed8, #0f172a)",
-              borderRadius: "1rem",
-              padding: "1.8rem",
-              color: "white",
-            }}
-          >
-            <h1>Frontend SECA</h1>
-            <p>
-              Panel de herramientas para clientes SECA: calculadoras fiscales,
-              consultor contable y resumen de servicios.
-            </p>
+  style={{
+    background: "linear-gradient(135deg, #0E234F, #2252EC)",
+    borderRadius: "1rem",
+    padding: "2.2rem",      // un poco más de aire
+    color: "white",
+  }}
+>
+
+<img
+  src="/images/logo3.png"
+  alt="SECA"
+  style={{
+    height: 120,          // 👈 MUCHO más visible
+    maxWidth: "100%",
+    marginBottom: "1rem",
+    display: "block",
+  }}
+/>
+
+
+            <p
+  style={{
+    marginBottom: "1.4rem",
+    maxWidth: 900,
+    fontSize: "1.1rem",     // 👈 más grande
+    lineHeight: 1.6,        // 👈 más aire
+    opacity: 0.95,
+  }}
+>
+  Servicios especializados de contabilidad y auditoría. Apoyamos a
+  empresas guatemaltecas y extranjeras en el cumplimiento de sus
+  obligaciones tributarias y el logro de sus objetivos de crecimiento.
+</p>
+
 
             {/* BOTONES */}
-            <div style={{ display: "flex", gap: "0.75rem" }}>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <button
                 onClick={probarStatus}
                 disabled={statusLoading}
@@ -142,9 +190,10 @@ function App() {
                   padding: "0.55rem 1.3rem",
                   borderRadius: "999px",
                   border: "none",
-                  fontWeight: 600,
-                  background: "linear-gradient(135deg, #22c55e, #4ade80)",
-                  color: "#052e16",
+                  fontWeight: 700,
+                  background: "linear-gradient(135deg, #229EFE, #3EFDFD)", // SECA accent -> cyan (oficial)
+                  color: "#0F0E3B",
+                  cursor: statusLoading ? "not-allowed" : "pointer",
                 }}
               >
                 {statusLoading ? "Consultando..." : "Probar /api/status"}
@@ -157,9 +206,10 @@ function App() {
                   padding: "0.55rem 1.3rem",
                   borderRadius: "999px",
                   border: "none",
-                  fontWeight: 600,
-                  background: "linear-gradient(135deg, #60a5fa, #93c5fd)",
-                  color: "#0b1220",
+                  fontWeight: 700,
+                  background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
+                  color: "#0F0E3B",
+                  cursor: dbTestLoading ? "not-allowed" : "pointer",
                 }}
               >
                 {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
@@ -170,10 +220,11 @@ function App() {
             <div
               style={{
                 marginTop: "1rem",
-                backgroundColor: "rgba(15,23,42,0.75)",
+                backgroundColor: "rgba(15,14,59,0.65)", // navy con alpha
                 padding: "0.8rem",
                 borderRadius: "0.75rem",
                 whiteSpace: "pre-wrap",
+                border: "1px solid rgba(255,255,255,0.15)",
               }}
             >
               {statusError && <strong>Error: {statusError}</strong>}
