@@ -14,10 +14,12 @@ import { calcularIndemnizacion } from "../services/calculadorasService";
  */
 const IndemnizacionCalculator: React.FC = () => {
   // Estado para los campos del formulario
-  const [form, setForm] = useState<IndemnizacionRequest>({
-    salarioMensual: 0,
-    aniosTrabajados: 0,
-  });
+ const [form, setForm] = useState<IndemnizacionRequest>({
+  salarioMensual: 0,
+  fechaInicio: "",
+  fechaFin: "",
+});
+
 
   // Estado para loading, error y resultado
   const [loading, setLoading] = useState(false);
@@ -29,15 +31,26 @@ const IndemnizacionCalculator: React.FC = () => {
    * Actualiza el estado cuando el usuario escribe
    * en los inputs numéricos.
    */
-  const handleChange =
-    (field: keyof IndemnizacionRequest) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseFloat(e.target.value);
-      setForm((prev) => ({
-        ...prev,
-        [field]: isNaN(value) ? 0 : value,
-      }));
-    };
+const handleNumberChange =
+  (field: "salarioMensual") =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setForm((prev) => ({
+      ...prev,
+      [field]: isNaN(value) ? 0 : value,
+    }));
+  };
+
+const handleDateChange =
+  (field: "fechaInicio" | "fechaFin") =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value; // YYYY-MM-DD
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
 
   /**
    * Maneja el envío del formulario.
@@ -91,7 +104,7 @@ const IndemnizacionCalculator: React.FC = () => {
             type="number"
             step="0.01"
             value={form.salarioMensual}
-            onChange={handleChange("salarioMensual")}
+            onChange={handleNumberChange("salarioMensual")}
             required
             style={{
               borderRadius: "0.5rem",
@@ -104,22 +117,39 @@ const IndemnizacionCalculator: React.FC = () => {
         </label>
 
         <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          Años trabajados:
-          <input
-            type="number"
-            step="0.1"
-            value={form.aniosTrabajados}
-            onChange={handleChange("aniosTrabajados")}
-            required
-            style={{
-              borderRadius: "0.5rem",
-              border: "1px solid #4b5563",
-              padding: "0.4rem 0.6rem",
-              backgroundColor: "#020617",
-              color: "white",
-            }}
-          />
-        </label>
+  Fecha inicio:
+  <input
+    type="date"
+    value={form.fechaInicio}
+    onChange={handleDateChange("fechaInicio")}
+    required
+    style={{
+      borderRadius: "0.5rem",
+      border: "1px solid #4b5563",
+      padding: "0.4rem 0.6rem",
+      backgroundColor: "#020617",
+      color: "white",
+    }}
+  />
+</label>
+
+<label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+  Fecha fin:
+  <input
+    type="date"
+    value={form.fechaFin}
+    onChange={handleDateChange("fechaFin")}
+    required
+    style={{
+      borderRadius: "0.5rem",
+      border: "1px solid #4b5563",
+      padding: "0.4rem 0.6rem",
+      backgroundColor: "#020617",
+      color: "white",
+    }}
+  />
+</label>
+
 
         <button
           type="submit"

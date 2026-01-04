@@ -12,8 +12,10 @@ export type RespuestaApi<TDatos> = {
 // ===============================
 export type IndemnizacionRequest = {
   salarioMensual: number;
-  aniosTrabajados: number;
+  fechaInicio: string; // "YYYY-MM-DD"
+  fechaFin: string;    // "YYYY-MM-DD"
 };
+
 
 export type IndemnizacionResponse = {
   montoIndemnizacion: number;
@@ -25,8 +27,10 @@ export type IndemnizacionResponse = {
 // ===============================
 export type Bono14Request = {
   salarioPromedio: number;
-  mesesTrabajados: number;
+  fechaInicio: string;
+  fechaFin: string;
 };
+
 
 export type Bono14Response = {
   montoBono14: number;
@@ -38,8 +42,10 @@ export type Bono14Response = {
 // ===============================
 export type AguinaldoRequest = {
   salarioPromedio: number;
-  mesesTrabajados: number;
+  fechaInicio: string;
+  fechaFin: string;
 };
+
 
 export type AguinaldoResponse = {
   montoAguinaldo: number;

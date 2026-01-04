@@ -16,7 +16,8 @@ const AguinaldoCalculator: React.FC = () => {
   // Estado para los campos del formulario
   const [form, setForm] = useState<AguinaldoRequest>({
     salarioPromedio: 0,
-    mesesTrabajados: 0,
+    fechaInicio: "",
+    fechaFin: "",
   });
 
   // Estado para loading, error y resultado
@@ -29,8 +30,8 @@ const AguinaldoCalculator: React.FC = () => {
    * Actualiza el estado cuando el usuario escribe
    * en los inputs numéricos.
    */
-  const handleChange =
-    (field: keyof AguinaldoRequest) =>
+  const handleNumberChange =
+    (field: "salarioPromedio") =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = parseFloat(e.target.value);
       setForm((prev) => ({
@@ -40,14 +41,41 @@ const AguinaldoCalculator: React.FC = () => {
     };
 
   /**
+   * Actualiza el estado cuando el usuario selecciona fechas
+   */
+  const handleDateChange =
+    (field: "fechaInicio" | "fechaFin") =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((prev) => ({
+        ...prev,
+        [field]: e.target.value, // YYYY-MM-DD
+      }));
+    };
+
+  /**
    * Maneja el envío del formulario.
    */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    setLoading(true);
     setError(null);
     setResultado(null);
+
+    // Validación básica frontend (evita requests inválidos)
+    if (!form.fechaInicio || !form.fechaFin) {
+      setError("Debes seleccionar la fecha inicio y la fecha fin.");
+      return;
+    }
+    if (form.fechaFin < form.fechaInicio) {
+      setError("La fecha fin no puede ser menor que la fecha inicio.");
+      return;
+    }
+    if (form.salarioPromedio <= 0) {
+      setError("El salario promedio debe ser mayor a 0.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await calcularAguinaldo(form);
@@ -72,8 +100,8 @@ const AguinaldoCalculator: React.FC = () => {
     >
       <h2 style={{ marginBottom: "0.5rem" }}>Calculadora de Aguinaldo</h2>
       <p style={{ marginBottom: "1rem" }}>
-        Ingresa el salario promedio y los meses trabajados para estimar el
-        aguinaldo.
+        Ingresa el salario promedio y el rango de fechas trabajado para estimar
+        el aguinaldo.
       </p>
 
       <form
@@ -85,13 +113,15 @@ const AguinaldoCalculator: React.FC = () => {
           maxWidth: 400,
         }}
       >
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <label
+          style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+        >
           Salario promedio (Q):
           <input
             type="number"
             step="0.01"
             value={form.salarioPromedio}
-            onChange={handleChange("salarioPromedio")}
+            onChange={handleNumberChange("salarioPromedio")}
             required
             style={{
               borderRadius: "0.5rem",
@@ -103,15 +133,33 @@ const AguinaldoCalculator: React.FC = () => {
           />
         </label>
 
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          Meses trabajados:
+        <label
+          style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+        >
+          Fecha inicio:
           <input
-            type="number"
-            step="1"
-            min="0"
-            max="12"
-            value={form.mesesTrabajados}
-            onChange={handleChange("mesesTrabajados")}
+            type="date"
+            value={form.fechaInicio}
+            onChange={handleDateChange("fechaInicio")}
+            required
+            style={{
+              borderRadius: "0.5rem",
+              border: "1px solid #4b5563",
+              padding: "0.4rem 0.6rem",
+              backgroundColor: "#020617",
+              color: "white",
+            }}
+          />
+        </label>
+
+        <label
+          style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+        >
+          Fecha fin:
+          <input
+            type="date"
+            value={form.fechaFin}
+            onChange={handleDateChange("fechaFin")}
             required
             style={{
               borderRadius: "0.5rem",
@@ -133,8 +181,7 @@ const AguinaldoCalculator: React.FC = () => {
             border: "none",
             cursor: "pointer",
             fontWeight: 600,
-            background:
-              "linear-gradient(135deg, #1d4ed8, #38bdf8)", // azules corporativos
+            background: "linear-gradient(135deg, #1d4ed8, #38bdf8)",
             color: "white",
           }}
         >
@@ -173,8 +220,8 @@ const AguinaldoCalculator: React.FC = () => {
           {resultado.exito && resultado.datos && (
             <>
               <p style={{ marginTop: "0.5rem" }}>
-                <strong>Monto Aguinaldo:</strong>{" "}
-                Q {resultado.datos.montoAguinaldo.toFixed(2)}
+                <strong>Monto Aguinaldo:</strong> Q{" "}
+                {resultado.datos.montoAguinaldo.toFixed(2)}
               </p>
               <p>
                 <strong>Detalle:</strong> {resultado.datos.detalleCalculo}

@@ -15,9 +15,11 @@ import { calcularBono14 } from "../services/calculadorasService";
 const Bono14Calculator: React.FC = () => {
   // Estado para los campos del formulario
   const [form, setForm] = useState<Bono14Request>({
-    salarioPromedio: 0,
-    mesesTrabajados: 0,
-  });
+  salarioPromedio: 0,
+  fechaInicio: "",
+  fechaFin: "",
+});
+
 
   // Estado para loading, error y resultado
   const [loading, setLoading] = useState(false);
@@ -29,15 +31,25 @@ const Bono14Calculator: React.FC = () => {
    * Actualiza el estado cuando el usuario escribe
    * en los inputs numéricos.
    */
-  const handleChange =
-    (field: keyof Bono14Request) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseFloat(e.target.value);
-      setForm((prev) => ({
-        ...prev,
-        [field]: isNaN(value) ? 0 : value,
-      }));
-    };
+const handleNumberChange =
+  (field: "salarioPromedio") =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setForm((prev) => ({
+      ...prev,
+      [field]: isNaN(value) ? 0 : value,
+    }));
+  };
+
+const handleDateChange =
+  (field: "fechaInicio" | "fechaFin") =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
 
   /**
    * Maneja el envío del formulario.
@@ -91,7 +103,7 @@ const Bono14Calculator: React.FC = () => {
             type="number"
             step="0.01"
             value={form.salarioPromedio}
-            onChange={handleChange("salarioPromedio")}
+            onChange={handleNumberChange("salarioPromedio")}
             required
             style={{
               borderRadius: "0.5rem",
@@ -103,25 +115,40 @@ const Bono14Calculator: React.FC = () => {
           />
         </label>
 
-        <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          Meses trabajados:
-          <input
-            type="number"
-            step="1"
-            min="0"
-            max="12"
-            value={form.mesesTrabajados}
-            onChange={handleChange("mesesTrabajados")}
-            required
-            style={{
-              borderRadius: "0.5rem",
-              border: "1px solid #4b5563",
-              padding: "0.4rem 0.6rem",
-              backgroundColor: "#020617",
-              color: "white",
-            }}
-          />
-        </label>
+<label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+  Fecha inicio:
+  <input
+    type="date"
+    value={form.fechaInicio}
+    onChange={handleDateChange("fechaInicio")}
+    required
+    style={{
+      borderRadius: "0.5rem",
+      border: "1px solid #4b5563",
+      padding: "0.4rem 0.6rem",
+      backgroundColor: "#020617",
+      color: "white",
+    }}
+  />
+</label>
+
+<label style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+  Fecha fin:
+  <input
+    type="date"
+    value={form.fechaFin}
+    onChange={handleDateChange("fechaFin")}
+    required
+    style={{
+      borderRadius: "0.5rem",
+      border: "1px solid #4b5563",
+      padding: "0.4rem 0.6rem",
+      backgroundColor: "#020617",
+      color: "white",
+    }}
+  />
+</label>
+
 
         <button
           type="submit"
