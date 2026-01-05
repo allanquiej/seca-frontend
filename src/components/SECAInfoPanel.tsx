@@ -3,409 +3,250 @@ import { useState } from "react";
 
 type Tab = "inicio" | "servicios" | "principios" | "contacto";
 
-/**
- * Panel informativo de SECA que se muestra a la izquierda
- * mientras el usuario usa las calculadoras
- */
 const SECAInfoPanel: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<Tab>("inicio");
+
+  // ====== PALETA EXACTA (MISMA QUE App.tsx) ======
+  const SECA = {
+    navy: "#0F0E3B",      // navbar
+    navy2: "#0E234F",     // inicio gradiente (lado oscuro)
+    blue: "#2252EC",      // inicio gradiente (lado azul)
+    accent: "#229EFE",    // botón status
+    cyan: "#3EFDFD",      // botón status
+    white: "#FFFFFF",
+    border: "rgba(255,255,255,0.15)",            // igual a App.tsx resultados
+    panelGlass: "rgba(15,14,59,0.55)",           // parecido a resultados (más sólido)
+    cardGlass: "rgba(15,14,59,0.38)",            // cards internas
+    cardGlassStrong: "rgba(15,14,59,0.50)",      // cards destacadas
+    textSoft: "rgba(255,255,255,0.92)",
+    textMuted: "rgba(255,255,255,0.78)",
+  };
+
+  const Card: React.FC<{ children: React.ReactNode; strong?: boolean }> = ({
+    children,
+    strong,
+  }) => (
+    <div
+      style={{
+        padding: "1rem",
+        borderRadius: "0.75rem",
+        background: strong ? SECA.cardGlassStrong : SECA.cardGlass,
+        border: `1px solid ${SECA.border}`,
+      }}
+    >
+      {children}
+    </div>
+  );
 
   const renderContenido = () => {
     switch (tabActiva) {
       case "inicio":
         return (
-          <div>
-            <div style={{ 
-              width: "80px", 
-              height: "80px", 
-              background: "linear-gradient(135deg, #1d4ed8, #38bdf8)",
-              borderRadius: "50%",
-              marginBottom: "1rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "2rem",
-              fontWeight: "bold",
-              color: "white"
-            }}>
-              SECA
-            </div>
-            
-            <h2 style={{ marginTop: 0, marginBottom: "1rem", fontSize: "1.75rem" }}>
+          <>
+            {/* LOGO (MISMO QUE APP.TSX) */}
+{/* LOGO (SOLO LOGO, SIN CÍRCULO/SILUETA) */}
+<img
+  src="/images/logo3.png"
+  alt="SECA"
+  style={{
+    height: 64,
+    width: "auto",
+    display: "block",
+    marginBottom: "1rem",
+    filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.35))",
+  }}
+/>
+
+
+            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>
               Servicios Especializados de Contabilidad y Auditoría
             </h2>
-            
-            <div style={{
-              padding: "1rem",
-              borderRadius: "0.5rem",
-              background: "rgba(29, 78, 216, 0.1)",
-              marginBottom: "1rem"
-            }}>
-              <h3 style={{ marginTop: 0, color: "#1d4ed8" }}>
+
+            <Card strong>
+              <p style={{ margin: 0, fontWeight: 800 }}>
                 ✨ 18 años de experiencia
-              </h3>
-              <p style={{ marginBottom: 0 }}>
-                Apoyando a empresas guatemaltecas y extranjeras en el cumplimiento 
+              </p>
+              <p style={{ marginTop: "0.55rem", marginBottom: 0, color: SECA.textSoft, lineHeight: 1.55 }}>
+                Apoyando a empresas guatemaltecas y extranjeras en el cumplimiento
                 de sus obligaciones tributarias y el logro de sus objetivos de crecimiento.
               </p>
-            </div>
+            </Card>
 
-            <h3 style={{ color: "#1d4ed8" }}>¿Qué hacemos?</h3>
-            <ul style={{ lineHeight: 1.8 }}>
-              <li><strong>Contabilidad y auditoría</strong> especializada</li>
-              <li><strong>Asesoría fiscal y tributaria</strong> personalizada</li>
-              <li><strong>Gestión de planillas</strong> y recursos humanos</li>
-              <li><strong>Trámites ante SAT e IGSS</strong></li>
-              <li><strong>Desarrollo de sistemas</strong> contables</li>
+            <h3 style={{ marginTop: "1.25rem", marginBottom: "0.5rem" }}>
+              ¿Qué hacemos?
+            </h3>
+
+            <ul style={{ lineHeight: 1.9, marginTop: 0, color: SECA.textSoft }}>
+              <li>Contabilidad y auditoría especializada</li>
+              <li>Asesoría fiscal y tributaria personalizada</li>
+              <li>Gestión de planillas y recursos humanos</li>
+              <li>Trámites ante SAT e IGSS</li>
+              <li>Desarrollo de sistemas contables</li>
             </ul>
 
-            <div style={{
-              padding: "1rem",
-              borderRadius: "0.5rem",
-              background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.1))",
-              marginTop: "1.5rem"
-            }}>
-              <p style={{ margin: 0, fontStyle: "italic" }}>
-                💡 <strong>Nuestra misión:</strong> Ahorrarle tiempo y dinero, 
-                protegiendo sus ganancias con soluciones claras y oportunas.
-              </p>
+            <div style={{ marginTop: "1.25rem" }}>
+              <Card>
+                <p style={{ margin: 0, fontStyle: "italic", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  💡 <strong style={{ color: SECA.white }}>Nuestra misión:</strong>{" "}
+                  Ahorrarle tiempo y dinero, protegiendo sus ganancias con soluciones claras y oportunas.
+                </p>
+              </Card>
             </div>
-          </div>
+          </>
         );
 
       case "servicios":
         return (
-          <div>
-            <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>
-              Nuestros Servicios
-            </h2>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div style={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                border: "2px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h3 style={{ margin: 0, marginBottom: "0.5rem", color: "#1d4ed8" }}>
-                  📊 Contabilidad Completa
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Desde pequeño contribuyente hasta régimen de utilidades. 
-                  Contabilidad externa e interna con tecnología de punta.
+          <>
+            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Servicios</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <Card>
+                <strong>📊 Contabilidad completa</strong>
+                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  Desde pequeño contribuyente hasta utilidades, con control y soporte profesional.
                 </p>
-              </div>
-
-              <div style={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                border: "2px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h3 style={{ margin: 0, marginBottom: "0.5rem", color: "#1d4ed8" }}>
-                  📋 Auditoría Profesional
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Interna, externa, fiscal y operacional. Análisis de estados 
-                  financieros para toma de decisiones estratégicas.
+              </Card>
+              <Card>
+                <strong>📋 Auditoría</strong>
+                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  Interna, externa y fiscal, orientada a cumplimiento y decisiones estratégicas.
                 </p>
-              </div>
-
-              <div style={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                border: "2px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h3 style={{ margin: 0, marginBottom: "0.5rem", color: "#1d4ed8" }}>
-                  💼 Nóminas y Planillas
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Gestión completa de planillas, cálculo de prestaciones, 
-                  indemnizaciones, contratos y trámites IGSS.
+              </Card>
+              <Card>
+                <strong>💼 Nóminas y planillas</strong>
+                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  Gestión, prestaciones y trámites relacionados.
                 </p>
-              </div>
-
-              <div style={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                border: "2px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h3 style={{ margin: 0, marginBottom: "0.5rem", color: "#1d4ed8" }}>
-                  🎯 Asesoría Empresarial
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Integración empresarial, coaching para emprendedores, 
-                  planificación fiscal y estrategias de crecimiento.
+              </Card>
+              <Card>
+                <strong>🎯 Asesoría empresarial</strong>
+                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  Planificación fiscal, orden financiero y acompañamiento.
                 </p>
-              </div>
-
-              <div style={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                border: "2px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h3 style={{ margin: 0, marginBottom: "0.5rem", color: "#1d4ed8" }}>
-                  ⚙️ Tecnología y Sistemas
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Desarrollo de software contable personalizado. Sistemas web 
-                  multiplataforma con Business Intelligence.
+              </Card>
+              <Card>
+                <strong>⚙️ Tecnología y sistemas</strong>
+                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                  Soluciones y automatización para procesos contables.
                 </p>
-              </div>
+              </Card>
             </div>
-
-            <div style={{
-              marginTop: "1.5rem",
-              padding: "1rem",
-              borderRadius: "0.5rem",
-              background: "linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(250, 204, 21, 0.1))",
-              border: "2px solid #eab308"
-            }}>
-              <p style={{ margin: 0, fontSize: "0.95rem" }}>
-                <strong>💰 Paquetes desde Q150/mes</strong><br />
-                Contabilidad para pequeño contribuyente con todos los servicios básicos.
-              </p>
-            </div>
-          </div>
+          </>
         );
 
       case "principios":
         return (
-          <div>
-            <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>
-              Nuestros Principios
-            </h2>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div style={{
-                padding: "0.75rem",
-                borderLeft: "4px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h4 style={{ margin: 0, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                  🔒 Confidencialidad
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Manejamos su información con total discreción para brindar 
-                  seguridad y confianza.
-                </p>
-              </div>
-
-              <div style={{
-                padding: "0.75rem",
-                borderLeft: "4px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h4 style={{ margin: 0, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                  ⚖️ Honestidad
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Claros, concisos y directos en nuestro trabajo, aplicando 
-                  soluciones sin comprometer nuestros principios.
-                </p>
-              </div>
-
-              <div style={{
-                padding: "0.75rem",
-                borderLeft: "4px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h4 style={{ margin: 0, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                  🎓 Profesionalismo
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Respeto por todos nuestros clientes, sin importar su estatus. 
-                  Servicios profesionales por igual.
-                </p>
-              </div>
-
-              <div style={{
-                padding: "0.75rem",
-                borderLeft: "4px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h4 style={{ margin: 0, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                  📅 Compromiso
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Cumplimos los acuerdos pactados con exactitud y puntualidad 
-                  en sus tributaciones.
-                </p>
-              </div>
-
-              <div style={{
-                padding: "0.75rem",
-                borderLeft: "4px solid #1d4ed8",
-                background: "rgba(29, 78, 216, 0.05)"
-              }}>
-                <h4 style={{ margin: 0, marginBottom: "0.25rem", color: "#1d4ed8" }}>
-                  💡 Creatividad
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                  Presentamos soluciones prácticas, efectivas y aplicables para 
-                  responder a sus necesidades.
-                </p>
-              </div>
+          <>
+            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Principios</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[
+                ["🔒 Confidencialidad", "Manejamos su información con discreción y seguridad."],
+                ["⚖️ Honestidad", "Claridad y transparencia en cada recomendación."],
+                ["🎓 Profesionalismo", "Calidad y respeto, sin importar el tamaño del cliente."],
+                ["📅 Compromiso", "Cumplimiento puntual y orden en cada proceso."],
+                ["💡 Creatividad", "Soluciones prácticas y aplicables a su realidad."],
+              ].map(([t, d]) => (
+                <Card key={t}>
+                  <strong>{t}</strong>
+                  <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
+                    {d}
+                  </p>
+                </Card>
+              ))}
             </div>
-
-            <div style={{
-              marginTop: "1.5rem",
-              padding: "1rem",
-              borderRadius: "0.5rem",
-              background: "linear-gradient(135deg, rgba(29, 78, 216, 0.1), rgba(56, 189, 248, 0.1))"
-            }}>
-              <p style={{ margin: 0, fontWeight: "bold", textAlign: "center" }}>
-                "Protegemos sus finanzas con eficiencia y profesionalismo"
-              </p>
-            </div>
-          </div>
+          </>
         );
 
       case "contacto":
         return (
-          <div>
-            <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>
-              Contáctanos
-            </h2>
+          <>
+            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Contacto</h2>
 
-            <div style={{
-              padding: "1.5rem",
-              borderRadius: "0.75rem",
-              background: "linear-gradient(135deg, rgba(29, 78, 216, 0.1), rgba(56, 189, 248, 0.1))",
-              marginBottom: "1rem"
-            }}>
-              <h3 style={{ marginTop: 0, marginBottom: "1rem", color: "#1d4ed8" }}>
-                📞 Información de Contacto
-              </h3>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div>
-                  <strong style={{ color: "#1d4ed8" }}>📧 Correo Electrónico:</strong><br />
-                  <a href="mailto:info@secagt.com" style={{ color: "#1d4ed8" }}>
-                    info@secagt.com
-                  </a>
-                </div>
-
-                <div>
-                  <strong style={{ color: "#1d4ed8" }}>☎️ Teléfono:</strong><br />
-                  <span>+502 0000-0000</span>
-                </div>
-
-                <div>
-                  <strong style={{ color: "#1d4ed8" }}>📱 WhatsApp:</strong><br />
-                  <span>+502 0000-0000</span>
-                </div>
-
-                <div>
-                  <strong style={{ color: "#1d4ed8" }}>📍 Ubicación:</strong><br />
-                  <span>Guatemala, Guatemala</span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{
-              padding: "1rem",
-              borderRadius: "0.5rem",
-              background: "rgba(34, 197, 94, 0.1)",
-              border: "2px solid #22c55e"
-            }}>
-              <h3 style={{ marginTop: 0, marginBottom: "0.75rem", color: "#15803d" }}>
-                🎁 Oferta Especial
-              </h3>
-              <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                <strong>Primera consulta GRATIS</strong><br />
-                Contáctanos y recibe asesoría sin compromiso sobre tus 
-                necesidades contables y fiscales.
+            <Card strong>
+              <p style={{ margin: 0, color: SECA.textSoft, lineHeight: 1.65 }}>
+                <strong style={{ color: SECA.white }}>📧 Correo:</strong>{" "}
+                <a href="mailto:info@secagt.com" style={{ color: SECA.white }}>
+                  info@secagt.com
+                </a>
+                <br />
+                <strong style={{ color: SECA.white }}>☎️ Teléfono:</strong> +502 0000-0000
+                <br />
+                <strong style={{ color: SECA.white }}>📍 Ubicación:</strong> Guatemala, Guatemala
               </p>
-            </div>
+            </Card>
 
-            <div style={{
-              marginTop: "1.5rem",
-              padding: "0.75rem",
-              borderRadius: "0.5rem",
-              background: "rgba(239, 68, 68, 0.1)",
-              fontSize: "0.85rem",
-              color: "#7f1d1d"
-            }}>
-              <strong>Nota:</strong> Los datos de contacto mostrados son de ejemplo. 
-              Actualiza con la información real de SECA.
+            <div style={{ marginTop: "1rem" }}>
+              <Card>
+                <p style={{ margin: 0, color: SECA.textMuted, fontSize: "0.9rem", lineHeight: 1.55 }}>
+                  <strong>Nota:</strong> Estos datos están como ejemplo. Reemplázalos por los reales.
+                </p>
+              </Card>
             </div>
-          </div>
+          </>
         );
-
-      default:
-        return null;
     }
   };
 
-  const estiloBoton = (activo: boolean): React.CSSProperties => ({
+  // Tabs (mismo look “píldora” que App.tsx: acento/cyan para activo, glass para inactivo)
+  const estiloTab = (activa: boolean): React.CSSProperties => ({
     flex: 1,
-    padding: "0.75rem 1rem",
-    borderRadius: "0.5rem",
-    border: "none",
+    padding: "0.7rem",
+    borderRadius: "0.6rem",
+    border: activa ? "none" : `1px solid ${SECA.border}`,
     cursor: "pointer",
-    fontSize: "0.9rem",
-    fontWeight: 600,
-    background: activo
-      ? "linear-gradient(135deg, #1d4ed8, #38bdf8)"
-      : "#e5e7eb",
-    color: activo ? "white" : "#4b5563",
-    transition: "all 0.2s",
+    fontWeight: 800,
+    background: activa
+      ? `linear-gradient(135deg, ${SECA.accent}, ${SECA.cyan})`
+      : "rgba(255,255,255,0.10)",
+    color: activa ? SECA.navy : SECA.white,
+    boxShadow: activa ? "0 10px 18px rgba(0,0,0,0.25)" : "none",
   });
 
   return (
     <div
       style={{
         position: "sticky",
-        top: "80px", // Se queda pegado al hacer scroll
+        top: 80,
         height: "calc(100vh - 100px)",
         overflowY: "auto",
-        background: "white",
-        borderRadius: "1rem",
         padding: "1.5rem",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        borderRadius: "1rem",
+        color: SECA.white,
+
+        // ====== MISMO DEGRADADO QUE EL HERO EN App.tsx ======
+        background: `linear-gradient(135deg, ${SECA.navy2}, ${SECA.blue})`,
+
+        // Para que tenga “profundidad” como el hero
+        boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
+        border: `1px solid ${SECA.border}`,
       }}
     >
-      {/* Tabs */}
+      {/* TABS */}
       <div
         style={{
           display: "flex",
           gap: "0.5rem",
-          marginBottom: "1.5rem",
-          flexWrap: "wrap",
+          marginBottom: "1.25rem",
         }}
       >
-        <button
-          style={estiloBoton(tabActiva === "inicio")}
-          onClick={() => setTabActiva("inicio")}
-        >
+        <button style={estiloTab(tabActiva === "inicio")} onClick={() => setTabActiva("inicio")}>
           Inicio
         </button>
-        <button
-          style={estiloBoton(tabActiva === "servicios")}
-          onClick={() => setTabActiva("servicios")}
-        >
+        <button style={estiloTab(tabActiva === "servicios")} onClick={() => setTabActiva("servicios")}>
           Servicios
         </button>
-        <button
-          style={estiloBoton(tabActiva === "principios")}
-          onClick={() => setTabActiva("principios")}
-        >
+        <button style={estiloTab(tabActiva === "principios")} onClick={() => setTabActiva("principios")}>
           Principios
         </button>
-        <button
-          style={estiloBoton(tabActiva === "contacto")}
-          onClick={() => setTabActiva("contacto")}
-        >
+        <button style={estiloTab(tabActiva === "contacto")} onClick={() => setTabActiva("contacto")}>
           Contacto
         </button>
       </div>
 
-      {/* Contenido */}
-      <div style={{ color: "#0f172a" }}>{renderContenido()}</div>
+      {/* CONTENIDO */}
+      <div style={{ color: SECA.white }}>
+        {renderContenido()}
+      </div>
     </div>
   );
 };
