@@ -1,23 +1,33 @@
 // src/components/SECAInfoPanel.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Tab = "inicio" | "servicios" | "principios" | "contacto";
 
 const SECAInfoPanel: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<Tab>("inicio");
 
+  // ====== DETECTAR MÓVIL (SOLO AFECTA MÓVIL, PC IGUAL) ======
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   // ====== PALETA EXACTA (MISMA QUE App.tsx) ======
   const SECA = {
-    navy: "#0F0E3B",      // navbar
-    navy2: "#0E234F",     // inicio gradiente (lado oscuro)
-    blue: "#2252EC",      // inicio gradiente (lado azul)
-    accent: "#229EFE",    // botón status
-    cyan: "#3EFDFD",      // botón status
+    navy: "#0F0E3B", // navbar
+    navy2: "#0E234F", // inicio gradiente (lado oscuro)
+    blue: "#2252EC", // inicio gradiente (lado azul)
+    accent: "#229EFE", // botón status
+    cyan: "#3EFDFD", // botón status
     white: "#FFFFFF",
-    border: "rgba(255,255,255,0.15)",            // igual a App.tsx resultados
-    panelGlass: "rgba(15,14,59,0.55)",           // parecido a resultados (más sólido)
-    cardGlass: "rgba(15,14,59,0.38)",            // cards internas
-    cardGlassStrong: "rgba(15,14,59,0.50)",      // cards destacadas
+    border: "rgba(255,255,255,0.15)", // igual a App.tsx resultados
+    panelGlass: "rgba(15,14,59,0.55)", // parecido a resultados (más sólido)
+    cardGlass: "rgba(15,14,59,0.38)", // cards internas
+    cardGlassStrong: "rgba(15,14,59,0.50)", // cards destacadas
     textSoft: "rgba(255,255,255,0.92)",
     textMuted: "rgba(255,255,255,0.78)",
   };
@@ -43,30 +53,33 @@ const SECAInfoPanel: React.FC = () => {
       case "inicio":
         return (
           <>
-            {/* LOGO (MISMO QUE APP.TSX) */}
-{/* LOGO (SOLO LOGO, SIN CÍRCULO/SILUETA) */}
-<img
-  src="/images/logo3.png"
-  alt="SECA"
-  style={{
-    height: 64,
-    width: "auto",
-    display: "block",
-    marginBottom: "1rem",
-    filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.35))",
-  }}
-/>
-
+            {/* LOGO (SOLO LOGO, SIN CÍRCULO/SILUETA) */}
+            <img
+              src="/images/logo3.png"
+              alt="SECA"
+              style={{
+                height: 64,
+                width: "auto",
+                display: "block",
+                marginBottom: "1rem",
+                filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.35))",
+              }}
+            />
 
             <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>
               Servicios Especializados de Contabilidad y Auditoría
             </h2>
 
             <Card strong>
-              <p style={{ margin: 0, fontWeight: 800 }}>
-                ✨ 18 años de experiencia
-              </p>
-              <p style={{ marginTop: "0.55rem", marginBottom: 0, color: SECA.textSoft, lineHeight: 1.55 }}>
+              <p style={{ margin: 0, fontWeight: 800 }}>✨ 18 años de experiencia</p>
+              <p
+                style={{
+                  marginTop: "0.55rem",
+                  marginBottom: 0,
+                  color: SECA.textSoft,
+                  lineHeight: 1.55,
+                }}
+              >
                 Apoyando a empresas guatemaltecas y extranjeras en el cumplimiento
                 de sus obligaciones tributarias y el logro de sus objetivos de crecimiento.
               </p>
@@ -86,7 +99,14 @@ const SECAInfoPanel: React.FC = () => {
 
             <div style={{ marginTop: "1.25rem" }}>
               <Card>
-                <p style={{ margin: 0, fontStyle: "italic", color: SECA.textSoft, lineHeight: 1.55 }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontStyle: "italic",
+                    color: SECA.textSoft,
+                    lineHeight: 1.55,
+                  }}
+                >
                   💡 <strong style={{ color: SECA.white }}>Nuestra misión:</strong>{" "}
                   Ahorrarle tiempo y dinero, protegiendo sus ganancias con soluciones claras y oportunas.
                 </p>
@@ -106,24 +126,28 @@ const SECAInfoPanel: React.FC = () => {
                   Desde pequeño contribuyente hasta utilidades, con control y soporte profesional.
                 </p>
               </Card>
+
               <Card>
                 <strong>📋 Auditoría</strong>
                 <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
                   Interna, externa y fiscal, orientada a cumplimiento y decisiones estratégicas.
                 </p>
               </Card>
+
               <Card>
                 <strong>💼 Nóminas y planillas</strong>
                 <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
                   Gestión, prestaciones y trámites relacionados.
                 </p>
               </Card>
+
               <Card>
                 <strong>🎯 Asesoría empresarial</strong>
                 <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
                   Planificación fiscal, orden financiero y acompañamiento.
                 </p>
               </Card>
+
               <Card>
                 <strong>⚙️ Tecnología y sistemas</strong>
                 <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
@@ -205,10 +229,16 @@ const SECAInfoPanel: React.FC = () => {
   return (
     <div
       style={{
-        position: "sticky",
-        top: 80,
-        height: "calc(100vh - 100px)",
-        overflowY: "auto",
+        // ✅ PC igual: sticky + altura fija
+        // ✅ MÓVIL: normal (no sticky, sin altura fija, sin recortes)
+        position: isMobile ? "static" : "sticky",
+        top: isMobile ? undefined : 80,
+        height: isMobile ? "auto" : "calc(100vh - 100px)",
+        overflowY: isMobile ? "visible" : "auto",
+
+        // en móvil le damos separación cuando ya baja abajo del listado
+        marginTop: isMobile ? "1rem" : undefined,
+
         padding: "1.5rem",
         borderRadius: "1rem",
         color: SECA.white,
@@ -216,7 +246,6 @@ const SECAInfoPanel: React.FC = () => {
         // ====== MISMO DEGRADADO QUE EL HERO EN App.tsx ======
         background: `linear-gradient(135deg, ${SECA.navy2}, ${SECA.blue})`,
 
-        // Para que tenga “profundidad” como el hero
         boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
         border: `1px solid ${SECA.border}`,
       }}
@@ -227,6 +256,7 @@ const SECAInfoPanel: React.FC = () => {
           display: "flex",
           gap: "0.5rem",
           marginBottom: "1.25rem",
+          flexWrap: isMobile ? "wrap" : "nowrap", // ✅ en móvil evita que se aplasten
         }}
       >
         <button style={estiloTab(tabActiva === "inicio")} onClick={() => setTabActiva("inicio")}>
@@ -244,9 +274,7 @@ const SECAInfoPanel: React.FC = () => {
       </div>
 
       {/* CONTENIDO */}
-      <div style={{ color: SECA.white }}>
-        {renderContenido()}
-      </div>
+      <div style={{ color: SECA.white }}>{renderContenido()}</div>
     </div>
   );
 };

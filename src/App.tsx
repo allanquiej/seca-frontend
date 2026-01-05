@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./responsive-layout.css";
 import { apiGetText } from "./services/apiClient";
 
@@ -22,6 +22,16 @@ function App() {
   // ====== ESTADOS DB TEST ======
   const [dbTestResult, setDbTestResult] = useState<string>("");
   const [dbTestLoading, setDbTestLoading] = useState(false);
+
+  // ====== RESPONSIVE (SOLO PARA MÓVIL) ======
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // ====== PROBAR /api/status ======
   const probarStatus = async () => {
@@ -146,40 +156,37 @@ function App() {
         {/* INICIO */}
         <section id="inicio">
           <div
-  style={{
-    background: "linear-gradient(135deg, #0E234F, #2252EC)",
-    borderRadius: "1rem",
-    padding: "2.2rem",      // un poco más de aire
-    color: "white",
-  }}
->
-
-<img
-  src="/images/logo3.png"
-  alt="SECA"
-  style={{
-    height: 120,          // 👈 MUCHO más visible
-    maxWidth: "100%",
-    marginBottom: "1rem",
-    display: "block",
-  }}
-/>
-
+            style={{
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
+              borderRadius: "1rem",
+              padding: "2.2rem",
+              color: "white",
+            }}
+          >
+            <img
+              src="/images/logo3.png"
+              alt="SECA"
+              style={{
+                height: 120,
+                maxWidth: "100%",
+                marginBottom: "1rem",
+                display: "block",
+              }}
+            />
 
             <p
-  style={{
-    marginBottom: "1.4rem",
-    maxWidth: 900,
-    fontSize: "1.1rem",     // 👈 más grande
-    lineHeight: 1.6,        // 👈 más aire
-    opacity: 0.95,
-  }}
->
-  Servicios especializados de contabilidad y auditoría. Apoyamos a
-  empresas guatemaltecas y extranjeras en el cumplimiento de sus
-  obligaciones tributarias y el logro de sus objetivos de crecimiento.
-</p>
-
+              style={{
+                marginBottom: "1.4rem",
+                maxWidth: 900,
+                fontSize: "1.1rem",
+                lineHeight: 1.6,
+                opacity: 0.95,
+              }}
+            >
+              Servicios especializados de contabilidad y auditoría. Apoyamos a
+              empresas guatemaltecas y extranjeras en el cumplimiento de sus
+              obligaciones tributarias y el logro de sus objetivos de crecimiento.
+            </p>
 
             {/* BOTONES */}
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
@@ -191,7 +198,7 @@ function App() {
                   borderRadius: "999px",
                   border: "none",
                   fontWeight: 700,
-                  background: "linear-gradient(135deg, #229EFE, #3EFDFD)", // SECA accent -> cyan (oficial)
+                  background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
                   color: "#0F0E3B",
                   cursor: statusLoading ? "not-allowed" : "pointer",
                 }}
@@ -220,7 +227,7 @@ function App() {
             <div
               style={{
                 marginTop: "1rem",
-                backgroundColor: "rgba(15,14,59,0.65)", // navy con alpha
+                backgroundColor: "rgba(15,14,59,0.65)",
                 padding: "0.8rem",
                 borderRadius: "0.75rem",
                 whiteSpace: "pre-wrap",
@@ -236,7 +243,14 @@ function App() {
 
         {/* CALCULADORAS */}
         <section id="calculadoras" style={{ marginTop: "2rem" }}>
-          <div style={{ display: "flex", gap: "2rem" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "2rem",
+              flexDirection: isMobile ? "column" : "row", // ✅ SOLO cambia en móvil
+            }}
+          >
+            {/* CALCULADORAS (siempre primero) */}
             <div style={{ flex: 1 }}>
               <IndemnizacionCalculator />
               <Bono14Calculator />
@@ -247,6 +261,7 @@ function App() {
               <ISOTrimestralCalculator />
             </div>
 
+            {/* PANEL (en móvil baja abajo automáticamente) */}
             <div id="seca-info" style={{ flex: 1 }}>
               <SECAInfoPanel />
             </div>
