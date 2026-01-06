@@ -202,13 +202,22 @@ function App() {
         {/* CALCULADORAS + PANEL */}
         <section id="calculadoras" style={{ marginTop: "2rem" }}>
           <div
+            className="calc-seca-layout"
             style={{
               display: "flex",
               gap: "2rem",
               alignItems: "stretch",
+              paddingTop: "0.6rem",
             }}
           >
-            <div style={{ flex: 1 }}>
+            {/* COLUMNA CALCULADORAS */}
+            <div
+              className="calc-col"
+              style={{
+                flex: 1,
+                marginTop: "-14px", // tu ajuste actual (no lo toco)
+              }}
+            >
               <IndemnizacionCalculator />
               <Bono14Calculator />
               <AguinaldoCalculator />
@@ -218,7 +227,15 @@ function App() {
               <ISOTrimestralCalculator />
             </div>
 
-            <div id="seca-info" style={{ flex: 1, display: "flex" }}>
+            {/* COLUMNA PANEL SECA */}
+            <div
+              id="seca-info"
+              className="seca-col"
+              style={{
+                flex: 1,
+                display: "flex",
+              }}
+            >
               <div style={{ flex: 1 }}>
                 <SECAInfoPanel />
               </div>
