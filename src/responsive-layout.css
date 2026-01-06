@@ -92,3 +92,11 @@ html, body {
   width: 100%;
   min-height: 100vh;
 }
+
+/* =========================================================
+   FIX: Alinear columna de calculadoras con el panel SECA
+   (la primera calculadora trae marginTop propio)
+========================================================= */
+.seca-calculators-col > *:first-child {
+  margin-top: 0 !important;
+}

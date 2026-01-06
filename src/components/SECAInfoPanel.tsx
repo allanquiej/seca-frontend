@@ -6,7 +6,7 @@ type Tab = "inicio" | "servicios" | "principios" | "contacto";
 const SECAInfoPanel: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<Tab>("inicio");
 
-  // ====== DETECTAR MÓVIL (SOLO AFECTA MÓVIL, PC IGUAL) ======
+  // ====== DETECTAR MÓVIL (NO CAMBIA DISEÑO, SOLO PARA TABS WRAP) ======
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -18,16 +18,15 @@ const SECAInfoPanel: React.FC = () => {
 
   // ====== PALETA EXACTA (MISMA QUE App.tsx) ======
   const SECA = {
-    navy: "#0F0E3B", // navbar
-    navy2: "#0E234F", // inicio gradiente (lado oscuro)
-    blue: "#2252EC", // inicio gradiente (lado azul)
-    accent: "#229EFE", // botón status
-    cyan: "#3EFDFD", // botón status
+    navy: "#0F0E3B",
+    navy2: "#0E234F",
+    blue: "#2252EC",
+    accent: "#229EFE",
+    cyan: "#3EFDFD",
     white: "#FFFFFF",
-    border: "rgba(255,255,255,0.15)", // igual a App.tsx resultados
-    panelGlass: "rgba(15,14,59,0.55)", // parecido a resultados (más sólido)
-    cardGlass: "rgba(15,14,59,0.38)", // cards internas
-    cardGlassStrong: "rgba(15,14,59,0.50)", // cards destacadas
+    border: "rgba(255,255,255,0.15)",
+    cardGlass: "rgba(15,14,59,0.38)",
+    cardGlassStrong: "rgba(15,14,59,0.50)",
     textSoft: "rgba(255,255,255,0.92)",
     textMuted: "rgba(255,255,255,0.78)",
   };
@@ -53,7 +52,6 @@ const SECAInfoPanel: React.FC = () => {
       case "inicio":
         return (
           <>
-            {/* LOGO (SOLO LOGO, SIN CÍRCULO/SILUETA) */}
             <img
               src="/images/logo3.png"
               alt="SECA"
@@ -71,7 +69,9 @@ const SECAInfoPanel: React.FC = () => {
             </h2>
 
             <Card strong>
-              <p style={{ margin: 0, fontWeight: 800 }}>✨ 18 años de experiencia</p>
+              <p style={{ margin: 0, fontWeight: 800 }}>
+                ✨ 18 años de experiencia
+              </p>
               <p
                 style={{
                   marginTop: "0.55rem",
@@ -211,7 +211,6 @@ const SECAInfoPanel: React.FC = () => {
     }
   };
 
-  // Tabs (mismo look “píldora” que App.tsx: acento/cyan para activo, glass para inactivo)
   const estiloTab = (activa: boolean): React.CSSProperties => ({
     flex: 1,
     padding: "0.7rem",
@@ -229,34 +228,27 @@ const SECAInfoPanel: React.FC = () => {
   return (
     <div
       style={{
-        // ✅ PC igual: sticky + altura fija
-        // ✅ MÓVIL: normal (no sticky, sin altura fija, sin recortes)
-        position: isMobile ? "static" : "sticky",
-        top: isMobile ? undefined : 80,
-        height: isMobile ? "auto" : "calc(100vh - 100px)",
-        overflowY: isMobile ? "visible" : "auto",
-
-        // en móvil le damos separación cuando ya baja abajo del listado
-        marginTop: isMobile ? "1rem" : undefined,
+        /* ✅ CLAVE: ahora SIEMPRE será normal y se moverá con las calculadoras */
+        position: "static",
+        top: undefined,
+        height: "auto",
+        overflowY: "visible",
 
         padding: "1.5rem",
         borderRadius: "1rem",
         color: SECA.white,
 
-        // ====== MISMO DEGRADADO QUE EL HERO EN App.tsx ======
         background: `linear-gradient(135deg, ${SECA.navy2}, ${SECA.blue})`,
-
         boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
         border: `1px solid ${SECA.border}`,
       }}
     >
-      {/* TABS */}
       <div
         style={{
           display: "flex",
           gap: "0.5rem",
           marginBottom: "1.25rem",
-          flexWrap: isMobile ? "wrap" : "nowrap", // ✅ en móvil evita que se aplasten
+          flexWrap: isMobile ? "wrap" : "nowrap",
         }}
       >
         <button style={estiloTab(tabActiva === "inicio")} onClick={() => setTabActiva("inicio")}>
@@ -273,7 +265,6 @@ const SECAInfoPanel: React.FC = () => {
         </button>
       </div>
 
-      {/* CONTENIDO */}
       <div style={{ color: SECA.white }}>{renderContenido()}</div>
     </div>
   );

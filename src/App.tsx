@@ -247,11 +247,11 @@ function App() {
             style={{
               display: "flex",
               gap: "2rem",
-              flexDirection: isMobile ? "column" : "row", // ✅ SOLO cambia en móvil
+              alignItems: "stretch", // ✅ CLAVE: estira ambas columnas a la misma altura
             }}
           >
-            {/* CALCULADORAS (siempre primero) */}
-            <div style={{ flex: 1 }}>
+            {/* COLUMNA CALCULADORAS */}
+            <div className="seca-calculators-col" style={{ flex: 1, marginTop: "0.5rem" }}>
               <IndemnizacionCalculator />
               <Bono14Calculator />
               <AguinaldoCalculator />
@@ -261,15 +261,25 @@ function App() {
               <ISOTrimestralCalculator />
             </div>
 
-            {/* PANEL (en móvil baja abajo automáticamente) */}
-            <div id="seca-info" style={{ flex: 1 }}>
-              <SECAInfoPanel />
+            {/* COLUMNA PANEL SECA */}
+            <div
+              id="seca-info"
+              style={{
+                flex: 1,
+                marginTop: "0.5rem",
+                display: "flex", // ✅ permite que el contenido interno crezca en alto
+              }}
+            >
+              {/* ✅ wrapper para que el panel ocupe todo el alto de la columna */}
+              <div style={{ flex: 1 }}>
+                <SECAInfoPanel />
+              </div>
             </div>
           </div>
         </section>
 
         {/* CONTACTO */}
-        <section id="contacto" style={{ marginTop: "2rem" }}>
+        <section id="contacto" style={{ marginTop: "0.5rem" }}>
           <h2>Contáctanos</h2>
           <p>
             Para implementar estas herramientas o recibir asesoría personalizada,
