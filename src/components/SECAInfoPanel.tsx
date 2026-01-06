@@ -6,7 +6,7 @@ type Tab = "inicio" | "servicios" | "principios" | "contacto";
 const SECAInfoPanel: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<Tab>("inicio");
 
-  // ====== DETECTAR MÓVIL (NO CAMBIA DISEÑO, SOLO PARA TABS WRAP) ======
+  // ====== DETECTAR MÓVIL ======
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -25,6 +25,7 @@ const SECAInfoPanel: React.FC = () => {
     cyan: "#3EFDFD",
     white: "#FFFFFF",
     border: "rgba(255,255,255,0.15)",
+    panelGlass: "rgba(15,14,59,0.55)",
     cardGlass: "rgba(15,14,59,0.38)",
     cardGlassStrong: "rgba(15,14,59,0.50)",
     textSoft: "rgba(255,255,255,0.92)",
@@ -119,6 +120,7 @@ const SECAInfoPanel: React.FC = () => {
         return (
           <>
             <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Servicios</h2>
+
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               <Card>
                 <strong>📊 Contabilidad completa</strong>
@@ -162,6 +164,7 @@ const SECAInfoPanel: React.FC = () => {
         return (
           <>
             <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Principios</h2>
+
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {[
                 ["🔒 Confidencialidad", "Manejamos su información con discreción y seguridad."],
@@ -228,11 +231,19 @@ const SECAInfoPanel: React.FC = () => {
   return (
     <div
       style={{
-        /* ✅ CLAVE: ahora SIEMPRE será normal y se moverá con las calculadoras */
+        // ✅ AHORA: móvil y PC se comportan igual (panel en flujo, se mueve con el scroll)
         position: "static",
         top: undefined,
-        height: "auto",
+
+        // ✅ CLAVE: en PC se estira para llenar el alto de la columna
+        height: isMobile ? "auto" : "100%",
+        minHeight: isMobile ? undefined : "100%",
+
+        // ✅ nada de recortes
         overflowY: "visible",
+
+        // separación solo cuando cae abajo en móvil
+        marginTop: isMobile ? "1rem" : undefined,
 
         padding: "1.5rem",
         borderRadius: "1rem",
@@ -241,8 +252,13 @@ const SECAInfoPanel: React.FC = () => {
         background: `linear-gradient(135deg, ${SECA.navy2}, ${SECA.blue})`,
         boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
         border: `1px solid ${SECA.border}`,
+
+        // ✅ ayuda visual para que el contenido se distribuya arriba
+        display: "flex",
+        flexDirection: "column",
       }}
     >
+      {/* TABS */}
       <div
         style={{
           display: "flex",
@@ -265,7 +281,11 @@ const SECAInfoPanel: React.FC = () => {
         </button>
       </div>
 
+      {/* CONTENIDO */}
       <div style={{ color: SECA.white }}>{renderContenido()}</div>
+
+      {/* ✅ “relleno” invisible para asegurar que el panel tome todo el alto cuando la columna estira */}
+      {!isMobile && <div style={{ flex: 1 }} />}
     </div>
   );
 };

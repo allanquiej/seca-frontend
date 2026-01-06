@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./responsive-layout.css";
 import { apiGetText } from "./services/apiClient";
 
@@ -22,16 +22,6 @@ function App() {
   // ====== ESTADOS DB TEST ======
   const [dbTestResult, setDbTestResult] = useState<string>("");
   const [dbTestLoading, setDbTestLoading] = useState(false);
-
-  // ====== RESPONSIVE (SOLO PARA MÓVIL) ======
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 900);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   // ====== PROBAR /api/status ======
   const probarStatus = async () => {
@@ -87,7 +77,7 @@ function App() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          backgroundColor: "#0F0E3B", // SECA navy (oficial)
+          backgroundColor: "#0F0E3B",
           boxShadow: "0 6px 20px rgba(15,23,42,0.4)",
         }}
       >
@@ -100,7 +90,6 @@ function App() {
             color: "white",
           }}
         >
-          {/* LOGO (blanco) */}
           <a
             href="/"
             onClick={(e) => {
@@ -115,15 +104,7 @@ function App() {
               color: "white",
             }}
           >
-            <img
-              src="/images/logo3.png"
-              alt="SECA"
-              style={{
-                height: 34,
-                width: "auto",
-                display: "block",
-              }}
-            />
+            <img src="/images/logo3.png" alt="SECA" style={{ height: 34 }} />
           </a>
 
           <div style={{ display: "flex", gap: "1rem" }}>
@@ -163,32 +144,14 @@ function App() {
               color: "white",
             }}
           >
-            <img
-              src="/images/logo3.png"
-              alt="SECA"
-              style={{
-                height: 120,
-                maxWidth: "100%",
-                marginBottom: "1rem",
-                display: "block",
-              }}
-            />
+            <img src="/images/logo3.png" alt="SECA" style={{ height: 120 }} />
 
-            <p
-              style={{
-                marginBottom: "1.4rem",
-                maxWidth: 900,
-                fontSize: "1.1rem",
-                lineHeight: 1.6,
-                opacity: 0.95,
-              }}
-            >
+            <p style={{ maxWidth: 900, fontSize: "1.1rem", lineHeight: 1.6 }}>
               Servicios especializados de contabilidad y auditoría. Apoyamos a
               empresas guatemaltecas y extranjeras en el cumplimiento de sus
               obligaciones tributarias y el logro de sus objetivos de crecimiento.
             </p>
 
-            {/* BOTONES */}
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <button
                 onClick={probarStatus}
@@ -196,11 +159,10 @@ function App() {
                 style={{
                   padding: "0.55rem 1.3rem",
                   borderRadius: "999px",
-                  border: "none",
                   fontWeight: 700,
                   background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
                   color: "#0F0E3B",
-                  cursor: statusLoading ? "not-allowed" : "pointer",
+                  border: "none",
                 }}
               >
                 {statusLoading ? "Consultando..." : "Probar /api/status"}
@@ -212,26 +174,22 @@ function App() {
                 style={{
                   padding: "0.55rem 1.3rem",
                   borderRadius: "999px",
-                  border: "none",
                   fontWeight: 700,
                   background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
                   color: "#0F0E3B",
-                  cursor: dbTestLoading ? "not-allowed" : "pointer",
+                  border: "none",
                 }}
               >
                 {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
               </button>
             </div>
 
-            {/* RESULTADOS */}
             <div
               style={{
                 marginTop: "1rem",
                 backgroundColor: "rgba(15,14,59,0.65)",
                 padding: "0.8rem",
                 borderRadius: "0.75rem",
-                whiteSpace: "pre-wrap",
-                border: "1px solid rgba(255,255,255,0.15)",
               }}
             >
               {statusError && <strong>Error: {statusError}</strong>}
@@ -241,17 +199,16 @@ function App() {
           </div>
         </section>
 
-        {/* CALCULADORAS */}
+        {/* CALCULADORAS + PANEL */}
         <section id="calculadoras" style={{ marginTop: "2rem" }}>
           <div
             style={{
               display: "flex",
               gap: "2rem",
-              alignItems: "stretch", // ✅ CLAVE: estira ambas columnas a la misma altura
+              alignItems: "stretch",
             }}
           >
-            {/* COLUMNA CALCULADORAS */}
-            <div className="seca-calculators-col" style={{ flex: 1, marginTop: "0.5rem" }}>
+            <div style={{ flex: 1 }}>
               <IndemnizacionCalculator />
               <Bono14Calculator />
               <AguinaldoCalculator />
@@ -261,16 +218,7 @@ function App() {
               <ISOTrimestralCalculator />
             </div>
 
-            {/* COLUMNA PANEL SECA */}
-            <div
-              id="seca-info"
-              style={{
-                flex: 1,
-                marginTop: "0.5rem",
-                display: "flex", // ✅ permite que el contenido interno crezca en alto
-              }}
-            >
-              {/* ✅ wrapper para que el panel ocupe todo el alto de la columna */}
+            <div id="seca-info" style={{ flex: 1, display: "flex" }}>
               <div style={{ flex: 1 }}>
                 <SECAInfoPanel />
               </div>
@@ -279,12 +227,9 @@ function App() {
         </section>
 
         {/* CONTACTO */}
-        <section id="contacto" style={{ marginTop: "0.5rem" }}>
+        <section id="contacto" style={{ marginTop: "1rem" }}>
           <h2>Contáctanos</h2>
-          <p>
-            Para implementar estas herramientas o recibir asesoría personalizada,
-            comunícate con SECA.
-          </p>
+          <p>Comunícate con SECA para asesoría personalizada.</p>
         </section>
       </main>
 
