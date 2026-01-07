@@ -418,25 +418,27 @@ const SECAInfoPanel: React.FC = () => {
     {/* OVERLAY AZUL (NO OPACITY EN LA IMAGEN) */}
     {!isMobile && (
   <div
+  style={{
+    position: "relative",
+    width: "100%",
+    height: isMobile ? 140 : 220, // ✅ móvil más bajo, PC más alto
+    marginTop: "1.5rem",
+    borderRadius: "0.75rem",
+    overflow: "hidden",
+  }}
+>
+  <img
+    src="/images/panel-illustration.png"
+    alt="SECA ilustración"
     style={{
-      position: "relative",
       width: "100%",
-      height: 220,
-      marginTop: "1.5rem",
-      borderRadius: "0.75rem",
-      overflow: "hidden",
+      height: "100%",
+      objectFit: "cover",
+      display: "block",
     }}
-  >
-    <img
-      src="/images/panel-illustration.png"
-      alt="SECA ilustración"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover", // banner ancho
-      }}
-    />
-  </div>
+  />
+</div>
+
 )}
 
   </div>
