@@ -107,6 +107,7 @@ function App() {
               color: "white",
             }}
           >
+            {/* Logo navbar (lo cambias aquí) */}
             <img src="/images/logo3.png" alt="SECA" style={{ height: 34 }} />
           </a>
 
@@ -141,66 +142,120 @@ function App() {
         <section id="inicio">
           <div
             style={{
+              position: "relative",
               background: "linear-gradient(135deg, #0E234F, #2252EC)",
               borderRadius: "1rem",
               padding: "2.2rem",
               color: "white",
+              overflow: "hidden",
             }}
           >
-            <img src="/images/seca.png" alt="SECA" style={{ height: 120 }} />
-
-            <p style={{ maxWidth: 900, fontSize: "1.1rem", lineHeight: 1.6 }}>
-              Servicios especializados de contabilidad y auditoría. Apoyamos a
-              empresas guatemaltecas y extranjeras en el cumplimiento de sus
-              obligaciones tributarias y el logro de sus objetivos de crecimiento.
-            </p>
-
-            {/* ✅ Botones de prueba (apagados por defecto) */}
-            {SHOW_DEV_BUTTONS && (
-              <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                <button
-                  onClick={probarStatus}
-                  disabled={statusLoading}
-                  style={{
-                    padding: "0.55rem 1.3rem",
-                    borderRadius: "999px",
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
-                    color: "#0F0E3B",
-                    border: "none",
-                  }}
-                >
-                  {statusLoading ? "Consultando..." : "Probar /api/status"}
-                </button>
-
-                <button
-                  onClick={probarDbTest}
-                  disabled={dbTestLoading}
-                  style={{
-                    padding: "0.55rem 1.3rem",
-                    borderRadius: "999px",
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
-                    color: "#0F0E3B",
-                    border: "none",
-                  }}
-                >
-                  {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
-                </button>
-              </div>
-            )}
-
+            {/* ✅ Fondo decorativo del banner (cambiá la imagen aquí)
+                PONE TU ARCHIVO EN: public/images/hero-banner.png (o .jpg)
+            */}
             <div
               style={{
-                marginTop: "1rem",
-                backgroundColor: "rgba(15,14,59,0.65)",
-                padding: "0.8rem",
-                borderRadius: "0.75rem",
+                position: "absolute",
+                inset: 0,
+                backgroundImage: "url('/images/hero-banner.png')",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                opacity: 0.62, // ✅ MÁS CLARA (antes 0.18)
+                filter: "contrast(1.02) saturate(1.05)",
+                pointerEvents: "none",
               }}
-            >
-              {statusError && <strong>Error: {statusError}</strong>}
-              {statusText && <div>{statusText}</div>}
-              {dbTestResult && <div>{dbTestResult}</div>}
+            />
+
+            {/* ✅ Capa de contraste (más suave, deja ver más la imagen) */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(90deg, rgba(14,35,79,0.72) 0%, rgba(14,35,79,0.52) 55%, rgba(14,35,79,0.28) 100%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* ✅ Contenido del banner (SIN cuadro derecho) */}
+            <div style={{ position: "relative" }}>
+              {/* Logo del banner (lo cambias aquí) */}
+              <img
+                src="/images/seca.png"
+                alt="SECA"
+                style={{
+                  height: 120,
+                  width: "auto",
+                  maxWidth: 360,
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
+
+              {/* ✅ Texto ocupa TODA la línea */}
+              <p
+                style={{
+                  maxWidth: "none", // ✅ antes 900
+                  width: "100%",
+                  fontSize: "1.15rem",
+                  lineHeight: 1.7,
+                  marginTop: "1.2rem",
+                }}
+              >
+                Servicios especializados de contabilidad y auditoría. Apoyamos a empresas guatemaltecas y
+                extranjeras en el cumplimiento de sus obligaciones tributarias y el logro de sus objetivos
+                de crecimiento.
+              </p>
+
+              {/* ✅ Botones de prueba (apagados por defecto) */}
+              {SHOW_DEV_BUTTONS && (
+                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "0.8rem" }}>
+                  <button
+                    onClick={probarStatus}
+                    disabled={statusLoading}
+                    style={{
+                      padding: "0.55rem 1.3rem",
+                      borderRadius: "999px",
+                      fontWeight: 700,
+                      background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
+                      color: "#0F0E3B",
+                      border: "none",
+                    }}
+                  >
+                    {statusLoading ? "Consultando..." : "Probar /api/status"}
+                  </button>
+
+                  <button
+                    onClick={probarDbTest}
+                    disabled={dbTestLoading}
+                    style={{
+                      padding: "0.55rem 1.3rem",
+                      borderRadius: "999px",
+                      fontWeight: 700,
+                      background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
+                      color: "#0F0E3B",
+                      border: "none",
+                    }}
+                  >
+                    {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
+                  </button>
+                </div>
+              )}
+
+              <div
+                style={{
+                  marginTop: "1rem",
+                  backgroundColor: "rgba(15,14,59,0.55)", // ✅ un poquito menos oscuro
+                  padding: "0.8rem",
+                  borderRadius: "0.75rem",
+                  maxWidth: 980, // ✅ opcional: evita que quede demasiado ancho si hay mensajes largos
+                }}
+              >
+                {statusError && <strong>Error: {statusError}</strong>}
+                {statusText && <div>{statusText}</div>}
+                {dbTestResult && <div>{dbTestResult}</div>}
+              </div>
             </div>
           </div>
         </section>
