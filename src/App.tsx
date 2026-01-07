@@ -215,7 +215,7 @@ function App() {
               className="calc-col"
               style={{
                 flex: 1,
-                marginTop: "-14px", // tu ajuste actual (no lo toco)
+                marginTop: "0px", // tu ajuste actual (no lo toco)
               }}
             >
               <IndemnizacionCalculator />

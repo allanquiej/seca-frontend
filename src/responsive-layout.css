@@ -131,3 +131,9 @@ html, body {
     order: 2 !important;
   }
 }
+
+
+/* Alinear la primera calculadora con el panel SECA */
+.calc-col > *:first-child {
+  margin-top: 0 !important;
+}
