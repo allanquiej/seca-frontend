@@ -147,7 +147,7 @@ function App() {
               color: "white",
             }}
           >
-            <img src="/images/logo3.png" alt="SECA" style={{ height: 120 }} />
+            <img src="/images/seca.png" alt="SECA" style={{ height: 120 }} />
 
             <p style={{ maxWidth: 900, fontSize: "1.1rem", lineHeight: 1.6 }}>
               Servicios especializados de contabilidad y auditoría. Apoyamos a
