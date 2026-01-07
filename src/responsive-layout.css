@@ -100,3 +100,34 @@ html, body {
 .seca-calculators-col > *:first-child {
   margin-top: 0 !important;
 }
+
+/* =========================================================
+   RESPONSIVE REAL para el layout actual del App.tsx
+   Clases usadas: .calc-seca-layout, .calc-col, .seca-col
+   Objetivo: en móvil, panel SECA abajo (no a la par)
+========================================================= */
+
+@media (max-width: 1024px) {
+  .calc-seca-layout {
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+    align-items: stretch !important;
+  }
+
+  .calc-col,
+  .seca-col {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Calculadoras arriba */
+  .calc-col {
+    order: 1 !important;
+    margin-top: 0 !important; /* importante: quita el -14px en móvil */
+  }
+
+  /* Panel SECA abajo */
+  .seca-col {
+    order: 2 !important;
+  }
+}
