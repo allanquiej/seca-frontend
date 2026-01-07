@@ -73,7 +73,7 @@ const FloatingConsultor: React.FC = () => {
           fontWeight: 700,
           letterSpacing: "0.08em",
           background:
-            "linear-gradient(135deg, #1d4ed8, #38bdf8)", // azul corporativo
+            "linear-gradient(135deg, #F59E0B, #D97706)", // color del boton flotante
           color: "white",
           boxShadow: "0 10px 30px rgba(15,23,42,0.7)",
         }}

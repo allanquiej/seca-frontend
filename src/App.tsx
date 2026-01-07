@@ -14,6 +14,9 @@ import FloatingConsultor from "./components/FloatingConsultor";
 import SECAInfoPanel from "./components/SECAInfoPanel";
 
 function App() {
+  // ✅ Cambiá a true SOLO cuando quieras ver los botones de prueba
+  const SHOW_DEV_BUTTONS = false;
+
   // ====== ESTADOS API STATUS ======
   const [statusText, setStatusText] = useState<string | null>(null);
   const [statusLoading, setStatusLoading] = useState(false);
@@ -152,37 +155,40 @@ function App() {
               obligaciones tributarias y el logro de sus objetivos de crecimiento.
             </p>
 
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              <button
-                onClick={probarStatus}
-                disabled={statusLoading}
-                style={{
-                  padding: "0.55rem 1.3rem",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
-                  color: "#0F0E3B",
-                  border: "none",
-                }}
-              >
-                {statusLoading ? "Consultando..." : "Probar /api/status"}
-              </button>
+            {/* ✅ Botones de prueba (apagados por defecto) */}
+            {SHOW_DEV_BUTTONS && (
+              <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                <button
+                  onClick={probarStatus}
+                  disabled={statusLoading}
+                  style={{
+                    padding: "0.55rem 1.3rem",
+                    borderRadius: "999px",
+                    fontWeight: 700,
+                    background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
+                    color: "#0F0E3B",
+                    border: "none",
+                  }}
+                >
+                  {statusLoading ? "Consultando..." : "Probar /api/status"}
+                </button>
 
-              <button
-                onClick={probarDbTest}
-                disabled={dbTestLoading}
-                style={{
-                  padding: "0.55rem 1.3rem",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
-                  color: "#0F0E3B",
-                  border: "none",
-                }}
-              >
-                {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
-              </button>
-            </div>
+                <button
+                  onClick={probarDbTest}
+                  disabled={dbTestLoading}
+                  style={{
+                    padding: "0.55rem 1.3rem",
+                    borderRadius: "999px",
+                    fontWeight: 700,
+                    background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
+                    color: "#0F0E3B",
+                    border: "none",
+                  }}
+                >
+                  {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
+                </button>
+              </div>
+            )}
 
             <div
               style={{
@@ -211,13 +217,7 @@ function App() {
             }}
           >
             {/* COLUMNA CALCULADORAS */}
-            <div
-              className="calc-col"
-              style={{
-                flex: 1,
-                marginTop: "0px", // tu ajuste actual (no lo toco)
-              }}
-            >
+            <div className="calc-col" style={{ flex: 1 }}>
               <IndemnizacionCalculator />
               <Bono14Calculator />
               <AguinaldoCalculator />
@@ -228,14 +228,7 @@ function App() {
             </div>
 
             {/* COLUMNA PANEL SECA */}
-            <div
-              id="seca-info"
-              className="seca-col"
-              style={{
-                flex: 1,
-                display: "flex",
-              }}
-            >
+            <div id="seca-info" className="seca-col" style={{ flex: 1, display: "flex" }}>
               <div style={{ flex: 1 }}>
                 <SECAInfoPanel />
               </div>
