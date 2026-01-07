@@ -30,6 +30,13 @@ const SECAInfoPanel: React.FC = () => {
     cardGlassStrong: "rgba(15,14,59,0.50)",
     textSoft: "rgba(255,255,255,0.92)",
     textMuted: "rgba(255,255,255,0.78)",
+    success: "#22c55e",
+  };
+
+  // ✅ BASE SOLO PARA FAMILIA TIPOGRÁFICA (sin fontSize/lineHeight) -> evita warnings
+  const BASE_FONT: React.CSSProperties = {
+    fontFamily:
+      'system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif',
   };
 
   const Card: React.FC<{ children: React.ReactNode; strong?: boolean }> = ({
@@ -48,114 +55,206 @@ const SECAInfoPanel: React.FC = () => {
     </div>
   );
 
+  const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <h3
+      style={{
+        ...BASE_FONT,
+        marginTop: 0,
+        marginBottom: "0.55rem",
+        fontSize: "1.22rem",
+        fontWeight: 900,
+        letterSpacing: "0.2px",
+      }}
+    >
+      {children}
+    </h3>
+  );
+
+  const Pill: React.FC<{ text: string }> = ({ text }) => (
+    <span
+      style={{
+        ...BASE_FONT,
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "0.55rem 0.85rem",
+        borderRadius: "999px",
+        border: `1px solid ${SECA.border}`,
+        background: "rgba(255,255,255,0.12)",
+        color: SECA.textSoft,
+        fontWeight: 800,
+        fontSize: "1.02rem",
+        lineHeight: 1,
+      }}
+    >
+      {text}
+    </span>
+  );
+
+  const GoalBadge: React.FC<{ text: string }> = ({ text }) => (
+    <span
+      style={{
+        ...BASE_FONT,
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "0.55rem 0.95rem",
+        borderRadius: "999px",
+        background: SECA.success,
+        color: SECA.white,
+        fontWeight: 900,
+        border: `1px solid rgba(255,255,255,0.18)`,
+        boxShadow: "0 10px 18px rgba(0,0,0,0.22)",
+        fontSize: "1.03rem",
+        lineHeight: 1,
+      }}
+    >
+      {text}
+    </span>
+  );
+
   const renderContenido = () => {
     switch (tabActiva) {
       case "inicio":
         return (
-          <>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.05rem" }}>
+            {/* ✅ LOGO: NO SE ESTIRA */}
             <img
               src="/images/logo3.png"
               alt="SECA"
               style={{
-                height: 64,
+                height: 70,
                 width: "auto",
+                maxWidth: 260,
                 display: "block",
-                marginBottom: "1rem",
+                marginBottom: "0.25rem",
                 filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.35))",
+                objectFit: "contain",
               }}
             />
 
-            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>
+            <h2
+              style={{
+                ...BASE_FONT,
+                marginTop: 0,
+                marginBottom: "0.2rem",
+                fontSize: "1.65rem",
+                fontWeight: 950 as any,
+                letterSpacing: "0.2px",
+                lineHeight: 1.2,
+              }}
+            >
               Servicios Especializados de Contabilidad y Auditoría
             </h2>
 
             <Card strong>
-              <p style={{ margin: 0, fontWeight: 800 }}>
-                ✨ 18 años de experiencia
-              </p>
               <p
                 style={{
-                  marginTop: "0.55rem",
-                  marginBottom: 0,
-                  color: SECA.textSoft,
-                  lineHeight: 1.55,
+                  ...BASE_FONT,
+                  margin: 0,
+                  fontWeight: 950 as any,
+                  letterSpacing: "0.2px",
+                  fontSize: "1.18rem",
                 }}
               >
-                Apoyando a empresas guatemaltecas y extranjeras en el cumplimiento
-                de sus obligaciones tributarias y el logro de sus objetivos de crecimiento.
+                ✨ 18 años de experiencia
+              </p>
+
+              <p style={{ ...BASE_FONT, marginTop: "0.6rem", marginBottom: 0, color: SECA.textSoft }}>
+                Somos un equipo de profesionales con 18 años de experiencia en el ramo contable, fiscal y
+                financiero, apoyando a empresas guatemaltecas y extranjeras en el cumplimiento de sus
+                obligaciones tributarias y el logro de sus objetivos de crecimiento.
               </p>
             </Card>
 
-            <h3 style={{ marginTop: "1.25rem", marginBottom: "0.5rem" }}>
-              ¿Qué hacemos?
-            </h3>
+            <SectionTitle>¿Quiénes somos?</SectionTitle>
 
-            <ul style={{ lineHeight: 1.9, marginTop: 0, color: SECA.textSoft }}>
-              <li>Contabilidad y auditoría especializada</li>
-              <li>Asesoría fiscal y tributaria personalizada</li>
-              <li>Gestión de planillas y recursos humanos</li>
-              <li>Trámites ante SAT e IGSS</li>
-              <li>Desarrollo de sistemas contables</li>
-            </ul>
+            <Card>
+              <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+                Brindamos asesorías y consultorías empresariales con el acompañamiento de expertos,
+                incluyendo apoyo en áreas legales, para garantizar a nuestros clientes el éxito de sus
+                inversiones, ahorrándoles tiempo y dinero, protegiendo sus ganancias con soluciones claras y
+                oportunas.
+              </p>
+            </Card>
 
-            <div style={{ marginTop: "1.25rem" }}>
-              <Card>
-                <p
-                  style={{
-                    margin: 0,
-                    fontStyle: "italic",
-                    color: SECA.textSoft,
-                    lineHeight: 1.55,
-                  }}
-                >
-                  💡 <strong style={{ color: SECA.white }}>Nuestra misión:</strong>{" "}
-                  Ahorrarle tiempo y dinero, protegiendo sus ganancias con soluciones claras y oportunas.
-                </p>
-              </Card>
+            <SectionTitle>¿Qué hacemos?</SectionTitle>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem" }}>
+              <Pill text="📊 Contabilidad" />
+              <Pill text="🏢 Integración Empresarial" />
+              <Pill text="📋 Auditoría" />
+              <Pill text="👥 Nóminas y Planilla" />
+              <Pill text="🤝 Outsourcing" />
+              <Pill text="🧾 Asesoría Fiscal y Tributaria" />
+              <Pill text="🧩 Trámites y Gestiones" />
+              <Pill text="💻 Tecnología y Sistemas" />
             </div>
-          </>
+
+            <SectionTitle>Nuestros principios</SectionTitle>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.95rem" }}>
+              {[
+                ["⚙️ Principios Morales", "Nuestro trabajo se hace con eficiencia y profesionalismo, aplicando las leyes tributarias para los datos financieros de cada uno de nuestros clientes."],
+                ["🔒 Principios Éticos", "Manejamos su información con confidencialidad y discreción para brindar seguridad y confianza."],
+                ["📅 Responsabilidad", "Comprometidos a cumplir los acuerdos pactados con nuestros clientes, según los lineamientos descritos y firmados."],
+                ["🤝 Confianza", "Mantenemos discreción en el manejo de la papelería y documentos financieros; no se divulgan datos personales ni empresariales."],
+                ["🎓 Profesionalismo", "Respeto por todos nuestros clientes sin importar su estatus económico o social; brindamos nuestros servicios profesionalmente por igual."],
+                ["⚖️ Honestidad", "Somos claros, concisos y directos en nuestro trabajo, aplicando soluciones sin ensuciar nuestros principios."],
+                ["✅ Compromiso", "Con cada cliente que confía sus tributaciones; trabajamos con exactitud y puntualidad según lo demandan las entidades públicas."],
+                ["💡 Creatividad", "Presentamos soluciones prácticas, efectivas y aplicables para responder a las necesidades de nuestros clientes."],
+              ].map(([t, d]) => (
+                <Card key={t}>
+                  <strong style={{ ...BASE_FONT, fontSize: "1.12rem" }}>{t}</strong>
+                  <p style={{ ...BASE_FONT, margin: "0.5rem 0 0", color: SECA.textSoft }}>{d}</p>
+                </Card>
+              ))}
+            </div>
+
+            {/* ✅ sin cursiva */}
+            <Card>
+              <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+                💡 <strong style={{ ...BASE_FONT, color: SECA.white }}>Nuestra misión:</strong>{" "}
+                Ahorrarle tiempo y dinero, protegiendo sus ganancias con soluciones claras y oportunas.
+              </p>
+            </Card>
+
+            <Card strong>
+              <p style={{ ...BASE_FONT, margin: 0, fontWeight: 950 as any, fontSize: "1.22rem" }}>
+                🤝 ¿Listo para ordenar tu contabilidad?
+              </p>
+              <p style={{ ...BASE_FONT, marginTop: "0.6rem", marginBottom: 0, color: SECA.textSoft }}>
+                Podemos ayudarte a cumplir con SAT e IGSS, optimizar tu control financiero y tomar mejores
+                decisiones con información clara.
+              </p>
+
+              <div style={{ marginTop: "0.9rem", display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+                <GoalBadge text="Asesoría" />
+                <GoalBadge text="Cumplimiento" />
+                <GoalBadge text="Orden financiero" />
+              </div>
+            </Card>
+          </div>
         );
 
       case "servicios":
         return (
           <>
-            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Servicios</h2>
+            <h2 style={{ ...BASE_FONT, marginTop: 0, marginBottom: "0.75rem", fontSize: "1.5rem", fontWeight: 900 }}>
+              Servicios
+            </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <Card>
-                <strong>📊 Contabilidad completa</strong>
-                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                  Desde pequeño contribuyente hasta utilidades, con control y soporte profesional.
-                </p>
-              </Card>
-
-              <Card>
-                <strong>📋 Auditoría</strong>
-                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                  Interna, externa y fiscal, orientada a cumplimiento y decisiones estratégicas.
-                </p>
-              </Card>
-
-              <Card>
-                <strong>💼 Nóminas y planillas</strong>
-                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                  Gestión, prestaciones y trámites relacionados.
-                </p>
-              </Card>
-
-              <Card>
-                <strong>🎯 Asesoría empresarial</strong>
-                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                  Planificación fiscal, orden financiero y acompañamiento.
-                </p>
-              </Card>
-
-              <Card>
-                <strong>⚙️ Tecnología y sistemas</strong>
-                <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                  Soluciones y automatización para procesos contables.
-                </p>
-              </Card>
+              {[
+                ["📊 Contabilidad completa", "Desde pequeño contribuyente hasta utilidades, con control y soporte profesional."],
+                ["📋 Auditoría", "Interna, externa y fiscal, orientada a cumplimiento y decisiones estratégicas."],
+                ["💼 Nóminas y planillas", "Gestión, prestaciones y trámites relacionados."],
+                ["🎯 Asesoría empresarial", "Planificación fiscal, orden financiero y acompañamiento."],
+                ["⚙️ Tecnología y sistemas", "Soluciones y automatización para procesos contables."],
+              ].map(([t, d]) => (
+                <Card key={t}>
+                  <strong style={{ ...BASE_FONT }}>{t}</strong>
+                  <p style={{ ...BASE_FONT, margin: "0.4rem 0 0", color: SECA.textSoft }}>{d}</p>
+                </Card>
+              ))}
             </div>
           </>
         );
@@ -163,7 +262,9 @@ const SECAInfoPanel: React.FC = () => {
       case "principios":
         return (
           <>
-            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Principios</h2>
+            <h2 style={{ ...BASE_FONT, marginTop: 0, marginBottom: "0.75rem", fontSize: "1.5rem", fontWeight: 900 }}>
+              Principios
+            </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {[
@@ -174,10 +275,8 @@ const SECAInfoPanel: React.FC = () => {
                 ["💡 Creatividad", "Soluciones prácticas y aplicables a su realidad."],
               ].map(([t, d]) => (
                 <Card key={t}>
-                  <strong>{t}</strong>
-                  <p style={{ margin: "0.4rem 0 0", color: SECA.textSoft, lineHeight: 1.55 }}>
-                    {d}
-                  </p>
+                  <strong style={{ ...BASE_FONT }}>{t}</strong>
+                  <p style={{ ...BASE_FONT, margin: "0.4rem 0 0", color: SECA.textSoft }}>{d}</p>
                 </Card>
               ))}
             </div>
@@ -187,25 +286,28 @@ const SECAInfoPanel: React.FC = () => {
       case "contacto":
         return (
           <>
-            <h2 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Contacto</h2>
+            <h2 style={{ ...BASE_FONT, marginTop: 0, marginBottom: "0.75rem", fontSize: "1.5rem", fontWeight: 900 }}>
+              Contacto
+            </h2>
 
             <Card strong>
-              <p style={{ margin: 0, color: SECA.textSoft, lineHeight: 1.65 }}>
-                <strong style={{ color: SECA.white }}>📧 Correo:</strong>{" "}
+              <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft, lineHeight: 1.65 }}>
+                <strong style={{ ...BASE_FONT, color: SECA.white }}>📧 Correo:</strong>{" "}
                 <a href="mailto:info@secagt.com" style={{ color: SECA.white }}>
                   info@secagt.com
                 </a>
                 <br />
-                <strong style={{ color: SECA.white }}>☎️ Teléfono:</strong> +502 0000-0000
+                <strong style={{ ...BASE_FONT, color: SECA.white }}>☎️ Teléfono:</strong> +502 0000-0000
                 <br />
-                <strong style={{ color: SECA.white }}>📍 Ubicación:</strong> Guatemala, Guatemala
+                <strong style={{ ...BASE_FONT, color: SECA.white }}>📍 Ubicación:</strong> Guatemala, Guatemala
               </p>
             </Card>
 
             <div style={{ marginTop: "1rem" }}>
               <Card>
-                <p style={{ margin: 0, color: SECA.textMuted, fontSize: "0.9rem", lineHeight: 1.55 }}>
-                  <strong>Nota:</strong> Estos datos están como ejemplo. Reemplázalos por los reales.
+                <p style={{ ...BASE_FONT, margin: 0, color: SECA.textMuted, fontSize: "1.02rem" }}>
+                  <strong style={{ ...BASE_FONT }}>Nota:</strong> Estos datos están como ejemplo. Reemplázalos
+                  por los reales.
                 </p>
               </Card>
             </div>
@@ -215,6 +317,7 @@ const SECAInfoPanel: React.FC = () => {
   };
 
   const estiloTab = (activa: boolean): React.CSSProperties => ({
+    ...BASE_FONT,
     flex: 1,
     padding: "0.7rem",
     borderRadius: "0.6rem",
@@ -231,18 +334,14 @@ const SECAInfoPanel: React.FC = () => {
   return (
     <div
       style={{
-        // ✅ AHORA: móvil y PC se comportan igual (panel en flujo, se mueve con el scroll)
         position: "static",
         top: undefined,
 
-        // ✅ CLAVE: en PC se estira para llenar el alto de la columna
         height: isMobile ? "auto" : "100%",
         minHeight: isMobile ? undefined : "100%",
 
-        // ✅ nada de recortes
         overflowY: "visible",
 
-        // separación solo cuando cae abajo en móvil
         marginTop: isMobile ? "1rem" : undefined,
 
         padding: "1.5rem",
@@ -253,7 +352,6 @@ const SECAInfoPanel: React.FC = () => {
         boxShadow: "0 10px 40px rgba(0,0,0,0.35)",
         border: `1px solid ${SECA.border}`,
 
-        // ✅ ayuda visual para que el contenido se distribuya arriba
         display: "flex",
         flexDirection: "column",
       }}
@@ -281,11 +379,70 @@ const SECAInfoPanel: React.FC = () => {
         </button>
       </div>
 
-      {/* CONTENIDO */}
-      <div style={{ color: SECA.white }}>{renderContenido()}</div>
+      {/* CONTENIDO (estandarizado) */}
+      <div
+        style={{
+          ...BASE_FONT,
+          color: SECA.white,
+          fontSize: "1.18rem",
+          lineHeight: 1.85,
+          letterSpacing: "0.2px",
+          fontStyle: "normal",
+        }}
+      >
+        {renderContenido()}
+      </div>
 
-      {/* ✅ “relleno” invisible para asegurar que el panel tome todo el alto cuando la columna estira */}
-      {!isMobile && <div style={{ flex: 1 }} />}
+{!isMobile && (
+  <div
+    style={{
+      position: "relative",
+      width: "100%",
+      height: 220, // ⬅️ controla qué tanto espacio ocupa
+      marginTop: "1.5rem",
+      borderRadius: "0.75rem",
+      overflow: "hidden",
+    }}
+  >
+    {/* IMAGEN */}
+    <img
+      src="/images/conta2.png"
+      alt="SECA ilustración"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover", // ⬅️ CLAVE: la hace ancha, tipo banner
+      }}
+    />
+
+    {/* OVERLAY AZUL (NO OPACITY EN LA IMAGEN) */}
+    {!isMobile && (
+  <div
+    style={{
+      position: "relative",
+      width: "100%",
+      height: 220,
+      marginTop: "1.5rem",
+      borderRadius: "0.75rem",
+      overflow: "hidden",
+    }}
+  >
+    <img
+      src="/images/panel-illustration.png"
+      alt="SECA ilustración"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover", // banner ancho
+      }}
+    />
+  </div>
+)}
+
+  </div>
+)}
+
+
     </div>
   );
 };
