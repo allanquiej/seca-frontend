@@ -243,45 +243,140 @@ const SECAInfoPanel: React.FC = () => {
             </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {[
-                ["📊 Contabilidad completa", "Desde pequeño contribuyente hasta utilidades, con control y soporte profesional."],
-                ["📋 Auditoría", "Interna, externa y fiscal, orientada a cumplimiento y decisiones estratégicas."],
-                ["💼 Nóminas y planillas", "Gestión, prestaciones y trámites relacionados."],
-                ["🎯 Asesoría empresarial", "Planificación fiscal, orden financiero y acompañamiento."],
-                ["⚙️ Tecnología y sistemas", "Soluciones y automatización para procesos contables."],
-              ].map(([t, d]) => (
-                <Card key={t}>
-                  <strong style={{ ...BASE_FONT }}>{t}</strong>
-                  <p style={{ ...BASE_FONT, margin: "0.4rem 0 0", color: SECA.textSoft }}>{d}</p>
-                </Card>
-              ))}
-            </div>
+  {/* Texto introductorio (NO es tarjeta) */}
+  <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+    Atendemos Pequeño Contribuyente, Régimen Opcional Simplificado y Actividades Lucrativas, además de
+    contabilidad administrativa y gestiones ante SAT. Nuestro enfoque es cumplimiento, orden y soporte
+    para la toma de decisiones, con envío mensual de entregables.
+  </p>
+
+  {[
+    [
+      "📊 Contabilidad Pequeño Contribuyente",
+      "Modalidad básica y premium: recepción y registro de documentos, contabilidad computarizada, libro electrónico de compras/ventas, preparación de IVA mensual y envío de boleta para pago. Incluye control de vencimientos y actualización RTU (según paquete).",
+    ],
+    [
+      "🏢 Régimen Opcional Simplificado (ROS)",
+      "Paquetes Básico/Media/Premium: libros electrónicos (compras/ventas y mayores), IVA e ISR mensual, ISR anual, envío de boletas/formularios, monitoreo de pagos para evitar inconsistencias y apoyo SAT en línea. Puede incluir estados financieros fiscales, conciliaciones y facturación electrónica (según paquete).",
+    ],
+    [
+      "🏭 Régimen Actividades Lucrativas (RTO)",
+      "Paquetes Básico/Media/Premium: IVA mensual, ISR e ISO trimestral, ISR anual, envío de boletas, proyecciones de impuestos e inventarios (si aplica). Incluye libros electrónicos, control de vencimientos, actualización RTU, y puede incorporar estados financieros, análisis y conciliaciones (según paquete).",
+    ],
+    [
+      "📑 Contabilidad Administrativa",
+      "Modalidad básica y completa: implementación de métodos contables, análisis de situación financiera y contable, control de libros, impuestos y seguimiento de pagos/presentaciones. Puede incluir visitas del asesor, digitación periódica, conciliaciones, planillas e IGSS, y reunión anual de resultados (según contratación).",
+    ],
+    [
+      "👤 Profesionales e Independientes",
+      "Servicio contable para profesionales por régimen: operación de documentación, libro electrónico de compras/ventas, preparación de impuestos y envío de boletas. Ideal para facturación mensual controlada.",
+    ],
+    [
+      "🧾 Nóminas y Planillas",
+      "Libro de salarios, recibos de pago, cálculo de prestaciones, y preparación de pagos a IGSS (el cliente envía la información con anticipación según vencimientos).",
+    ],
+    [
+      "🧩 Gestiones ante SAT",
+      "Solvencia fiscal, habilitación de facturación electrónica, inscripción y cambios de régimen (PC/ROS), agencia virtual sin ir a SAT, actualización de datos/RTU y patente de comercio (según requisitos).",
+    ],
+    [
+      "🤝 Asesoría Fiscal y Empresarial",
+      "Asesorías para decisiones y prevención de sanciones: revisión de estatus, coordinación de operaciones, sugerencias y acompañamiento ante requerimientos. También apoyamos con trámites y representación según necesidad.",
+    ],
+  ].map(([t, d]) => (
+    <Card key={t}>
+      <strong style={{ ...BASE_FONT }}>{t}</strong>
+      <p style={{ ...BASE_FONT, margin: "0.4rem 0 0", color: SECA.textSoft }}>
+        {d}
+      </p>
+    </Card>
+  ))}
+
+  {/* Texto final (NO es tarjeta) */}
+  <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+    Requisitos habituales: acceso a agencia virtual, libros/boletas/formularios del último año y hoja de omisos o inconsistencias (si aplica).
+    Manejamos documentación con discreción, enviamos respaldos por correo y conservamos copia de seguridad.
+  </p>
+
+  {/* Lista final (NO es tarjeta) */}
+  <ul style={{ ...BASE_FONT, margin: 0, paddingLeft: "1.25rem", color: SECA.textSoft }}>
+    <li>Envío mensual de libros y boletas</li>
+    <li>Monitoreo para evitar inconsistencias en SAT</li>
+    <li>Control de vencimientos y orden documental</li>
+  </ul>
+</div>
+
           </>
         );
 
       case "principios":
-        return (
-          <>
-            <h2 style={{ ...BASE_FONT, marginTop: 0, marginBottom: "0.75rem", fontSize: "1.5rem", fontWeight: 900 }}>
-              Principios
-            </h2>
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      {/* Texto introductorio (NO es tarjeta) */}
+      <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+        En SECA trabajamos bajo principios sólidos que garantizan confianza, orden y
+        cumplimiento. Nuestra forma de trabajar está orientada a brindar seguridad,
+        claridad y acompañamiento profesional a cada uno de nuestros clientes.
+      </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {[
-                ["🔒 Confidencialidad", "Manejamos su información con discreción y seguridad."],
-                ["⚖️ Honestidad", "Claridad y transparencia en cada recomendación."],
-                ["🎓 Profesionalismo", "Calidad y respeto, sin importar el tamaño del cliente."],
-                ["📅 Compromiso", "Cumplimiento puntual y orden en cada proceso."],
-                ["💡 Creatividad", "Soluciones prácticas y aplicables a su realidad."],
-              ].map(([t, d]) => (
-                <Card key={t}>
-                  <strong style={{ ...BASE_FONT }}>{t}</strong>
-                  <p style={{ ...BASE_FONT, margin: "0.4rem 0 0", color: SECA.textSoft }}>{d}</p>
-                </Card>
-              ))}
-            </div>
-          </>
-        );
+      {[
+        [
+          "⚙️ Principios Morales",
+          "Nuestro trabajo se realiza con eficiencia y profesionalismo, aplicando correctamente la legislación tributaria y contable en cada operación financiera, priorizando el orden y la responsabilidad.",
+        ],
+        [
+          "🔒 Principios Éticos",
+          "Manejamos la información de nuestros clientes con confidencialidad y discreción, brindando seguridad en cada proceso y protegiendo los datos financieros y fiscales.",
+        ],
+        [
+          "📅 Responsabilidad",
+          "Cumplimos con los acuerdos y lineamientos establecidos, respetando plazos y obligaciones ante las entidades correspondientes, garantizando continuidad y seriedad en el servicio.",
+        ],
+        [
+          "🤝 Confianza",
+          "Toda la documentación es tratada de forma reservada. No divulgamos información y mantenemos comunicación clara, fortaleciendo relaciones profesionales a largo plazo.",
+        ],
+        [
+          "🎓 Profesionalismo",
+          "Atendemos a cada cliente con respeto, compromiso y calidad, sin distinción, ofreciendo soluciones adecuadas según su régimen y situación empresarial.",
+        ],
+        [
+          "⚖️ Honestidad",
+          "Somos claros y transparentes en cada asesoría, proponiendo soluciones reales y legales, siempre alineadas con los intereses y el cumplimiento del cliente.",
+        ],
+        [
+          "✅ Compromiso",
+          "Trabajamos con exactitud y puntualidad para cumplir obligaciones fiscales, contables y administrativas, minimizando riesgos y evitando sanciones.",
+        ],
+        [
+          "💡 Creatividad",
+          "Buscamos soluciones prácticas, efectivas y aplicables, adaptadas a la realidad de cada empresa o profesional, optimizando recursos y resultados.",
+        ],
+      ].map(([t, d]) => (
+        <Card key={t}>
+          <strong style={{ ...BASE_FONT }}>{t}</strong>
+          <p
+            style={{
+              ...BASE_FONT,
+              margin: "0.4rem 0 0",
+              color: SECA.textSoft,
+              lineHeight: 1.55,
+            }}
+          >
+            {d}
+          </p>
+        </Card>
+      ))}
+
+      {/* Texto final (NO es tarjeta) */}
+      <p style={{ ...BASE_FONT, margin: 0, color: SECA.textSoft }}>
+        Estos principios guían cada una de nuestras acciones y decisiones, permitiéndonos
+        brindar un servicio confiable, profesional y alineado con la normativa vigente,
+        enfocado en la estabilidad y crecimiento de nuestros clientes.
+      </p>
+    </div>
+  );
+
 
       case "contacto":
         return (
