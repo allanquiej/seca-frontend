@@ -11,7 +11,7 @@ import ISREmpresaMensualCalculator from "./components/ISREmpresaMensualCalculato
 import ISREmpresaTrimestralCalculator from "./components/ISREmpresaTrimestralCalculator";
 import ISOTrimestralCalculator from "./components/ISOTrimestralCalculator";
 import FloatingConsultor from "./components/FloatingConsultor";
-import FloatingWhatsApp from "./components/FloatingWhatsApp"; // ✅ NUEVO: Importar componente de WhatsApp
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import SECAInfoPanel from "./components/SECAInfoPanel";
 
 function App() {
@@ -254,30 +254,43 @@ function App() {
           </div>
         </section>
 
-        {/* CALCULADORAS */}
+        {/* CALCULADORAS - ✅ ORDEN MODIFICADO */}
         <section id="calculadoras" style={{ marginTop: "2rem" }}>
           <div
             className="calc-seca-layout"
             style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}
           >
-            {/* COLUMNA CALCULADORAS: Ajustada a 55% y SIN marginTop negativo */}
+            {/* COLUMNA CALCULADORAS: Ajustada a 55% */}
             <div className="calc-col" style={{ flex: "1 1 55%" }}>
-              <Bono14Calculator />
+              {/* ✅ 1. INDEMNIZACIÓN - Primera */}
+              <IndemnizacionCalculator />
+              
+              {/* ✅ 2. BONO 14 */}
+              <div style={{ marginTop: "1.75rem" }}>
+                <Bono14Calculator />
+              </div>
+              
+              {/* ✅ 3. AGUINALDO */}
               <div style={{ marginTop: "1.75rem" }}>
                 <AguinaldoCalculator />
               </div>
+              
+              {/* ✅ 4. ISR LABORAL */}
               <div style={{ marginTop: "1.75rem" }}>
                 <ISRLaboralCalculator />
               </div>
-              <div style={{ marginTop: "1.75rem" }}>
-                <IndemnizacionCalculator />
-              </div>
+              
+              {/* ✅ 5. ISR EMPRESA MENSUAL */}
               <div style={{ marginTop: "1.75rem" }}>
                 <ISREmpresaMensualCalculator />
               </div>
+              
+              {/* ✅ 6. ISR EMPRESA TRIMESTRAL */}
               <div style={{ marginTop: "1.75rem" }}>
                 <ISREmpresaTrimestralCalculator />
               </div>
+              
+              {/* ✅ 7. ISO TRIMESTRAL - Última */}
               <div style={{ marginTop: "1.75rem" }}>
                 <ISOTrimestralCalculator />
               </div>
@@ -303,7 +316,7 @@ function App() {
 
       {/* ✅ BOTONES FLOTANTES */}
       <FloatingConsultor />
-      <FloatingWhatsApp /> {/* ✅ NUEVO: Botón flotante de WhatsApp */}
+      <FloatingWhatsApp />
 
       {/* FOOTER - MÁS COMPACTO */}
       <footer
