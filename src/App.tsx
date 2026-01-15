@@ -11,6 +11,7 @@ import ISREmpresaMensualCalculator from "./components/ISREmpresaMensualCalculato
 import ISREmpresaTrimestralCalculator from "./components/ISREmpresaTrimestralCalculator";
 import ISOTrimestralCalculator from "./components/ISOTrimestralCalculator";
 import FloatingConsultor from "./components/FloatingConsultor";
+import FloatingWhatsApp from "./components/FloatingWhatsApp"; // ✅ NUEVO: Importar componente de WhatsApp
 import SECAInfoPanel from "./components/SECAInfoPanel";
 
 function App() {
@@ -300,7 +301,9 @@ function App() {
         </section>
       </main>
 
+      {/* ✅ BOTONES FLOTANTES */}
       <FloatingConsultor />
+      <FloatingWhatsApp /> {/* ✅ NUEVO: Botón flotante de WhatsApp */}
 
       {/* FOOTER - MÁS COMPACTO */}
       <footer
