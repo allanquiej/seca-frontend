@@ -259,7 +259,8 @@ function App() {
             className="calc-seca-layout"
             style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}
           >
-            <div className="calc-col" style={{ flex: "1 1 60%", marginTop: "-14px" }}>
+            {/* ✅ COLUMNA CALCULADORAS: Ajustada a 55% y SIN marginTop negativo */}
+            <div className="calc-col" style={{ flex: "1 1 55%" }}>
               <Bono14Calculator />
               <div style={{ marginTop: "1.75rem" }}>
                 <AguinaldoCalculator />
@@ -281,9 +282,10 @@ function App() {
               </div>
             </div>
 
+            {/* ✅ COLUMNA SECA INFO: Ajustada a 45% */}
             <div
               className="seca-col"
-              style={{ flex: "1 1 40%", display: "flex", alignItems: "stretch" }}
+              style={{ flex: "1 1 45%", display: "flex", alignItems: "stretch" }}
             >
               <div style={{ flex: 1 }}>
                 <SECAInfoPanel />
@@ -300,14 +302,14 @@ function App() {
 
       <FloatingConsultor />
 
-      {/* FOOTER - ✅ ESPACIO REDUCIDO A LA MITAD (0.5rem) */}
+      {/* FOOTER - ✅ ESPACIO REDUCIDO Y CON IMAGEN DE FONDO */}
       <footer
         id="contacto"
         style={{
           background: "linear-gradient(135deg, #0E234F, #2252EC)",
           color: "white",
           padding: "2.5rem 2rem 1.5rem",
-          marginTop: "0.5rem", // ✅ REDUCIDO de 1rem a 0.5rem (la mitad)
+          marginTop: "0.5rem",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.2)",
         }}
       >
