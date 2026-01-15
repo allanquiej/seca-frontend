@@ -259,7 +259,7 @@ function App() {
             className="calc-seca-layout"
             style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}
           >
-            {/* ✅ COLUMNA CALCULADORAS: Ajustada a 55% y SIN marginTop negativo */}
+            {/* COLUMNA CALCULADORAS: Ajustada a 55% y SIN marginTop negativo */}
             <div className="calc-col" style={{ flex: "1 1 55%" }}>
               <Bono14Calculator />
               <div style={{ marginTop: "1.75rem" }}>
@@ -282,7 +282,7 @@ function App() {
               </div>
             </div>
 
-            {/* ✅ COLUMNA SECA INFO: Ajustada a 45% */}
+            {/* COLUMNA SECA INFO: Ajustada a 45% */}
             <div
               className="seca-col"
               style={{ flex: "1 1 45%", display: "flex", alignItems: "stretch" }}
@@ -302,18 +302,18 @@ function App() {
 
       <FloatingConsultor />
 
-      {/* FOOTER - ✅ MÁS COMPACTO: Reducido padding, fuentes y espaciados */}
+      {/* FOOTER - MÁS COMPACTO */}
       <footer
         id="contacto"
         style={{
           background: "linear-gradient(135deg, #0E234F, #2252EC)",
           color: "white",
-          padding: "1.5rem 2rem 1rem", // ✅ REDUCIDO de 2.5rem a 1.5rem
+          padding: "1.5rem 2rem 1rem",
           marginTop: "0.5rem",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.2)",
         }}
       >
-        {/* ✅ CONTENEDOR CON IMAGEN DE FONDO Y OVERLAY */}
+        {/* CONTENEDOR CON IMAGEN DE FONDO Y OVERLAY */}
         <div
           style={{
             position: "relative",
@@ -352,10 +352,10 @@ function App() {
               position: "relative",
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "1.5rem", // ✅ REDUCIDO de 2rem a 1.5rem
+              gap: "1.5rem",
               maxWidth: "1200px",
               margin: "0 auto",
-              padding: "1.2rem 0.8rem", // ✅ REDUCIDO de 2rem a 1.2rem
+              padding: "1.2rem 0.8rem",
             }}
           >
             {/* Sobre Nosotros */}
@@ -504,8 +504,8 @@ function App() {
         {/* Copyright */}
         <div
           style={{
-            marginTop: "1.5rem", // ✅ REDUCIDO de 2.5rem a 1.5rem
-            paddingTop: "1rem", // ✅ REDUCIDO de 1.5rem a 1rem
+            marginTop: "1.5rem",
+            paddingTop: "1rem",
             borderTop: "1px solid rgba(255,255,255,0.2)",
             display: "flex",
             alignItems: "center",
@@ -514,8 +514,8 @@ function App() {
             flexWrap: "wrap",
           }}
         >
-          <img src="/images/logo3.png" alt="SECA" style={{ height: 40 }} /> {/* ✅ REDUCIDO de 48 a 40 */}
-          <p style={{ margin: 0, fontSize: "0.95rem", opacity: 0.95 }}> {/* ✅ REDUCIDO de 1.05rem a 0.95rem */}
+          <img src="/images/logo3.png" alt="SECA" style={{ height: 40 }} />
+          <p style={{ margin: 0, fontSize: "0.95rem", opacity: 0.95 }}>
             Copyright 2026 © SECA, S.A. Todos los derechos reservados.
           </p>
         </div>

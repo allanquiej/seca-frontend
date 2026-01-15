@@ -33,22 +33,21 @@ const ConsultorContable: React.FC = () => {
   };
 
   return (
-  <div
+    <div
       style={{
-        background:
-          "linear-gradient(135deg, rgba(37,99,235,0.18), rgba(59,130,246,0.1))",
+        background: "linear-gradient(135deg, #1e293b, #0f172a)", // ✅ Fondo oscuro profesional
         borderRadius: "0.75rem",
         padding: "1.5rem",
-        border: "1px solid rgba(59,130,246,0.5)",
+        border: "1px solid rgba(59,130,246,0.3)",
         marginTop: "2rem",
         maxWidth: "720px",
         marginLeft: "auto",
         marginRight: "auto",
+        color: "white", // ✅ Texto blanco por defecto
       }}
     >
-
-      <h2>Consultor Contable</h2>
-      <p style={{ marginBottom: "1rem" }}>
+      <h2 style={{ color: "white", marginTop: 0 }}>Consultor Contable</h2> {/* ✅ Encabezado blanco */}
+      <p style={{ marginBottom: "1rem", color: "rgba(255,255,255,0.9)" }}>
         Escribe tu duda contable o fiscal y recibirás una respuesta automática.
       </p>
 
@@ -69,10 +68,11 @@ const ConsultorContable: React.FC = () => {
           style={{
             resize: "none",
             borderRadius: "0.5rem",
-            border: "1px solid #4b5563",
+            border: "1px solid rgba(59,130,246,0.4)",
             padding: "0.6rem",
-            backgroundColor: "#020617",
-            color: "white",
+            backgroundColor: "#1e293b", // ✅ Fondo oscuro pero legible
+            color: "white", // ✅ Texto blanco
+            fontSize: "0.95rem",
           }}
         />
 
@@ -86,9 +86,9 @@ const ConsultorContable: React.FC = () => {
             border: "none",
             cursor: "pointer",
             fontWeight: 600,
-            background:
-              "linear-gradient(135deg, #1d4ed8, #38bdf8)",
+            background: "linear-gradient(135deg, #1d4ed8, #38bdf8)",
             color: "white",
+            opacity: loading ? 0.7 : 1,
           }}
         >
           {loading ? "Consultando..." : "Preguntar"}
@@ -101,7 +101,9 @@ const ConsultorContable: React.FC = () => {
             marginTop: "1rem",
             padding: "0.75rem",
             borderRadius: "0.5rem",
-            backgroundColor: "#7f1d1d",
+            backgroundColor: "rgba(220, 38, 38, 0.2)", // ✅ Rojo semitransparente
+            border: "1px solid rgba(220, 38, 38, 0.5)",
+            color: "white", // ✅ Texto blanco
           }}
         >
           <strong>Error:</strong> {error}
@@ -112,18 +114,22 @@ const ConsultorContable: React.FC = () => {
         <div
           style={{
             marginTop: "1rem",
-            padding: "0.75rem",
+            padding: "1rem",
             borderRadius: "0.5rem",
-            backgroundColor: "#022c22",
+            backgroundColor: "#0f172a", // ✅ Fondo oscuro sólido
+            border: "1px solid rgba(34, 197, 94, 0.3)", // ✅ Borde verde sutil
+            color: "white", // ✅ Texto blanco
           }}
         >
-          <p style={{ whiteSpace: "pre-line" }}>
-            <strong>Respuesta:</strong> {respuesta.respuesta}
+          <p style={{ whiteSpace: "pre-line", margin: 0, lineHeight: 1.6 }}>
+            <strong style={{ color: "#22c55e" }}>Respuesta:</strong> {respuesta.respuesta}
           </p>
 
-          <p style={{ marginTop: "0.5rem", opacity: 0.7 }}>
-            {respuesta.mensaje}
-          </p>
+          {respuesta.mensaje && (
+            <p style={{ marginTop: "0.75rem", opacity: 0.8, fontSize: "0.9rem", margin: "0.75rem 0 0 0" }}>
+              {respuesta.mensaje}
+            </p>
+          )}
         </div>
       )}
     </div>
