@@ -302,13 +302,13 @@ function App() {
 
       <FloatingConsultor />
 
-      {/* FOOTER - ✅ ESPACIO REDUCIDO Y CON IMAGEN DE FONDO */}
+      {/* FOOTER - ✅ MÁS COMPACTO: Reducido padding, fuentes y espaciados */}
       <footer
         id="contacto"
         style={{
           background: "linear-gradient(135deg, #0E234F, #2252EC)",
           color: "white",
-          padding: "2.5rem 2rem 1.5rem",
+          padding: "1.5rem 2rem 1rem", // ✅ REDUCIDO de 2.5rem a 1.5rem
           marginTop: "0.5rem",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.2)",
         }}
@@ -352,18 +352,18 @@ function App() {
               position: "relative",
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "2rem",
+              gap: "1.5rem", // ✅ REDUCIDO de 2rem a 1.5rem
               maxWidth: "1200px",
               margin: "0 auto",
-              padding: "2rem 1rem",
+              padding: "1.2rem 0.8rem", // ✅ REDUCIDO de 2rem a 1.2rem
             }}
           >
             {/* Sobre Nosotros */}
             <div>
-              <h3 style={{ margin: "0 0 1rem", fontSize: "1.6rem", fontWeight: 700 }}>
+              <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.35rem", fontWeight: 700 }}>
                 Sobre Nosotros
               </h3>
-              <p style={{ margin: 0, lineHeight: 1.6, fontSize: "1.1rem", opacity: 0.95 }}>
+              <p style={{ margin: 0, lineHeight: 1.5, fontSize: "0.98rem", opacity: 0.95 }}>
                 SECA brinda servicios especializados de contabilidad y auditoría, apoyando a empresas
                 guatemaltecas y extranjeras en el cumplimiento de sus obligaciones tributarias con 18
                 años de experiencia.
@@ -372,18 +372,18 @@ function App() {
 
             {/* Contacto */}
             <div>
-              <h3 style={{ margin: "0 0 1rem", fontSize: "1.6rem", fontWeight: 700 }}>
+              <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.35rem", fontWeight: 700 }}>
                 Contacto
               </h3>
-              <div style={{ fontSize: "1.1rem", lineHeight: 1.8, opacity: 0.95 }}>
-                <div style={{ marginBottom: "0.5rem" }}>
+              <div style={{ fontSize: "0.98rem", lineHeight: 1.6, opacity: 0.95 }}>
+                <div style={{ marginBottom: "0.4rem" }}>
                   <strong>📧 Correo:</strong>
                   <div style={{ paddingLeft: "1.5rem" }}>
                     info@seca.gt<br />
                     corporacionseca@gmail.com
                   </div>
                 </div>
-                <div style={{ marginBottom: "0.5rem" }}>
+                <div style={{ marginBottom: "0.4rem" }}>
                   <strong>☎️ Teléfono:</strong> 3639-3647
                 </div>
                 <div>
@@ -397,7 +397,7 @@ function App() {
 
             {/* Redes Sociales */}
             <div>
-              <h3 style={{ margin: "0 0 1rem", fontSize: "1.6rem", fontWeight: 700 }}>
+              <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.35rem", fontWeight: 700 }}>
                 Redes Sociales
               </h3>
               <div style={{ display: "flex", gap: "1rem" }}>
@@ -504,8 +504,8 @@ function App() {
         {/* Copyright */}
         <div
           style={{
-            marginTop: "2.5rem",
-            paddingTop: "1.5rem",
+            marginTop: "1.5rem", // ✅ REDUCIDO de 2.5rem a 1.5rem
+            paddingTop: "1rem", // ✅ REDUCIDO de 1.5rem a 1rem
             borderTop: "1px solid rgba(255,255,255,0.2)",
             display: "flex",
             alignItems: "center",
@@ -514,8 +514,8 @@ function App() {
             flexWrap: "wrap",
           }}
         >
-          <img src="/images/logo3.png" alt="SECA" style={{ height: 48 }} />
-          <p style={{ margin: 0, fontSize: "1.05rem", opacity: 0.95 }}>
+          <img src="/images/logo3.png" alt="SECA" style={{ height: 40 }} /> {/* ✅ REDUCIDO de 48 a 40 */}
+          <p style={{ margin: 0, fontSize: "0.95rem", opacity: 0.95 }}> {/* ✅ REDUCIDO de 1.05rem a 0.95rem */}
             Copyright 2026 © SECA, S.A. Todos los derechos reservados.
           </p>
         </div>
