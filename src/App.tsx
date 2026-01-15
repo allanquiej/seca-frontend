@@ -150,9 +150,6 @@ function App() {
               overflow: "hidden",
             }}
           >
-            {/* ✅ Fondo decorativo del banner (cambiá la imagen aquí)
-                PONE TU ARCHIVO EN: public/images/hero-banner.png (o .jpg)
-            */}
             <div
               style={{
                 position: "absolute",
@@ -161,13 +158,12 @@ function App() {
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
-                opacity: 0.62, // ✅ MÁS CLARA (antes 0.18)
+                opacity: 0.62,
                 filter: "contrast(1.02) saturate(1.05)",
                 pointerEvents: "none",
               }}
             />
 
-            {/* ✅ Capa de contraste (más suave, deja ver más la imagen) */}
             <div
               style={{
                 position: "absolute",
@@ -178,9 +174,7 @@ function App() {
               }}
             />
 
-            {/* ✅ Contenido del banner (SIN cuadro derecho) */}
             <div style={{ position: "relative" }}>
-              {/* Logo del banner (lo cambias aquí) */}
               <img
                 src="/images/seca.png"
                 alt="SECA"
@@ -193,10 +187,9 @@ function App() {
                 }}
               />
 
-              {/* ✅ Texto ocupa TODA la línea */}
               <p
                 style={{
-                  maxWidth: "none", // ✅ antes 900
+                  maxWidth: "none",
                   width: "100%",
                   fontSize: "1.15rem",
                   lineHeight: 1.7,
@@ -208,7 +201,6 @@ function App() {
                 de crecimiento.
               </p>
 
-              {/* ✅ Botones de prueba (apagados por defecto) */}
               {SHOW_DEV_BUTTONS && (
                 <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "0.8rem" }}>
                   <button
@@ -218,9 +210,10 @@ function App() {
                       padding: "0.55rem 1.3rem",
                       borderRadius: "999px",
                       fontWeight: 700,
-                      background: "linear-gradient(135deg, #229EFE, #3EFDFD)",
-                      color: "#0F0E3B",
                       border: "none",
+                      cursor: "pointer",
+                      backgroundColor: "#229EFE",
+                      color: "white",
                     }}
                   >
                     {statusLoading ? "Consultando..." : "Probar /api/status"}
@@ -233,9 +226,10 @@ function App() {
                       padding: "0.55rem 1.3rem",
                       borderRadius: "999px",
                       fontWeight: 700,
-                      background: "linear-gradient(135deg, #FFFFFF, #E5E7EB)",
-                      color: "#0F0E3B",
                       border: "none",
+                      cursor: "pointer",
+                      backgroundColor: "#3EFDFD",
+                      color: "#0F0E3B",
                     }}
                   >
                     {dbTestLoading ? "Consultando..." : "Probar /api/dbtest"}
@@ -243,36 +237,32 @@ function App() {
                 </div>
               )}
 
-              <div
-                style={{
-                  marginTop: "1rem",
-                  backgroundColor: "rgba(15,14,59,0.55)", // ✅ un poquito menos oscuro
-                  padding: "0.8rem",
-                  borderRadius: "0.75rem",
-                  maxWidth: 980, // ✅ opcional: evita que quede demasiado ancho si hay mensajes largos
-                }}
-              >
-                {statusError && <strong>Error: {statusError}</strong>}
-                {statusText && <div>{statusText}</div>}
-                {dbTestResult && <div>{dbTestResult}</div>}
-              </div>
+              {SHOW_DEV_BUTTONS && (
+                <div style={{ marginTop: "1rem" }}>
+                  {statusError && <p style={{ color: "#fecaca", fontWeight: 700 }}>{statusError}</p>}
+                  {statusText && <p style={{ color: "#bbf7d0", fontWeight: 700 }}>{statusText}</p>}
+
+                  {dbTestResult && (
+                    <p style={{ color: "#bbf7d0", fontWeight: 700, marginTop: "0.5rem" }}>{dbTestResult}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        {/* CALCULADORAS + PANEL */}
+        {/* CALCULADORAS + PANEL SECA */}
         <section id="calculadoras" style={{ marginTop: "2rem" }}>
           <div
             className="calc-seca-layout"
             style={{
               display: "flex",
-              gap: "2rem",
-              alignItems: "stretch",
-              paddingTop: "0.6rem",
+              gap: "1.5rem",
+              alignItems: "flex-start",
             }}
           >
-            {/* COLUMNA CALCULADORAS */}
-            <div className="calc-col" style={{ flex: 1 }}>
+            {/* Columna izquierda (calculadoras) */}
+            <div className="calc-col" style={{ flex: 1, marginTop: -14 }}>
               <IndemnizacionCalculator />
               <Bono14Calculator />
               <AguinaldoCalculator />
@@ -282,8 +272,8 @@ function App() {
               <ISOTrimestralCalculator />
             </div>
 
-            {/* COLUMNA PANEL SECA */}
-            <div id="seca-info" className="seca-col" style={{ flex: 1, display: "flex" }}>
+            {/* Columna derecha (panel SECA) */}
+            <div className="seca-col" style={{ flex: 1, display: "flex" }}>
               <div style={{ flex: 1 }}>
                 <SECAInfoPanel />
               </div>
@@ -291,10 +281,15 @@ function App() {
           </div>
         </section>
 
-        {/* CONTACTO */}
-        <section id="contacto" style={{ marginTop: "1rem" }}>
-          <h2>Contáctanos</h2>
-          <p>Comunícate con SECA para asesoría personalizada.</p>
+        {/* SOBRE SECA */}
+        <section id="seca-info" style={{ marginTop: "2rem" }}>
+          {/* tu contenido si aplica */}
+        </section>
+
+        {/* CONTACTO (sección final) */}
+        <section id="contacto" style={{ marginTop: "2rem" }}>
+          <h2 style={{ margin: 0 }}>Contáctanos</h2>
+          <p style={{ marginTop: "0.6rem" }}>Comunícate con SECA para asesoría personalizada.</p>
         </section>
       </main>
 
