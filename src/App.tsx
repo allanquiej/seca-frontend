@@ -419,7 +419,7 @@ function App() {
               <div style={{ display: "flex", gap: "1rem" }}>
                 {/* Facebook */}
                 <a
-                  href="https://www.facebook.com/tuPaginaDeFacebook"
+                  href="https://www.facebook.com/secagt"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -451,7 +451,7 @@ function App() {
 
                 {/* Instagram */}
                 <a
-                  href="https://www.instagram.com/tuInstagram"
+                  href="https://www.instagram.com/corporacionseca/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
