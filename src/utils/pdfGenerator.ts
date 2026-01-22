@@ -13,9 +13,103 @@ const SECA_CONFIG = {
 };
 
 /**
+ * Función auxiliar para cargar el logo de SECA
+ */
+const loadSECALogo = (): Promise<string | null> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      } else {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = '/images/logo3.png';
+  });
+};
+
+/**
+ * Función auxiliar para formatear el detalle del cálculo de manera legible
+ */
+const formatearDetalleCalculo = (detalleCalculo: string): string[] => {
+  // Convertir el formato de código a texto legible
+  const lineas: string[] = [];
+  
+  // Parsear el detalle (ejemplo: "SalarioMensual=7200; FechaInicio=04-04-2022; ...")
+  const partes = detalleCalculo.split(';').map(p => p.trim()).filter(p => p);
+  
+  lineas.push("Información del cálculo:");
+  lineas.push("");
+  
+  partes.forEach(parte => {
+    if (parte.includes('=')) {
+      const [clave, valor] = parte.split('=').map(s => s.trim());
+      
+      // Formatear las claves para que sean legibles
+      let claveFormateada = clave;
+      switch(clave) {
+        case 'SalarioMensual':
+          claveFormateada = 'Salario Mensual';
+          break;
+        case 'FechaInicio':
+          claveFormateada = 'Fecha de Inicio';
+          break;
+        case 'FechaFin':
+          claveFormateada = 'Fecha de Finalización';
+          break;
+        case 'Dias':
+          claveFormateada = 'Días Trabajados';
+          break;
+        case 'AniosEquivalentes':
+          claveFormateada = 'Años Equivalentes';
+          break;
+        case 'Formula':
+          claveFormateada = 'Fórmula';
+          break;
+        case 'Meses':
+          claveFormateada = 'Meses Trabajados';
+          break;
+        case 'SalarioPromedio':
+          claveFormateada = 'Salario Promedio';
+          break;
+        case 'SalarioOrdinario':
+          claveFormateada = 'Salario Ordinario';
+          break;
+      }
+      
+      // Formatear el valor
+      let valorFormateado = valor;
+      if (clave === 'Formula') {
+        // Convertir fórmula de código a texto legible
+        valorFormateado = valor.replace(/SalarioMensual\*/g, 'Salario Mensual × ')
+                              .replace(/SalarioPromedio\*/g, 'Salario Promedio × ')
+                              .replace(/SalarioOrdinario\*/g, 'Salario Ordinario × ')
+                              .replace(/AniosEquivalentes/g, 'Años Equivalentes')
+                              .replace(/Meses/g, 'Meses');
+      } else if (!isNaN(Number(valor)) && valor.includes('.')) {
+        // Formatear números decimales
+        valorFormateado = parseFloat(valor).toFixed(2);
+      }
+      
+      lineas.push(`• ${claveFormateada}: ${valorFormateado}`);
+    }
+  });
+  
+  return lineas;
+};
+
+/**
  * Genera un PDF con los resultados de la calculadora de Indemnización
  */
-export const generateIndemnizacionPDF = (data: {
+export const generateIndemnizacionPDF = async (data: {
   salarioMensual: number;
   fechaInicio: string;
   fechaFin: string;
@@ -25,14 +119,36 @@ export const generateIndemnizacionPDF = (data: {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
+
   // Header con logo y título
   doc.setFillColor(...SECA_CONFIG.primaryColor);
   doc.rect(0, 0, pageWidth, 35, "F");
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  // Logo o texto SECA
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      // Texto al lado del logo
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      // Fallback a texto si falla
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    // Sin logo, usar texto centrado
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
@@ -48,7 +164,7 @@ export const generateIndemnizacionPDF = (data: {
     startY: 55,
     head: [["Datos Ingresados", "Valor"]],
     body: [
-      ["Salario Mensual", `Q ${data.salarioMensual.toFixed(2)}`],
+      ["Salario Mensual", `Q ${data.salarioMensual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Fecha de Inicio", data.fechaInicio],
       ["Fecha de Finalización", data.fechaFin],
     ],
@@ -72,16 +188,31 @@ export const generateIndemnizacionPDF = (data: {
   doc.text("Monto de Indemnización", pageWidth / 2, finalY + 10, { align: "center" });
 
   doc.setFontSize(20);
-  doc.text(`Q ${data.montoIndemnizacion.toFixed(2)}`, pageWidth / 2, finalY + 20, {
+  doc.text(`Q ${data.montoIndemnizacion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, {
     align: "center",
   });
 
-  // Detalle del cálculo
+  // Detalle del cálculo (MEJORADO - MÁS LEGIBLE)
   doc.setTextColor(...SECA_CONFIG.textColor);
-  doc.setFontSize(11);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Detalles del Cálculo", 14, finalY + 35);
+
+  // Formatear el detalle para que sea legible
+  const detallesFormateados = formatearDetalleCalculo(data.detalleCalculo);
+  
+  doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  const splitDetail = doc.splitTextToSize(data.detalleCalculo, pageWidth - 28);
-  doc.text(splitDetail, 14, finalY + 35);
+  let yPos = finalY + 42;
+  
+  detallesFormateados.forEach((linea) => {
+    if (linea === "") {
+      yPos += 3;
+    } else {
+      doc.text(linea, 14, yPos);
+      yPos += 5;
+    }
+  });
 
   // Footer
   const footerY = doc.internal.pageSize.getHeight() - 20;
@@ -101,7 +232,7 @@ export const generateIndemnizacionPDF = (data: {
 /**
  * Genera un PDF con los resultados de la calculadora de Bono 14
  */
-export const generateBono14PDF = (data: {
+export const generateBono14PDF = async (data: {
   salarioPromedio: number;
   fechaInicio: string;
   fechaFin: string;
@@ -111,14 +242,33 @@ export const generateBono14PDF = (data: {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Header
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
+
+  // Header con logo y título
   doc.setFillColor(...SECA_CONFIG.primaryColor);
   doc.rect(0, 0, pageWidth, 35, "F");
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  // Logo o texto SECA
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
@@ -134,7 +284,7 @@ export const generateBono14PDF = (data: {
     startY: 55,
     head: [["Datos Ingresados", "Valor"]],
     body: [
-      ["Salario Ordinario", `Q ${data.salarioPromedio.toFixed(2)}`],
+      ["Salario Ordinario", `Q ${data.salarioPromedio.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Fecha de Inicio", data.fechaInicio],
       ["Fecha de Finalización", data.fechaFin],
     ],
@@ -158,14 +308,28 @@ export const generateBono14PDF = (data: {
   doc.text("Monto de Bono 14", pageWidth / 2, finalY + 10, { align: "center" });
 
   doc.setFontSize(20);
-  doc.text(`Q ${data.montoBono14.toFixed(2)}`, pageWidth / 2, finalY + 20, { align: "center" });
+  doc.text(`Q ${data.montoBono14.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
 
-  // Detalle del cálculo
+  // Detalle del cálculo (MEJORADO)
   doc.setTextColor(...SECA_CONFIG.textColor);
-  doc.setFontSize(11);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Detalles del Cálculo", 14, finalY + 35);
+
+  const detallesFormateados = formatearDetalleCalculo(data.detalleCalculo);
+  
+  doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  const splitDetail = doc.splitTextToSize(data.detalleCalculo, pageWidth - 28);
-  doc.text(splitDetail, 14, finalY + 35);
+  let yPos = finalY + 42;
+  
+  detallesFormateados.forEach((linea) => {
+    if (linea === "") {
+      yPos += 3;
+    } else {
+      doc.text(linea, 14, yPos);
+      yPos += 5;
+    }
+  });
 
   // Footer
   const footerY = doc.internal.pageSize.getHeight() - 20;
@@ -184,7 +348,7 @@ export const generateBono14PDF = (data: {
 /**
  * Genera un PDF con los resultados de la calculadora de Aguinaldo
  */
-export const generateAguinaldoPDF = (data: {
+export const generateAguinaldoPDF = async (data: {
   salarioPromedio: number;
   fechaInicio: string;
   fechaFin: string;
@@ -194,14 +358,33 @@ export const generateAguinaldoPDF = (data: {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Header
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
+
+  // Header con logo y título
   doc.setFillColor(...SECA_CONFIG.primaryColor);
   doc.rect(0, 0, pageWidth, 35, "F");
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  // Logo o texto SECA
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
@@ -217,7 +400,7 @@ export const generateAguinaldoPDF = (data: {
     startY: 55,
     head: [["Datos Ingresados", "Valor"]],
     body: [
-      ["Salario Promedio", `Q ${data.salarioPromedio.toFixed(2)}`],
+      ["Salario Promedio", `Q ${data.salarioPromedio.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Fecha de Inicio", data.fechaInicio],
       ["Fecha de Finalización", data.fechaFin],
     ],
@@ -241,16 +424,30 @@ export const generateAguinaldoPDF = (data: {
   doc.text("Monto de Aguinaldo", pageWidth / 2, finalY + 10, { align: "center" });
 
   doc.setFontSize(20);
-  doc.text(`Q ${data.montoAguinaldo.toFixed(2)}`, pageWidth / 2, finalY + 20, {
+  doc.text(`Q ${data.montoAguinaldo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, {
     align: "center",
   });
 
-  // Detalle del cálculo
+  // Detalle del cálculo (MEJORADO)
   doc.setTextColor(...SECA_CONFIG.textColor);
-  doc.setFontSize(11);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Detalles del Cálculo", 14, finalY + 35);
+
+  const detallesFormateados = formatearDetalleCalculo(data.detalleCalculo);
+  
+  doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  const splitDetail = doc.splitTextToSize(data.detalleCalculo, pageWidth - 28);
-  doc.text(splitDetail, 14, finalY + 35);
+  let yPos = finalY + 42;
+  
+  detallesFormateados.forEach((linea) => {
+    if (linea === "") {
+      yPos += 3;
+    } else {
+      doc.text(linea, 14, yPos);
+      yPos += 5;
+    }
+  });
 
   // Footer
   const footerY = doc.internal.pageSize.getHeight() - 20;
