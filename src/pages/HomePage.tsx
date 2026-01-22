@@ -74,7 +74,7 @@ const HomePage = () => {
           overflow: "hidden",
         }}
       >
-        {/* Imagen de fondo - El usuario puede cambiar esta ruta */}
+        {/* Imagen de fondo */}
         <div
           style={{
             position: "absolute",
@@ -208,24 +208,25 @@ const HomePage = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateX(8px)";
                     e.currentTarget.style.boxShadow =
-                      "0 12px 30px rgba(0,0,0,0.15)";
+                      "0 12px 30px rgba(34, 82, 236, 0.25)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateX(0)";
                     e.currentTarget.style.boxShadow =
-                      "0 4px 12px rgba(0,0,0,0.08)";
+                      "0 4px 12px rgba(34, 82, 236, 0.15)";
                   }}
                 >
                   <div
                     style={{
-                      backgroundColor: "white",
+                      background: "linear-gradient(135deg, rgba(14, 35, 79, 0.08) 0%, rgba(34, 82, 236, 0.12) 100%)",
+                      backdropFilter: "blur(10px)",
                       borderRadius: "16px",
                       padding: "2rem",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                      boxShadow: "0 4px 12px rgba(34, 82, 236, 0.15)",
                       display: "flex",
                       alignItems: "center",
                       gap: "1.5rem",
-                      border: "2px solid transparent",
+                      border: "1px solid rgba(34, 82, 236, 0.2)",
                       transition: "all 0.3s ease",
                     }}
                   >
@@ -234,13 +235,14 @@ const HomePage = () => {
                       style={{
                         width: "70px",
                         height: "70px",
-                        backgroundColor: calc.color + "18",
+                        backgroundColor: calc.color + "20",
                         borderRadius: "16px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "2.2rem",
                         flexShrink: 0,
+                        border: `2px solid ${calc.color}30`,
                       }}
                     >
                       {calc.icon}
@@ -262,7 +264,7 @@ const HomePage = () => {
                       <p
                         style={{
                           fontSize: "0.95rem",
-                          color: "#64748b",
+                          color: "#475569",
                           lineHeight: "1.5",
                         }}
                       >
@@ -459,77 +461,6 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Sección CTA - Asesoría */}
-      <div
-        style={{
-          backgroundColor: "#0f172a",
-          padding: "5rem 2rem",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "900px",
-            margin: "0 auto",
-            textAlign: "center",
-            color: "white",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "2.8rem",
-              fontWeight: "700",
-              marginBottom: "1.5rem",
-              lineHeight: "1.2",
-            }}
-          >
-            ¿Necesitas Asesoría Profesional?
-          </h2>
-          <p
-            style={{
-              fontSize: "1.25rem",
-              opacity: "0.9",
-              marginBottom: "3rem",
-              lineHeight: "1.6",
-            }}
-          >
-            Nuestro equipo está listo para ayudarte con tu contabilidad y
-            cumplimiento fiscal
-          </p>
-          <a
-            href="https://wa.me/50236393647"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              backgroundColor: "#25D366",
-              color: "white",
-              padding: "1.4rem 3rem",
-              borderRadius: "50px",
-              fontSize: "1.15rem",
-              fontWeight: "700",
-              textDecoration: "none",
-              transition: "all 0.3s ease",
-              boxShadow: "0 10px 25px rgba(37, 211, 102, 0.4)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow =
-                "0 15px 35px rgba(37, 211, 102, 0.5)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow =
-                "0 10px 25px rgba(37, 211, 102, 0.4)";
-            }}
-          >
-            <span style={{ fontSize: "1.6rem" }}>📱</span>
-            <span>Contáctanos por WhatsApp</span>
-          </a>
         </div>
       </div>
 

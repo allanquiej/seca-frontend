@@ -1,14 +1,15 @@
 // src/components/FloatingConsultor.tsx
-import { useState } from "react";
+// Tooltip aparece al LADO IZQUIERDO del botón GNIO (no lo tapa)
+
+import { useState, useEffect } from "react";
 import { preguntarConsultor } from "../services/consultorService";
 
 type PreguntaRapida = {
   id: string;
-  label: string;    // lo que ve el usuario
-  pregunta: string; // lo que se envía al backend
+  label: string;
+  pregunta: string;
 };
 
-// Preguntas que el backend reconoce por palabras clave
 const PREGUNTAS_RAPIDAS: PreguntaRapida[] = [
   {
     id: "iva",
@@ -34,11 +35,20 @@ const PREGUNTAS_RAPIDAS: PreguntaRapida[] = [
 
 const FloatingConsultor: React.FC = () => {
   const [abierto, setAbierto] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [respuesta, setRespuesta] = useState<string | null>(null);
-  const [preguntaSeleccionada, setPreguntaSeleccionada] =
-    useState<string | null>(null);
+  const [preguntaSeleccionada, setPreguntaSeleccionada] = useState<string | null>(null);
+
+  // Tooltip aparece después de 3 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTooltip(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const manejarClickPregunta = async (pregunta: PreguntaRapida) => {
     setLoading(true);
@@ -58,31 +68,101 @@ const FloatingConsultor: React.FC = () => {
 
   return (
     <>
-      {/* Botón flotante GNIO */}
-      <button
-        onClick={() => setAbierto((prev) => !prev)}
+      {/* Botón flotante GNIO con tooltip AL LADO */}
+      <div
         style={{
           position: "fixed",
           right: "1.5rem",
           bottom: "1.5rem",
           zIndex: 50,
-          borderRadius: "999px",
-          padding: "0.8rem 1.4rem",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          background:
-            "linear-gradient(135deg, #F59E0B, #D97706)", // color del boton flotante
-          color: "white",
-          boxShadow: "0 10px 30px rgba(15,23,42,0.7)",
-          transition: "transform 0.2s",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
         }}
-        onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-        onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        GNIO
-      </button>
+        {/* Tooltip AL LADO IZQUIERDO - solo si el panel NO está abierto */}
+        {showTooltip && !abierto && (
+          <div
+            style={{
+              backgroundColor: "#0f172a",
+              color: "white",
+              padding: "0.75rem 1.25rem",
+              borderRadius: "12px",
+              fontSize: "0.95rem",
+              fontWeight: "600",
+              whiteSpace: "nowrap",
+              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+              animation: "bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+              position: "relative",
+            }}
+          >
+            Hazme una pregunta
+            
+            {/* Flecha apuntando AL BOTÓN (hacia la derecha) */}
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "-6px",
+                transform: "translateY(-50%)",
+                width: "0",
+                height: "0",
+                borderTop: "8px solid transparent",
+                borderBottom: "8px solid transparent",
+                borderLeft: "8px solid #0f172a",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Botón GNIO */}
+        <button
+          onClick={() => setAbierto((prev) => !prev)}
+          style={{
+            borderRadius: "999px",
+            padding: "0.8rem 1.4rem",
+            border: "none",
+            cursor: "pointer",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            background: "linear-gradient(135deg, #F59E0B, #D97706)",
+            color: "white",
+            boxShadow: "0 10px 30px rgba(15,23,42,0.7)",
+            transition: "transform 0.2s",
+            flexShrink: 0,
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          GNIO
+        </button>
+
+        {/* CSS para animación bounce */}
+        <style>{`
+          @keyframes bounceIn {
+            0% {
+              opacity: 0;
+              transform: scale(0.3) translateX(20px);
+            }
+            50% {
+              opacity: 1;
+              transform: scale(1.1);
+            }
+            70% {
+              transform: scale(0.9);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+
+          @media (max-width: 768px) {
+            [style*="bounceIn"] {
+              display: none !important;
+            }
+          }
+        `}</style>
+      </div>
 
       {/* Panel flotante (solo si está abierto) */}
       {abierto && (
@@ -95,14 +175,14 @@ const FloatingConsultor: React.FC = () => {
             maxHeight: "70vh",
             padding: "1rem",
             borderRadius: "0.75rem",
-            backgroundColor: "#1e293b", // ✅ Fondo oscuro pero legible (antes era #020617)
+            backgroundColor: "#1e293b",
             border: "1px solid rgba(59,130,246,0.5)",
             boxShadow: "0 20px 40px rgba(15,23,42,0.9)",
             display: "flex",
             flexDirection: "column",
             gap: "0.75rem",
             zIndex: 40,
-            color: "white", // ✅ Texto blanco por defecto
+            color: "white",
             overflowY: "auto",
           }}
         >
@@ -139,8 +219,8 @@ const FloatingConsultor: React.FC = () => {
                   width: "100%",
                   borderRadius: "0.5rem",
                   border: "1px solid rgba(148,163,184,0.4)",
-                  backgroundColor: "#0f172a", // ✅ Fondo más oscuro para botones
-                  color: "white", // ✅ Texto blanco
+                  backgroundColor: "#0f172a",
+                  color: "white",
                   padding: "0.5rem 0.7rem",
                   fontSize: "0.85rem",
                   cursor: loading ? "not-allowed" : "pointer",
@@ -170,7 +250,7 @@ const FloatingConsultor: React.FC = () => {
               style={{
                 marginTop: "0.5rem",
                 fontSize: "0.85rem",
-                color: "white", // ✅ Texto blanco
+                color: "white",
                 opacity: 0.9,
                 textAlign: "center",
               }}
@@ -186,9 +266,9 @@ const FloatingConsultor: React.FC = () => {
                 fontSize: "0.85rem",
                 padding: "0.6rem",
                 borderRadius: "0.5rem",
-                backgroundColor: "rgba(220, 38, 38, 0.2)", // ✅ Rojo semitransparente
+                backgroundColor: "rgba(220, 38, 38, 0.2)",
                 border: "1px solid rgba(220, 38, 38, 0.5)",
-                color: "white", // ✅ Texto blanco
+                color: "white",
               }}
             >
               <strong>Error:</strong> {error}
@@ -201,10 +281,10 @@ const FloatingConsultor: React.FC = () => {
                 marginTop: "0.5rem",
                 padding: "0.75rem",
                 borderRadius: "0.5rem",
-                backgroundColor: "#0f172a", // ✅ Fondo oscuro profesional (antes era #022c22)
-                border: "1px solid rgba(34, 197, 94, 0.3)", // ✅ Borde verde sutil
+                backgroundColor: "#0f172a",
+                border: "1px solid rgba(34, 197, 94, 0.3)",
                 fontSize: "0.85rem",
-                color: "white", // ✅ Texto blanco
+                color: "white",
                 lineHeight: 1.5,
               }}
             >
