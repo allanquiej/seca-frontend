@@ -12,6 +12,7 @@ import ISRLaboralPage from "./pages/ISRLaboralPage";
 import ISREmpresaMensualPage from "./pages/ISREmpresaMensualPage";
 import ISREmpresaTrimestralPage from "./pages/ISREmpresaTrimestralPage";
 import ISOTrimestralPage from "./pages/ISOTrimestralPage";
+import SobreNosotrosPage from "./pages/SobreNosotrosPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/calculadora-isr-empresa-mensual" element={<ISREmpresaMensualPage />} />
           <Route path="/calculadora-isr-empresa-trimestral" element={<ISREmpresaTrimestralPage />} />
           <Route path="/calculadora-iso-trimestral" element={<ISOTrimestralPage />} />
+          <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
         </Routes>
       </Layout>
     </Router>

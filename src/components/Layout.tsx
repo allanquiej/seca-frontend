@@ -67,10 +67,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             <img
-              src="/images/logo3.png"
+              src="/images/seca.png"
               alt="SECA"
               style={{
-                height: 48,
+                height: 90,
                 filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))",
               }}
             />
@@ -90,6 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               { label: "Inicio", path: "/" },
               { label: "Servicios", path: "/servicios" },
               { label: "Principios", path: "/principios" },
+              { label: "Sobre nosotros", path: "/sobre-nosotros" },
               { label: "Contacto", path: "/contacto" },
             ].map((item) => (
               <button
@@ -260,6 +261,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               { label: "Inicio", path: "/" },
               { label: "Servicios", path: "/servicios" },
               { label: "Principios", path: "/principios" },
+              { label: "Sobre nosotros", path: "/sobre-nosotros" },
               { label: "Contacto", path: "/contacto" },
             ].map((item) => (
               <button
@@ -367,7 +369,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",
-              opacity: 0.1,
+              opacity: 0.15,
               pointerEvents: "none",
             }}
           />
@@ -377,7 +379,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             style={{
               position: "absolute",
               inset: 0,
-              background: "rgba(14,35,79,0.7)",
+              background: "linear-gradient(135deg, rgba(14,35,79,0.7) 0%, rgba(34,82,236,0.7) 100%)",
               pointerEvents: "none",
             }}
           />

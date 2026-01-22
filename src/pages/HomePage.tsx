@@ -83,7 +83,7 @@ const HomePage = () => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
             backgroundSize: "cover",
-            opacity: 0.15,
+            opacity: 0.30,
             pointerEvents: "none",
           }}
         />
@@ -93,7 +93,7 @@ const HomePage = () => {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(135deg, rgba(14,35,79,0.7) 0%, rgba(34,82,236,0.7) 100%)",
+            background: "linear-gradient(135deg, rgba(14,35,79,0.5) 0%, rgba(34,82,236,0.5) 100%)",
             pointerEvents: "none",
           }}
         />
@@ -116,7 +116,7 @@ const HomePage = () => {
               textShadow: "0 4px 12px rgba(0,0,0,0.4)",
             }}
           >
-            Herramientas Profesionales para Calcular
+            Soluciones Contables Profesionales
           </h1>
           <p
             style={{
@@ -127,29 +127,9 @@ const HomePage = () => {
               textShadow: "0 2px 8px rgba(0,0,0,0.3)",
             }}
           >
-            Prestaciones laborales, impuestos y obligaciones fiscales según la
-            legislación guatemalteca
+            Expertos en contabilidad, auditoría y asesoría tributaria en Guatemala
           </p>
 
-          {/* Badge de experiencia */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              backgroundColor: "rgba(255,255,255,0.15)",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "50px",
-              backdropFilter: "blur(10px)",
-              fontSize: "1rem",
-              fontWeight: "600",
-              border: "1px solid rgba(255,255,255,0.2)",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-            }}
-          >
-            <span>✨</span>
-            <span>18 años de experiencia respaldando nuestros cálculos</span>
-          </div>
         </div>
       </div>
 
