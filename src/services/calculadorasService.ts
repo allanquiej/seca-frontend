@@ -15,6 +15,8 @@ import type {
   ISREmpresaTrimestralResponse,
   ISOTrimestralRequest,
   ISOTrimestralResponse,
+  PrestacionesCompletasRequest,
+  PrestacionesCompletasResponse,
   RespuestaApi,
 } from "../types/calculadoras";
 
@@ -105,4 +107,22 @@ export function calcularISOTrimestral(data: ISOTrimestralRequest) {
     "/api/calculadoras/iso-trimestral",
     data
   );
+}
+
+/**
+ * 🆕 POST /api/calculadoras/prestaciones-completas
+ * Calcula todas las prestaciones laborales de una vez:
+ * - Indemnización
+ * - Aguinaldo proporcional
+ * - Bono 14 proporcional
+ * - Vacaciones no gozadas
+ * - Bonificación Q250
+ */
+export function calcularPrestacionesCompletas(
+  data: PrestacionesCompletasRequest
+) {
+  return apiPostJson<
+    PrestacionesCompletasRequest,
+    RespuestaApi<PrestacionesCompletasResponse>
+  >("/api/calculadoras/prestaciones-completas", data);
 }

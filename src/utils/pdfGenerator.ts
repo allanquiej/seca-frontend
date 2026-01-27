@@ -463,4 +463,178 @@ export const generateAguinaldoPDF = async (data: {
   doc.save(`SECA_Aguinaldo_${new Date().getTime()}.pdf`);
 };
 
-// Puedes agregar más funciones para otras calculadoras siguiendo el mismo patrón
+/**
+ * 🆕 Genera un PDF con el cálculo completo de prestaciones laborales
+ */
+export const generatePrestacionesCompletasPDF = async (data: {
+  fechaInicio: string;
+  fechaFin: string;
+  salarioOrdinario: number;
+  tipoTerminacion: string;
+  indemnizacion: { aplica: boolean; monto: number; detalle: string };
+  aguinaldo: { aplica: boolean; monto: number; detalle: string };
+  bono14: { aplica: boolean; monto: number; detalle: string };
+  vacaciones: { aplica: boolean; monto: number; detalle: string };
+  bonificacion250: { aplica: boolean; monto: number; detalle: string };
+  totalLiquidacion: number;
+  advertencias: string[];
+  notasLegales: string[];
+}) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
+
+  // Header con logo y título
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
+
+  // Logo o texto SECA
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Liquidación de Prestaciones Laborales", pageWidth / 2, 25, { align: "center" });
+
+  // Información general
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+
+  // Tabla de datos generales
+  autoTable(doc, {
+    startY: 55,
+    head: [["Datos del Empleado", "Valor"]],
+    body: [
+      ["Fecha de Inicio", data.fechaInicio],
+      ["Fecha de Salida", data.fechaFin],
+      ["Salario Ordinario", `Q ${data.salarioOrdinario.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Tipo de Terminación", data.tipoTerminacion],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.primaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+  });
+
+  // Tabla de prestaciones
+  const finalY1 = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.text("Desglose de Prestaciones", 14, finalY1);
+
+  const prestacionesData = [
+    ["1. Indemnización", data.indemnizacion.aplica ? "Sí" : "No", `Q ${data.indemnizacion.monto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ["2. Aguinaldo Proporcional", data.aguinaldo.aplica ? "Sí" : "No", `Q ${data.aguinaldo.monto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ["3. Bono 14 Proporcional", data.bono14.aplica ? "Sí" : "No", `Q ${data.bono14.monto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ["4. Vacaciones No Gozadas", data.vacaciones.aplica ? "Sí" : "No", `Q ${data.vacaciones.monto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ["5. Bonificación Q250", data.bonificacion250.aplica ? "Sí" : "No", `Q ${data.bonificacion250.monto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+  ];
+
+  autoTable(doc, {
+    startY: finalY1 + 5,
+    head: [["Concepto", "Aplica", "Monto"]],
+    body: prestacionesData,
+    foot: [["TOTAL LIQUIDACIÓN", "", `Q ${data.totalLiquidacion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]],
+    headStyles: {
+      fillColor: SECA_CONFIG.secondaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    footStyles: {
+      fillColor: SECA_CONFIG.primaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+      fontSize: 11,
+    },
+    styles: { fontSize: 10 },
+  });
+
+  // Advertencias (si hay)
+  const finalY2 = (doc as any).lastAutoTable.finalY + 10;
+
+  if (data.advertencias.length > 0) {
+    doc.setFillColor(251, 191, 36);
+    doc.rect(14, finalY2, pageWidth - 28, 8, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("⚠ Advertencias", 18, finalY2 + 5);
+
+    doc.setTextColor(...SECA_CONFIG.textColor);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+
+    let yPos = finalY2 + 12;
+    data.advertencias.forEach((adv) => {
+      doc.text(`• ${adv}`, 18, yPos);
+      yPos += 5;
+    });
+  }
+
+  // Notas legales
+  let notasY = data.advertencias.length > 0 ? finalY2 + 12 + (data.advertencias.length * 5) + 5 : finalY2;
+
+  // Verificar si necesitamos nueva página
+  if (notasY > doc.internal.pageSize.getHeight() - 60) {
+    doc.addPage();
+    notasY = 20;
+  }
+
+  doc.setFillColor(...SECA_CONFIG.accentColor);
+  doc.rect(14, notasY, pageWidth - 28, 8, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("📋 Notas Legales", 18, notasY + 5);
+
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+
+  let yPosNotas = notasY + 12;
+  data.notasLegales.forEach((nota) => {
+    const lines = doc.splitTextToSize(`• ${nota}`, pageWidth - 40);
+    doc.text(lines, 18, yPosNotas);
+    yPosNotas += lines.length * 4;
+  });
+
+  // Footer
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
+    align: "center",
+  });
+  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
+    align: "center",
+  });
+
+  // Descargar el PDF
+  doc.save(`SECA_Prestaciones_Laborales_${new Date().getTime()}.pdf`);
+};

@@ -110,3 +110,59 @@ export type ConsultorResponse = {
   respuesta: string;
   mensaje?: string;
 };
+
+// ===============================
+// 🆕 PRESTACIONES LABORALES COMPLETAS
+// ===============================
+
+// ✅ SOLUCIÓN: Usar type literal en lugar de enum para evitar error de erasableSyntaxOnly
+export type TipoTerminacion = 1 | 2 | 3 | 4 | 5;
+
+// Constantes para los valores (opcional, para mayor claridad en el código)
+export const TIPO_TERMINACION = {
+  DespidoInjustificado: 1 as TipoTerminacion,
+  DespidoJustificado: 2 as TipoTerminacion,
+  RenunciaVoluntaria: 3 as TipoTerminacion,
+  RenunciaCausaJusta: 4 as TipoTerminacion,
+  PensionIGSS: 5 as TipoTerminacion,
+} as const;
+
+export type PrestacionesCompletasRequest = {
+  // Fechas
+  fechaInicio: string; // "YYYY-MM-DD"
+  fechaFin: string;    // "YYYY-MM-DD"
+  
+  // Salarios
+  salarioOrdinario: number;
+  salariosUltimos6Meses: number[];
+  
+  // Tipo de terminación
+  tipoTerminacion: TipoTerminacion;
+  
+  // Vacaciones
+  diasVacacionesPendientes: number;
+  
+  // Prestaciones recibidas
+  yaRecibioAguinaldo: boolean;
+  yaRecibiBono14: boolean;
+  
+  // Pensión IGSS (opcional)
+  montoPensionIGSS?: number;
+};
+
+export type ComponentePrestacion = {
+  aplica: boolean;
+  monto: number;
+  detalle: string;
+};
+
+export type PrestacionesCompletasResponse = {
+  indemnizacion: ComponentePrestacion;
+  aguinaldo: ComponentePrestacion;
+  bono14: ComponentePrestacion;
+  vacaciones: ComponentePrestacion;
+  bonificacion250: ComponentePrestacion;
+  totalLiquidacion: number;
+  advertencias: string[];
+  notasLegales: string[];
+};
