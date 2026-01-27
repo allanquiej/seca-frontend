@@ -3,6 +3,17 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const calculadoras = [
+
+    {
+      id: "prestaciones-laborales",
+      nombre: "Prestaciones Laborales",
+      descripcion: "Calcula prestaciones completas (indemnización, vacaciones, aguinaldo, bono 14 y más) según fechas y tipo de terminación.",
+      icon: "🧾",
+      color: "#22c55e",
+      ruta: "/calculadora-prestaciones-laborales",
+    },
+
+
     {
       id: "indemnizacion",
       nombre: "Indemnización",
