@@ -32,7 +32,7 @@ const loadSECALogo = (): Promise<string | null> => {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = '/images/logo3.png';
+    img.src = '/images/seca.png';
   });
 };
 
