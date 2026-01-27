@@ -1,9 +1,3 @@
-// ============================================================================
-// ⚠️ ARCHIVO COMPLETAMENTE NUEVO
-// Ubicación: src/pages/PrestacionesLaboralesPage.tsx
-// Este archivo NO existe actualmente, es completamente nuevo
-// ============================================================================
-
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
@@ -624,7 +618,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
                   style={{ marginRight: "1rem", width: "20px", height: "20px" }}
                 />
                 <div>
-                  <div style={{ fontWeight: 600, color: "#0f172a" }}>¿Ya recibió el Aguinaldo del período actual?</div>
+                  <div style={{ fontWeight: 600, color: "#0f172a" }}>Ya recibí el aguinaldo del período actual</div>
                 </div>
               </label>
 
@@ -648,7 +642,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
                   style={{ marginRight: "1rem", width: "20px", height: "20px" }}
                 />
                 <div>
-                  <div style={{ fontWeight: 600, color: "#0f172a" }}>¿Ya recibió el Bono 14 del período actual?</div>
+                  <div style={{ fontWeight: 600, color: "#0f172a" }}>Ya recibí el Bono 14 del período actual</div>
                 </div>
               </label>
             </div>
@@ -841,7 +835,3 @@ const PrestacionesLaboralesPage: React.FC = () => {
 };
 
 export default PrestacionesLaboralesPage;
-
-// ============================================================================
-// ⚠️ FIN DEL ARCHIVO NUEVO
-// ============================================================================
