@@ -401,8 +401,8 @@ const ISRLaboralPage: React.FC = () => {
             </p>
           </div>
 
-          {/* ISR Mensual (si es proyectado) */}
-          {resultado.datos.esProyectado && resultado.datos.isrMensual > 0 && (
+          {/* ISR Mensual (si es mayor a 0) */}
+          {resultado.datos.isrMensual > 0 && (
             <div
               style={{
                 background: "rgba(255,255,255,0.25)",
