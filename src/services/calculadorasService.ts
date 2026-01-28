@@ -9,10 +9,16 @@ import type {
   AguinaldoResponse,
   ISRLaboralRequest,
   ISRLaboralResponse,
+  ISRAsalariadoRequest,
+  ISRAsalariadoResponse,
   ISREmpresaMensualRequest,
   ISREmpresaMensualResponse,
+  ISREmpresaMensualV2Request,
+  ISREmpresaMensualV2Response,
   ISREmpresaTrimestralRequest,
   ISREmpresaTrimestralResponse,
+  ISRTrimestralV2Request,
+  ISRTrimestralV2Response,
   ISOTrimestralRequest,
   ISOTrimestralResponse,
   PrestacionesCompletasRequest,
@@ -21,27 +27,17 @@ import type {
 } from "../types/calculadoras";
 
 /**
- * Llama al endpoint POST /api/calculadoras/indemnizacion
- * enviando salarioMensual y aniosTrabajados.
- *
- * IMPORTANTE:
- * El endpoint del backend se llama exactamente:
- *   POST /api/calculadoras/indemnizacion
+ * POST /api/calculadoras/indemnizacion
  */
 export function calcularIndemnizacion(data: IndemnizacionRequest) {
-  return apiPostJson<
-    IndemnizacionRequest,
-    RespuestaApi<IndemnizacionResponse>
-  >("/api/calculadoras/indemnizacion", data);
+  return apiPostJson<IndemnizacionRequest, RespuestaApi<IndemnizacionResponse>>(
+    "/api/calculadoras/indemnizacion",
+    data
+  );
 }
 
 /**
- * Llama al endpoint POST /api/calculadoras/bono14
- * enviando salarioPromedio y mesesTrabajados.
- *
- * IMPORTANTE:
- * El endpoint del backend se llama exactamente:
- *   POST /api/calculadoras/bono14
+ * POST /api/calculadoras/bono14
  */
 export function calcularBono14(data: Bono14Request) {
   return apiPostJson<Bono14Request, RespuestaApi<Bono14Response>>(
@@ -51,12 +47,7 @@ export function calcularBono14(data: Bono14Request) {
 }
 
 /**
- * Llama al endpoint POST /api/calculadoras/aguinaldo
- * enviando salarioPromedio y mesesTrabajados.
- *
- * IMPORTANTE:
- * El endpoint del backend se llama exactamente:
- *   POST /api/calculadoras/aguinaldo
+ * POST /api/calculadoras/aguinaldo
  */
 export function calcularAguinaldo(data: AguinaldoRequest) {
   return apiPostJson<AguinaldoRequest, RespuestaApi<AguinaldoResponse>>(
@@ -66,8 +57,7 @@ export function calcularAguinaldo(data: AguinaldoRequest) {
 }
 
 /**
- * Llama al endpoint POST /api/calculadoras/isr-laboral
- * enviando sueldoMensual.
+ * POST /api/calculadoras/isr-laboral (VIEJO)
  */
 export function calcularISRLaboral(data: ISRLaboralRequest) {
   return apiPostJson<ISRLaboralRequest, RespuestaApi<ISRLaboralResponse>>(
@@ -76,27 +66,54 @@ export function calcularISRLaboral(data: ISRLaboralRequest) {
   );
 }
 
-
 /**
- * POST /api/calculadoras/isr-empresa-mensual
+ * 🆕 POST /api/calculadoras/isr-asalariado (NUEVO - CORREGIDO)
  */
-export function calcularISREmpresaMensual(data: ISREmpresaMensualRequest) {
-  return apiPostJson<
-    ISREmpresaMensualRequest,
-    RespuestaApi<ISREmpresaMensualResponse>
-  >("/api/calculadoras/isr-empresa-mensual", data);
+export function calcularISRAsalariado(data: ISRAsalariadoRequest) {
+  return apiPostJson<ISRAsalariadoRequest, RespuestaApi<ISRAsalariadoResponse>>(
+    "/api/calculadoras/isr-asalariado",
+    data
+  );
 }
 
 /**
- * POST /api/calculadoras/isr-empresa-trimestral
+ * POST /api/calculadoras/isr-empresa-mensual (VIEJO)
  */
-export function calcularISREmpresaTrimestral(
-  data: ISREmpresaTrimestralRequest
-) {
-  return apiPostJson<
-    ISREmpresaTrimestralRequest,
-    RespuestaApi<ISREmpresaTrimestralResponse>
-  >("/api/calculadoras/isr-empresa-trimestral", data);
+export function calcularISREmpresaMensual(data: ISREmpresaMensualRequest) {
+  return apiPostJson<ISREmpresaMensualRequest, RespuestaApi<ISREmpresaMensualResponse>>(
+    "/api/calculadoras/isr-empresa-mensual",
+    data
+  );
+}
+
+/**
+ * 🆕 POST /api/calculadoras/isr-empresa-mensual-v2 (NUEVO - CORREGIDO)
+ */
+export function calcularISREmpresaMensualV2(data: ISREmpresaMensualV2Request) {
+  return apiPostJson<ISREmpresaMensualV2Request, RespuestaApi<ISREmpresaMensualV2Response>>(
+    "/api/calculadoras/isr-empresa-mensual-v2",
+    data
+  );
+}
+
+/**
+ * POST /api/calculadoras/isr-empresa-trimestral (VIEJO)
+ */
+export function calcularISREmpresaTrimestral(data: ISREmpresaTrimestralRequest) {
+  return apiPostJson<ISREmpresaTrimestralRequest, RespuestaApi<ISREmpresaTrimestralResponse>>(
+    "/api/calculadoras/isr-empresa-trimestral",
+    data
+  );
+}
+
+/**
+ * 🆕 POST /api/calculadoras/isr-empresa-trimestral-v2 (NUEVO - CORREGIDO)
+ */
+export function calcularISRTrimestralV2(data: ISRTrimestralV2Request) {
+  return apiPostJson<ISRTrimestralV2Request, RespuestaApi<ISRTrimestralV2Response>>(
+    "/api/calculadoras/isr-empresa-trimestral-v2",
+    data
+  );
 }
 
 /**
@@ -110,19 +127,11 @@ export function calcularISOTrimestral(data: ISOTrimestralRequest) {
 }
 
 /**
- * 🆕 POST /api/calculadoras/prestaciones-completas
- * Calcula todas las prestaciones laborales de una vez:
- * - Indemnización
- * - Aguinaldo proporcional
- * - Bono 14 proporcional
- * - Vacaciones no gozadas
- * - Bonificación Q250
+ * POST /api/calculadoras/prestaciones-completas
  */
-export function calcularPrestacionesCompletas(
-  data: PrestacionesCompletasRequest
-) {
-  return apiPostJson<
-    PrestacionesCompletasRequest,
-    RespuestaApi<PrestacionesCompletasResponse>
-  >("/api/calculadoras/prestaciones-completas", data);
+export function calcularPrestacionesCompletas(data: PrestacionesCompletasRequest) {
+  return apiPostJson<PrestacionesCompletasRequest, RespuestaApi<PrestacionesCompletasResponse>>(
+    "/api/calculadoras/prestaciones-completas",
+    data
+  );
 }
