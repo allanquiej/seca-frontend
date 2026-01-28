@@ -12,8 +12,8 @@ export type RespuestaApi<TDatos> = {
 // ===============================
 export type IndemnizacionRequest = {
   salarioMensual: number;
-  fechaInicio: string; // "YYYY-MM-DD"
-  fechaFin: string;    // "YYYY-MM-DD"
+  fechaInicio: string;
+  fechaFin: string;
 };
 
 export type IndemnizacionResponse = {
@@ -50,7 +50,7 @@ export type AguinaldoResponse = {
 };
 
 // ===============================
-// ISR LABORAL (VIEJO)
+// ISR LABORAL (VIEJO - mantener)
 // ===============================
 export type ISRLaboralRequest = {
   sueldoMensual: number;
@@ -62,28 +62,28 @@ export type ISRLaboralResponse = {
 };
 
 // ===============================
-// 🆕 ISR ASALARIADO (NUEVO - CORREGIDO)
+// ISR ASALARIADO (NUEVO - CORRECTO)
 // ===============================
 export type ISRAsalariadoRequest = {
   salariosAnuales: number;
   bono14: number;
   aguinaldo: number;
   otrosBonos: number;
-  esProyectado: boolean; // true = mensual, false = definitiva anual
+  esProyectado: boolean;
 };
 
 export type ISRAsalariadoResponse = {
   totalIngresos: number;
-  deduccionPersonal: number; // Q48,000
+  deduccionPersonal: number;
   baseImponible: number;
   isrTotal: number;
-  isrMensual: number; // Solo si es proyectado
-  tipoCalculo: string; // "Proyectado" o "Definitiva"
+  isrMensual: number;
+  tipoCalculo: string;
   detalleCalculo: string;
 };
 
 // ===============================
-// ISR EMPRESA MENSUAL (VIEJO)
+// ISR EMPRESA MENSUAL (VIEJO - mantener)
 // ===============================
 export type ISREmpresaMensualRequest = {
   ingresosMensuales: number;
@@ -97,7 +97,7 @@ export type ISREmpresaMensualResponse = {
 };
 
 // ===============================
-// 🆕 ISR EMPRESA MENSUAL V2 (NUEVO - CORREGIDO)
+// ISR EMPRESA MENSUAL V2 (NUEVO - CORRECTO)
 // ===============================
 export type ISREmpresaMensualV2Request = {
   totalFacturacionMes: number;
@@ -115,7 +115,7 @@ export type ISREmpresaMensualV2Response = {
 };
 
 // ===============================
-// ISR EMPRESA TRIMESTRAL (VIEJO)
+// ISR EMPRESA TRIMESTRAL (VIEJO - mantener)
 // ===============================
 export type ISREmpresaTrimestralRequest = {
   ingresosTrimestrales: number;
@@ -129,25 +129,18 @@ export type ISREmpresaTrimestralResponse = {
 };
 
 // ===============================
-// 🆕 ISR TRIMESTRAL V2 (NUEVO - CORREGIDO)
+// ISR TRIMESTRAL V2 (NUEVO - CORRECTO)
 // ===============================
 export type ISRTrimestralV2Request = {
-  // Para Opción 1 (Acumulado)
   ventasAcumuladas: number;
   gastosAcumulados: number;
-  
-  // Para Opción 2 (Solo trimestre)
   ventasTrimestre: number;
-  
-  // Común para ambas opciones
   isoPendiente: number;
-  
-  // Tipo de cálculo
-  usarOpcionAcumulada: boolean; // true = Opción 1, false = Opción 2
+  usarOpcionAcumulada: boolean;
 };
 
 export type ISRTrimestralV2Response = {
-  opcionUtilizada: string; // "Opción 1 - Acumulado" o "Opción 2 - Trimestre"
+  opcionUtilizada: string;
   baseCalculo: number;
   isrCalculado: number;
   isoAcreditar: number;
@@ -221,4 +214,35 @@ export type PrestacionesCompletasResponse = {
   totalLiquidacion: number;
   advertencias: string[];
   notasLegales: string[];
+};
+
+// ===============================
+// 🆕 IVA (Impuesto al Valor Agregado)
+// ===============================
+
+export type RegimenIVA = "general" | "pequeno" | "exento";
+
+export type IVARequest = {
+  regimen: RegimenIVA;
+  // Para Régimen General
+  ventasMes: number;
+  comprasMes: number;
+  retenciones: number;
+  // Para Pequeño Contribuyente
+  ingresosAnuales: number;
+};
+
+export type IVAResponse = {
+  regimenNombre: string;
+  // Para Régimen General
+  debitoFiscal: number;
+  creditoFiscal: number;
+  ivaBruto: number;
+  ivaAPagar: number;
+  // Para Pequeño Contribuyente
+  cuotaFija: number;
+  // Para todos
+  aplica: boolean;
+  mensaje: string;
+  detalleCalculo: string;
 };

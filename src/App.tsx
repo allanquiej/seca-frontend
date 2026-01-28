@@ -14,6 +14,7 @@ import ISREmpresaTrimestralPage from "./pages/ISREmpresaTrimestralPage";
 import ISOTrimestralPage from "./pages/ISOTrimestralPage";
 import SobreNosotrosPage from "./pages/SobreNosotrosPage";
 import PrestacionesLaboralesPage from "./pages/PrestacionesLaboralesPage";
+import IVAPage from "./pages/IVAPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/calculadora-iso-trimestral" element={<ISOTrimestralPage />} />
           <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
           <Route path="/calculadora-prestaciones-laborales" element={<PrestacionesLaboralesPage />} />
+          <Route path="/calculadora-iva" element={<IVAPage />} />
         </Routes>
       </Layout>
     </Router>

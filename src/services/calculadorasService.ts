@@ -23,6 +23,8 @@ import type {
   ISOTrimestralResponse,
   PrestacionesCompletasRequest,
   PrestacionesCompletasResponse,
+  IVARequest,
+  IVAResponse,
   RespuestaApi,
 } from "../types/calculadoras";
 
@@ -67,7 +69,7 @@ export function calcularISRLaboral(data: ISRLaboralRequest) {
 }
 
 /**
- * 🆕 POST /api/calculadoras/isr-asalariado (NUEVO - CORREGIDO)
+ * 🆕 POST /api/calculadoras/isr-asalariado (NUEVO - CORRECTO)
  */
 export function calcularISRAsalariado(data: ISRAsalariadoRequest) {
   return apiPostJson<ISRAsalariadoRequest, RespuestaApi<ISRAsalariadoResponse>>(
@@ -87,7 +89,7 @@ export function calcularISREmpresaMensual(data: ISREmpresaMensualRequest) {
 }
 
 /**
- * 🆕 POST /api/calculadoras/isr-empresa-mensual-v2 (NUEVO - CORREGIDO)
+ * 🆕 POST /api/calculadoras/isr-empresa-mensual-v2 (NUEVO - CORRECTO)
  */
 export function calcularISREmpresaMensualV2(data: ISREmpresaMensualV2Request) {
   return apiPostJson<ISREmpresaMensualV2Request, RespuestaApi<ISREmpresaMensualV2Response>>(
@@ -107,7 +109,7 @@ export function calcularISREmpresaTrimestral(data: ISREmpresaTrimestralRequest) 
 }
 
 /**
- * 🆕 POST /api/calculadoras/isr-empresa-trimestral-v2 (NUEVO - CORREGIDO)
+ * 🆕 POST /api/calculadoras/isr-empresa-trimestral-v2 (NUEVO - CORRECTO)
  */
 export function calcularISRTrimestralV2(data: ISRTrimestralV2Request) {
   return apiPostJson<ISRTrimestralV2Request, RespuestaApi<ISRTrimestralV2Response>>(
@@ -132,6 +134,17 @@ export function calcularISOTrimestral(data: ISOTrimestralRequest) {
 export function calcularPrestacionesCompletas(data: PrestacionesCompletasRequest) {
   return apiPostJson<PrestacionesCompletasRequest, RespuestaApi<PrestacionesCompletasResponse>>(
     "/api/calculadoras/prestaciones-completas",
+    data
+  );
+}
+
+/**
+ * 🆕 POST /api/calculadoras/iva
+ * Calcula el IVA según el régimen seleccionado
+ */
+export function calcularIVA(data: IVARequest) {
+  return apiPostJson<IVARequest, RespuestaApi<IVAResponse>>(
+    "/api/calculadoras/iva",
     data
   );
 }

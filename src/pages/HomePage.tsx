@@ -70,8 +70,15 @@ const HomePage = () => {
       color: "#6366f1",
       ruta: "/calculadora-iso-trimestral",
     },
+    {
+      id: "iva",
+      nombre: "IVA",
+      descripcion: "Calcula el Impuesto al Valor Agregado según tu régimen: General (12%), Pequeño Contribuyente o Exento.",
+      icon: "🧾",
+      color: "#3b82f6",
+      ruta: "/calculadora-iva",
+    },
   ];
-
   return (
     <div style={{ minHeight: "100vh" }}>
       {/* Hero Section con Imagen de Fondo */}
