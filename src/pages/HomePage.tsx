@@ -14,14 +14,14 @@ const HomePage = () => {
     },
 
 
-    {
+  /*{
       id: "indemnizacion",
       nombre: "Indemnización",
       descripcion: "Calcula la indemnización correspondiente por despido según el salario mensual y años trabajados.",
       icon: "💼",
       color: "#3b82f6",
       ruta: "/calculadora-indemnizacion",
-    },
+    },*/
     {
       id: "bono14",
       nombre: "Bono 14",
