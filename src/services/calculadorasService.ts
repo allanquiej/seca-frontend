@@ -143,8 +143,26 @@ export function calcularPrestacionesCompletas(data: PrestacionesCompletasRequest
  * Calcula el IVA según el régimen seleccionado
  */
 export function calcularIVA(data: IVARequest) {
-  return apiPostJson<IVARequest, RespuestaApi<IVAResponse>>(
+  // Mapeo de regímenes de IVA (frontend → backend)
+  const REGIMEN_IVA_MAP: Record<string, number> = {
+    general: 0,   // RegimenIVA.General
+    pequeno: 1,   // RegimenIVA.PequenoContribuyente
+    exento: 2,    // RegimenIVA.Exento
+  };
+
+  // Transformar al formato que espera el backend (PascalCase + Enum)
+  const payload = {
+    Regimen: REGIMEN_IVA_MAP[data.regimen],
+    VentasMes: data.ventasMes,
+    ComprasMes: data.comprasMes,
+    Retenciones: data.retenciones,
+    IngresosAnuales: data.ingresosAnuales,
+  };
+
+  console.log('📤 Enviando payload IVA al backend:', payload);
+
+  return apiPostJson<any, RespuestaApi<IVAResponse>>(
     "/api/calculadoras/iva",
-    data
+    payload
   );
 }
