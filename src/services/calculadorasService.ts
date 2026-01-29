@@ -141,13 +141,14 @@ export function calcularPrestacionesCompletas(data: PrestacionesCompletasRequest
 /**
  * 🆕 POST /api/calculadoras/iva
  * Calcula el IVA según el régimen seleccionado
+ * ✅ CORREGIDO: Mapeo correcto de regímenes (1, 2, 3)
  */
 export function calcularIVA(data: IVARequest) {
-  // Mapeo de regímenes de IVA (frontend → backend)
+  // ✅ MAPEO CORRECTO - Coincide con el enum del backend
   const REGIMEN_IVA_MAP: Record<string, number> = {
-    general: 0,   // RegimenIVA.General
-    pequeno: 1,   // RegimenIVA.PequenoContribuyente
-    exento: 2,    // RegimenIVA.Exento
+    general: 1,   // RegimenIVA.General = 1
+    pequeno: 2,   // RegimenIVA.PequenoContribuyente = 2
+    exento: 3,    // RegimenIVA.Exento = 3
   };
 
   // Transformar al formato que espera el backend (PascalCase + Enum)
