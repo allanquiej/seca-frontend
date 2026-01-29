@@ -49,8 +49,10 @@ const IVAPage: React.FC = () => {
 
     try {
       const res = await calcularIVA(form);
+      console.log('✅ Respuesta recibida del backend:', res);
       setResultado(res);
     } catch (err: any) {
+      console.error('❌ Error al calcular IVA:', err);
       setError(err.message ?? "Ocurrió un error al calcular el IVA.");
     } finally {
       setLoading(false);
@@ -383,19 +385,19 @@ const IVAPage: React.FC = () => {
               <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
                 <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>Débito Fiscal:</p>
                 <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  Q {resultado.datos.debitoFiscal.toFixed(2)}
+                  Q {(resultado.datos.debitoFiscal || 0).toFixed(2)}
                 </p>
               </div>
               <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
                 <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>Crédito Fiscal:</p>
                 <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  - Q {resultado.datos.creditoFiscal.toFixed(2)}
+                  - Q {(resultado.datos.creditoFiscal || 0).toFixed(2)}
                 </p>
               </div>
               <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
                 <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>IVA Bruto:</p>
                 <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  Q {resultado.datos.ivaBruto.toFixed(2)}
+                  Q {(resultado.datos.ivaBruto || 0).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -414,7 +416,7 @@ const IVAPage: React.FC = () => {
               {regimen === "pequeno" ? "Cuota Fija Mensual:" : "IVA a Pagar:"}
             </p>
             <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {resultado.datos.ivaAPagar.toFixed(2)}
+              Q {(resultado.datos.ivaAPagar || 0).toFixed(2)}
             </p>
           </div>
 
