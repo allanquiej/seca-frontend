@@ -809,3 +809,369 @@ export const generateIVAPDF = async (data: {
   // Descargar el PDF
   doc.save(`SECA_IVA_${data.regimenNombre.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
 };
+/**
+ * Genera un PDF con los resultados de la calculadora de ISR Laboral (Asalariados)
+ */
+export const generateISRLaboralPDF = async (data: {
+  salariosAnuales: number;
+  bono14: number;
+  aguinaldo: number;
+  otrosBonos: number;
+  esProyectado: boolean;
+  totalIngresos: number;
+  deduccionPersonal: number;
+  baseImponible: number;
+  isrTotal: number;
+  isrMensual: number;
+  tipoCalculo: string;
+  detalleCalculo: string;
+}) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const logoData = await loadSECALogo();
+
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
+
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Cálculo de ISR Asalariados", pageWidth / 2, 25, { align: "center" });
+
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+  doc.text(`Tipo de cálculo: ${data.tipoCalculo}`, 14, 51);
+
+  autoTable(doc, {
+    startY: 60,
+    head: [["Concepto", "Monto"]],
+    body: [
+      ["Salarios Anuales", `Q ${data.salariosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Bono 14", `Q ${data.bono14.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Aguinaldo", `Q ${data.aguinaldo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Otros Bonos", `Q ${data.otrosBonos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.primaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  let finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  autoTable(doc, {
+    startY: finalY,
+    head: [["Descripción", "Valor"]],
+    body: [
+      ["Total Ingresos", `Q ${data.totalIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Deducción Personal (Art. 72)", `- Q ${data.deduccionPersonal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Base Imponible", `Q ${data.baseImponible.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR (5%)", `Q ${data.isrTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.secondaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFillColor(...SECA_CONFIG.accentColor);
+  doc.rect(14, finalY, pageWidth - 28, 25, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("ISR Total Anual", pageWidth / 2, finalY + 10, { align: "center" });
+
+  doc.setFontSize(20);
+  doc.text(`Q ${data.isrTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
+
+  finalY += 30;
+
+  if (data.esProyectado && data.isrMensual > 0) {
+    doc.setFillColor(245, 158, 11);
+    doc.rect(14, finalY, pageWidth - 28, 20, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("ISR Mensual (Descuento por mes)", pageWidth / 2, finalY + 8, { align: "center" });
+
+    doc.setFontSize(18);
+    doc.text(`Q ${data.isrMensual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 16, { align: "center" });
+  }
+
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
+    align: "center",
+  });
+  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
+    align: "center",
+  });
+
+  doc.save(`SECA_ISR_Laboral_${data.tipoCalculo}_${new Date().getTime()}.pdf`);
+};
+
+/**
+ * Genera un PDF con los resultados de la calculadora de ISR Empresa Mensual
+ */
+export const generateISREmpresaMensualPDF = async (data: {
+  totalFacturacionMes: number;
+  totalRetenciones: number;
+  base: number;
+  iva: number;
+  isrPrimerosTreintaMil: number;
+  isrExcedente: number;
+  isrTotal: number;
+  isrAPagar: number;
+  detalleCalculo: string;
+}) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const logoData = await loadSECALogo();
+
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
+
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Cálculo de ISR Empresa Mensual", pageWidth / 2, 25, { align: "center" });
+
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+  doc.text("Régimen Opcional Simplificado sobre Ingresos", 14, 51);
+
+  autoTable(doc, {
+    startY: 60,
+    head: [["Datos Ingresados", "Valor"]],
+    body: [
+      ["Total Facturación del Mes", `Q ${data.totalFacturacionMes.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Total Retenciones", `Q ${data.totalRetenciones.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.primaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  let finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  autoTable(doc, {
+    startY: finalY,
+    head: [["Concepto", "Monto"]],
+    body: [
+      ["Base (÷ 1.12)", `Q ${data.base.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["IVA (12%)", `Q ${data.iva.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Primeros Q30,000 (5%)", `Q ${data.isrPrimerosTreintaMil.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Excedente (7%)", `Q ${data.isrExcedente.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Total", `Q ${data.isrTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Retenciones", `- Q ${data.totalRetenciones.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.secondaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFillColor(16, 185, 129);
+  doc.rect(14, finalY, pageWidth - 28, 25, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("ISR a Pagar", pageWidth / 2, finalY + 10, { align: "center" });
+
+  doc.setFontSize(20);
+  doc.text(`Q ${data.isrAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
+
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
+    align: "center",
+  });
+  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
+    align: "center",
+  });
+
+  doc.save(`SECA_ISR_Empresa_Mensual_${new Date().getTime()}.pdf`);
+};
+
+/**
+ * Genera un PDF con los resultados de la calculadora de ISR Empresa Trimestral
+ */
+export const generateISRTrimestralPDF = async (data: {
+  usarOpcionAcumulada: boolean;
+  ventasAcumuladas: number;
+  gastosAcumulados: number;
+  ventasTrimestre: number;
+  isoPendiente: number;
+  opcionUtilizada: string;
+  baseCalculo: number;
+  isrCalculado: number;
+  isoAcreditar: number;
+  isrAPagar: number;
+  detalleCalculo: string;
+}) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const logoData = await loadSECALogo();
+
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
+
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("- Servicios Contables", 52, 18);
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Cálculo de ISR Empresa Trimestral", pageWidth / 2, 25, { align: "center" });
+
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+  doc.text(`Método: ${data.opcionUtilizada}`, 14, 51);
+
+  let bodyData: string[][];
+  if (data.usarOpcionAcumulada) {
+    bodyData = [
+      ["Ventas Acumuladas", `Q ${data.ventasAcumuladas.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Gastos Acumulados", `Q ${data.gastosAcumulados.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO Pendiente", `Q ${data.isoPendiente.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ];
+  } else {
+    bodyData = [
+      ["Ventas del Trimestre", `Q ${data.ventasTrimestre.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO Pendiente", `Q ${data.isoPendiente.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ];
+  }
+
+  autoTable(doc, {
+    startY: 60,
+    head: [["Datos Ingresados", "Valor"]],
+    body: bodyData,
+    headStyles: {
+      fillColor: SECA_CONFIG.primaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  let finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  autoTable(doc, {
+    startY: finalY,
+    head: [["Concepto", "Monto"]],
+    body: [
+      ["Base de Cálculo", `Q ${data.baseCalculo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR (25%)", `Q ${data.isrCalculado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO a Acreditar", `- Q ${data.isoAcreditar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: SECA_CONFIG.secondaryColor,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 11 },
+  });
+
+  finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFillColor(6, 182, 212);
+  doc.rect(14, finalY, pageWidth - 28, 25, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("ISR a Pagar", pageWidth / 2, finalY + 10, { align: "center" });
+
+  doc.setFontSize(20);
+  doc.text(`Q ${data.isrAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
+
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
+    align: "center",
+  });
+  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
+    align: "center",
+  });
+
+  doc.save(`SECA_ISR_Empresa_Trimestral_${data.opcionUtilizada.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
+};

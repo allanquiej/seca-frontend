@@ -7,6 +7,7 @@ import type {
   RespuestaApi,
 } from "../types/calculadoras";
 import { calcularISRAsalariado } from "../services/calculadorasService";
+import { generateISRLaboralPDF } from "../utils/pdfGenerator";
 
 const ISRLaboralPage: React.FC = () => {
   const [form, setForm] = useState<ISRAsalariadoRequest>({
@@ -48,6 +49,19 @@ const ISRLaboralPage: React.FC = () => {
       setError(err.message ?? "Ocurrió un error al calcular ISR laboral.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    if (resultado && resultado.datos) {
+      generateISRLaboralPDF({
+        salariosAnuales: form.salariosAnuales,
+        bono14: form.bono14,
+        aguinaldo: form.aguinaldo,
+        otrosBonos: form.otrosBonos,
+        esProyectado: form.esProyectado,
+        ...resultado.datos,
+      });
     }
   };
 
@@ -432,6 +446,32 @@ const ISRLaboralPage: React.FC = () => {
           >
             <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
           </div>
+
+          {/* Botón Descargar PDF */}
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              width: "100%",
+              padding: "1rem",
+              borderRadius: "0.75rem",
+              border: "2px solid white",
+              background: "rgba(255,255,255,0.2)",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "1rem",
+              transition: "all 0.2s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+            }}
+          >
+            📄 Descargar Resultado en PDF
+          </button>
+
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import type {
   RespuestaApi,
 } from "../types/calculadoras";
 import { calcularISREmpresaMensualV2 } from "../services/calculadorasService";
+import { generateISREmpresaMensualPDF } from "../utils/pdfGenerator";
 
 const ISREmpresaMensualPage: React.FC = () => {
   const [form, setForm] = useState<ISREmpresaMensualV2Request>({
@@ -41,6 +42,16 @@ const ISREmpresaMensualPage: React.FC = () => {
       setError(err.message ?? "Error al calcular ISR de empresa mensual.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    if (resultado && resultado.datos) {
+      generateISREmpresaMensualPDF({
+        totalFacturacionMes: form.totalFacturacionMes,
+        totalRetenciones: form.totalRetenciones,
+        ...resultado.datos,
+      });
     }
   };
 
@@ -331,6 +342,32 @@ const ISREmpresaMensualPage: React.FC = () => {
           >
             <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
           </div>
+
+          {/* Botón Descargar PDF */}
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              width: "100%",
+              padding: "1rem",
+              borderRadius: "0.75rem",
+              border: "2px solid white",
+              background: "rgba(255,255,255,0.2)",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "1rem",
+              transition: "all 0.2s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+            }}
+          >
+            📄 Descargar Resultado en PDF
+          </button>
+
         </div>
       )}
     </div>

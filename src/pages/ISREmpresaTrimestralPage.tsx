@@ -7,6 +7,7 @@ import type {
   RespuestaApi,
 } from "../types/calculadoras";
 import { calcularISRTrimestralV2 } from "../services/calculadorasService";
+import { generateISRTrimestralPDF } from "../utils/pdfGenerator";
 
 const ISREmpresaTrimestralPage: React.FC = () => {
   const [form, setForm] = useState<ISRTrimestralV2Request>({
@@ -48,6 +49,19 @@ const ISREmpresaTrimestralPage: React.FC = () => {
       setError(err.message ?? "Error al calcular el ISR de empresa trimestral.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    if (resultado && resultado.datos) {
+      generateISRTrimestralPDF({
+        usarOpcionAcumulada: form.usarOpcionAcumulada,
+        ventasAcumuladas: form.ventasAcumuladas,
+        gastosAcumulados: form.gastosAcumulados,
+        ventasTrimestre: form.ventasTrimestre,
+        isoPendiente: form.isoPendiente,
+        ...resultado.datos,
+      });
     }
   };
 
@@ -438,6 +452,32 @@ const ISREmpresaTrimestralPage: React.FC = () => {
           >
             <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
           </div>
+
+          {/* Botón Descargar PDF */}
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              width: "100%",
+              padding: "1rem",
+              borderRadius: "0.75rem",
+              border: "2px solid white",
+              background: "rgba(255,255,255,0.2)",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "1rem",
+              transition: "all 0.2s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+            }}
+          >
+            📄 Descargar Resultado en PDF
+          </button>
+
         </div>
       )}
     </div>
