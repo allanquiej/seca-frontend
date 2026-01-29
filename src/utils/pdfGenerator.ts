@@ -571,7 +571,7 @@ export const generatePrestacionesCompletasPDF = async (data: {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text("⚠ Advertencias", 18, finalY2 + 5);
+    doc.text("Advertencias", 18, finalY2 + 5);
 
     doc.setTextColor(...SECA_CONFIG.textColor);
     doc.setFont("helvetica", "normal");
@@ -599,7 +599,7 @@ export const generatePrestacionesCompletasPDF = async (data: {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("📋 Notas Legales", 18, notasY + 5);
+  doc.text("Notas Legales", 18, notasY + 5);
 
   doc.setTextColor(...SECA_CONFIG.textColor);
   doc.setFont("helvetica", "normal");
