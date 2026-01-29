@@ -1143,3 +1143,178 @@ export const generateISRTrimestralPDF = async (data: {
 
   doc.save(`SECA_ISR_Empresa_Trimestral_${data.opcionUtilizada.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
 };
+
+/**
+ * Genera un PDF con los resultados de la calculadora de ISO Trimestral
+ * ⚠️ INSTRUCCIÓN: REEMPLAZA la función generateISOTrimestralPDF en pdfGenerator.ts
+ */
+export const generateISOTrimestralPDF = async (data: {
+  // Datos ingresados
+  ingresosBrutosAnuales: number;
+  activoTotal: number;
+  depreciacionAmortizacionAcumulada: number;
+  reservaCuentasIncobrables: number;
+  creditosReinversion: number;
+  iusiPagado: number;
+  // Resultados
+  baseTrimestralIngresos: number;
+  isoSobreIngresos: number;
+  activoNeto: number;
+  baseTrimestralActivo: number;
+  isoSobreActivoNeto: number;
+  isoSobreActivoNetoFinal: number;
+  isoAPagar: number;
+  metodoUtilizado: string;
+  detalleCalculoIngresos: string;
+  detalleCalculoActivo: string;
+  mensaje: string;
+  recomendacionLegal: string;
+}) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
+
+  // Header con logo y título
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
+
+  // Logo o texto SECA
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Cálculo de ISO Trimestral", pageWidth / 2, 25, { align: "center" });
+
+  // Información general
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+
+  // Tabla 1: Datos ingresados (Método 1)
+  autoTable(doc, {
+    startY: 55,
+    head: [["Método 1: Ingresos Brutos", "Valor"]],
+    body: [
+      ["Ingresos Brutos Anuales", `Q ${data.ingresosBrutosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Base Trimestral (÷4)", `Q ${data.baseTrimestralIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO sobre Ingresos (1%)", `Q ${data.isoSobreIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: [59, 130, 246], // Azul #3b82f6
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+  });
+
+  // Tabla 2: Datos ingresados (Método 2)
+  const finalY1 = (doc as any).lastAutoTable.finalY + 5;
+  
+  autoTable(doc, {
+    startY: finalY1,
+    head: [["Método 2: Activo Neto", "Valor"]],
+    body: [
+      ["Activo Total", `Q ${data.activoTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Depreciación y Amort. Acum.", `Q ${data.depreciacionAmortizacionAcumulada.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Reserva Cuentas Incobrables", `Q ${data.reservaCuentasIncobrables.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Créditos por Reinversión", `Q ${data.creditosReinversion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(=) Activo Neto", `Q ${data.activoNeto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Base Trimestral (÷4)", `Q ${data.baseTrimestralActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO sobre Activo (1%)", `Q ${data.isoSobreActivoNeto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) IUSI Pagado", `Q ${data.iusiPagado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(=) ISO Final Activo Neto", `Q ${data.isoSobreActivoNetoFinal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: [59, 130, 246], // Azul #3b82f6
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+  });
+
+  // Resultado Final
+  const finalY2 = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFillColor(59, 130, 246); // Azul #3b82f6
+  doc.rect(14, finalY2, pageWidth - 28, 30, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text("ISO a Pagar (El mayor de ambos métodos):", pageWidth / 2, finalY2 + 10, { align: "center" });
+
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+  doc.text(`Q ${data.isoAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY2 + 22, {
+    align: "center",
+  });
+
+  // Método utilizado
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  const yPos = finalY2 + 38;
+  doc.text(`Método seleccionado: ${data.metodoUtilizado}`, 14, yPos);
+
+  // Detalle del cálculo
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  
+  let yText = yPos + 8;
+  
+  // Método 1
+  doc.setFont("helvetica", "bold");
+  doc.text("Método 1 (Ingresos):", 14, yText);
+  yText += 5;
+  doc.setFont("helvetica", "normal");
+  const lineasIngresos = doc.splitTextToSize(data.detalleCalculoIngresos, pageWidth - 28);
+  doc.text(lineasIngresos, 14, yText);
+  yText += lineasIngresos.length * 5 + 3;
+
+  // Método 2
+  doc.setFont("helvetica", "bold");
+  doc.text("Método 2 (Activo Neto):", 14, yText);
+  yText += 5;
+  doc.setFont("helvetica", "normal");
+  const lineasActivo = doc.splitTextToSize(data.detalleCalculoActivo, pageWidth - 28);
+  doc.text(lineasActivo, 14, yText);
+  yText += lineasActivo.length * 5 + 5;
+
+  // Recomendación legal
+  doc.setFont("helvetica", "bold");
+  doc.text("Información Legal:", 14, yText);
+  yText += 5;
+  doc.setFont("helvetica", "normal");
+  const lineasLegal = doc.splitTextToSize(data.recomendacionLegal, pageWidth - 28);
+  doc.text(lineasLegal, 14, yText);
+
+  // Footer
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+
+  // Descargar el PDF
+  doc.save(`SECA_ISO_Trimestral_${new Date().getTime()}.pdf`);
+};

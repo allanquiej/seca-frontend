@@ -120,6 +120,7 @@ export function calcularISRTrimestralV2(data: ISRTrimestralV2Request) {
 
 /**
  * POST /api/calculadoras/iso-trimestral
+ * ✅ ACTUALIZADO: Ahora calcula con ambos métodos (Ingresos y Activo Neto)
  */
 export function calcularISOTrimestral(data: ISOTrimestralRequest) {
   return apiPostJson<ISOTrimestralRequest, RespuestaApi<ISOTrimestralResponse>>(

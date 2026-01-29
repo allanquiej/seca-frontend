@@ -149,16 +149,43 @@ export type ISRTrimestralV2Response = {
 };
 
 // ===============================
-// ISO TRIMESTRAL
+// ISO TRIMESTRAL - ✅ ACTUALIZADO
 // ===============================
 export type ISOTrimestralRequest = {
-  ingresosTrimestrales: number;
-  activoNeto?: number;
+  ingresosBrutosAnuales: number;
+  activoTotal: number;
+  depreciacionAmortizacionAcumulada: number;
+  reservaCuentasIncobrables: number;
+  creditosReinversion: number;
+  iusiPagado: number;
 };
 
 export type ISOTrimestralResponse = {
-  isoCalculado: number;
-  detalleCalculo: string;
+  // Método 1: Ingresos
+  ingresosBrutosAnuales: number;
+  baseTrimestralIngresos: number;
+  isoSobreIngresos: number;
+  
+  // Método 2: Activo Neto
+  activoTotal: number;
+  depreciacionAmortizacionAcumulada: number;
+  reservaCuentasIncobrables: number;
+  creditosReinversion: number;
+  activoNeto: number;
+  baseTrimestralActivo: number;
+  isoSobreActivoNeto: number;
+  iusiPagado: number;
+  isoSobreActivoNetoFinal: number;
+  
+  // Resultado
+  isoAPagar: number;
+  metodoUtilizado: string;
+  
+  // Detalles
+  detalleCalculoIngresos: string;
+  detalleCalculoActivo: string;
+  mensaje: string;
+  recomendacionLegal: string;
 };
 
 // ===============================
