@@ -44,8 +44,10 @@ const ISREmpresaTrimestralPage: React.FC = () => {
 
     try {
       const res = await calcularISRTrimestralV2(form);
+      console.log('✅ Respuesta recibida del backend:', res);
       setResultado(res);
     } catch (err: any) {
+      console.error('❌ Error al calcular ISR Trimestral:', err);
       setError(err.message ?? "Error al calcular el ISR de empresa trimestral.");
     } finally {
       setLoading(false);
@@ -388,7 +390,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 Base de Cálculo:
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.baseCalculo.toFixed(2)}
+                Q {(resultado.datos.baseCalculo || 0).toFixed(2)}
               </p>
             </div>
 
@@ -403,7 +405,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 ISR (25%):
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.isrCalculado.toFixed(2)}
+                Q {(resultado.datos.isrCalculado || 0).toFixed(2)}
               </p>
             </div>
 
@@ -418,7 +420,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 ISO a Acreditar:
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                - Q {resultado.datos.isoAcreditar.toFixed(2)}
+                - Q {(resultado.datos.isoAcreditar || 0).toFixed(2)}
               </p>
             </div>
           </div>
@@ -436,7 +438,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               ISR a Pagar:
             </p>
             <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {resultado.datos.isrAPagar.toFixed(2)}
+              Q {(resultado.datos.isrAPagar || 0).toFixed(2)}
             </p>
           </div>
 

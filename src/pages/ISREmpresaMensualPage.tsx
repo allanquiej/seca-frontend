@@ -37,8 +37,10 @@ const ISREmpresaMensualPage: React.FC = () => {
 
     try {
       const res = await calcularISREmpresaMensualV2(form);
+      console.log('✅ Respuesta recibida del backend:', res);
       setResultado(res);
     } catch (err: any) {
+      console.error('❌ Error al calcular ISR Mensual:', err);
       setError(err.message ?? "Error al calcular ISR de empresa mensual.");
     } finally {
       setLoading(false);
@@ -243,7 +245,7 @@ const ISREmpresaMensualPage: React.FC = () => {
                 Base (÷ 1.12):
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.base.toFixed(2)}
+                Q {(resultado.datos.base || 0).toFixed(2)}
               </p>
             </div>
 
@@ -258,7 +260,7 @@ const ISREmpresaMensualPage: React.FC = () => {
                 IVA (12%):
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.iva.toFixed(2)}
+                Q {(resultado.datos.iva || 0).toFixed(2)}
               </p>
             </div>
           </div>
@@ -276,7 +278,7 @@ const ISREmpresaMensualPage: React.FC = () => {
                 ISR Primeros Q30k (5%):
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.isrPrimerosTreintaMil.toFixed(2)}
+                Q {(resultado.datos.isrPrimerosTreintaMil || 0).toFixed(2)}
               </p>
             </div>
 
@@ -291,7 +293,7 @@ const ISREmpresaMensualPage: React.FC = () => {
                 ISR Excedente (7%):
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.isrExcedente.toFixed(2)}
+                Q {(resultado.datos.isrExcedente || 0).toFixed(2)}
               </p>
             </div>
           </div>
@@ -309,7 +311,7 @@ const ISREmpresaMensualPage: React.FC = () => {
               ISR Total:
             </p>
             <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {resultado.datos.isrTotal.toFixed(2)}
+              Q {(resultado.datos.isrTotal || 0).toFixed(2)}
             </p>
           </div>
 
@@ -326,7 +328,7 @@ const ISREmpresaMensualPage: React.FC = () => {
               ISR a Pagar (Después de retenciones):
             </p>
             <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {resultado.datos.isrAPagar.toFixed(2)}
+              Q {(resultado.datos.isrAPagar || 0).toFixed(2)}
             </p>
           </div>
 
