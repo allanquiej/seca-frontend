@@ -90,17 +90,17 @@ const ISRLaboralPage: React.FC = () => {
       {/* Información importante */}
       <div
         style={{
-          background: "#fef3c7",
-          border: "2px solid #fbbf24",
+          background: "#dbeafe",
+          border: "2px solid #2252EC",
           borderRadius: "1rem",
           padding: "1.5rem",
           marginBottom: "2rem",
         }}
       >
-        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#78350f" }}>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#0E234F" }}>
           ℹ️ ¿Cómo funciona este cálculo?
         </h3>
-        <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#78350f", lineHeight: 1.8 }}>
+        <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#0E234F", lineHeight: 1.8 }}>
           <li>Se suman <strong>todos</strong> tus ingresos anuales (salarios, bono 14, aguinaldo, otros bonos)</li>
           <li>Se resta la deducción personal de <strong>Q48,000</strong></li>
           <li>Al resultado se aplica el <strong>5%</strong></li>
@@ -258,11 +258,11 @@ const ISRLaboralPage: React.FC = () => {
                   flex: 1,
                   padding: "1rem",
                   borderRadius: "0.75rem",
-                  border: form.esProyectado ? "3px solid #f59e0b" : "2px solid #e2e8f0",
-                  background: form.esProyectado ? "#fef3c7" : "white",
+                  border: form.esProyectado ? "3px solid #0E234F" : "2px solid #e2e8f0",
+                  background: form.esProyectado ? "#dbeafe" : "white",
                   cursor: "pointer",
                   fontWeight: 600,
-                  color: form.esProyectado ? "#78350f" : "#64748b",
+                  color: form.esProyectado ? "#0E234F" : "#64748b",
                   transition: "all 0.2s",
                 }}
               >
@@ -275,11 +275,11 @@ const ISRLaboralPage: React.FC = () => {
                   flex: 1,
                   padding: "1rem",
                   borderRadius: "0.75rem",
-                  border: !form.esProyectado ? "3px solid #f59e0b" : "2px solid #e2e8f0",
-                  background: !form.esProyectado ? "#fef3c7" : "white",
+                  border: !form.esProyectado ? "3px solid #0E234F" : "2px solid #e2e8f0",
+                  background: !form.esProyectado ? "#dbeafe" : "white",
                   cursor: "pointer",
                   fontWeight: 600,
-                  color: !form.esProyectado ? "#78350f" : "#64748b",
+                  color: !form.esProyectado ? "#0E234F" : "#64748b",
                   transition: "all 0.2s",
                 }}
               >
@@ -304,9 +304,9 @@ const ISRLaboralPage: React.FC = () => {
               cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 700,
               fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
               color: "white",
-              boxShadow: "0 4px 15px rgba(245,158,11,0.3)",
+              boxShadow: "0 4px 15px rgba(14,35,79,0.3)",
               transition: "transform 0.2s",
             }}
             onMouseOver={(e) =>
@@ -339,11 +339,11 @@ const ISRLaboralPage: React.FC = () => {
       {resultado && resultado.datos && (
         <div
           style={{
-            background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+            background: "linear-gradient(135deg, #0E234F, #2252EC)",
             borderRadius: "1rem",
             padding: "2rem",
             color: "white",
-            boxShadow: "0 10px 40px rgba(245,158,11,0.4)",
+            boxShadow: "0 10px 40px rgba(14,35,79,0.4)",
           }}
         >
           <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "1.5rem" }}>

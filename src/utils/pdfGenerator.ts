@@ -134,7 +134,7 @@ export const generateIndemnizacionPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       // Fallback a texto si falla
       doc.setTextColor(255, 255, 255);
@@ -218,12 +218,8 @@ export const generateIndemnizacionPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   // Descargar el PDF
   doc.save(`SECA_Indemnizacion_${new Date().getTime()}.pdf`);
@@ -256,7 +252,7 @@ export const generateBono14PDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -335,12 +331,8 @@ export const generateBono14PDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_Bono14_${new Date().getTime()}.pdf`);
 };
@@ -372,7 +364,7 @@ export const generateAguinaldoPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -453,12 +445,8 @@ export const generateAguinaldoPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_Aguinaldo_${new Date().getTime()}.pdf`);
 };
@@ -497,7 +485,7 @@ export const generatePrestacionesCompletasPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -628,12 +616,8 @@ export const generatePrestacionesCompletasPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   // Descargar el PDF
   doc.save(`SECA_Prestaciones_Laborales_${new Date().getTime()}.pdf`);
@@ -674,7 +658,7 @@ export const generateIVAPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -799,12 +783,8 @@ export const generateIVAPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   // Descargar el PDF
   doc.save(`SECA_IVA_${data.regimenNombre.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
@@ -840,7 +820,7 @@ export const generateISRLaboralPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -930,12 +910,8 @@ export const generateISRLaboralPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_ISR_Laboral_${data.tipoCalculo}_${new Date().getTime()}.pdf`);
 };
@@ -968,7 +944,7 @@ export const generateISREmpresaMensualPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -1043,12 +1019,8 @@ export const generateISREmpresaMensualPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_ISR_Empresa_Mensual_${new Date().getTime()}.pdf`);
 };
@@ -1083,7 +1055,7 @@ export const generateISRTrimestralPDF = async (data: {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
       doc.setFont("helvetica", "normal");
-      doc.text("- Servicios Contables", 52, 18);
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
     } catch (error) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(22);
@@ -1166,12 +1138,8 @@ export const generateISRTrimestralPDF = async (data: {
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, {
-    align: "center",
-  });
-  doc.text("📧 info@seca.gt | ☎️ 3639-3647", pageWidth / 2, footerY + 5, {
-    align: "center",
-  });
+  doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_ISR_Empresa_Trimestral_${data.opcionUtilizada.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
 };

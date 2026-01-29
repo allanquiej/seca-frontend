@@ -78,17 +78,17 @@ const ISREmpresaMensualPage: React.FC = () => {
       {/* Información importante */}
       <div
         style={{
-          background: "#d1fae5",
-          border: "2px solid #10b981",
+          background: "#dbeafe",
+          border: "2px solid #0E234F",
           borderRadius: "1rem",
           padding: "1.5rem",
           marginBottom: "2rem",
         }}
       >
-        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#065f46" }}>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#0E234F" }}>
           ℹ️ Régimen Opcional Simplificado
         </h3>
-        <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#065f46", lineHeight: 1.8 }}>
+        <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#0E234F", lineHeight: 1.8 }}>
           <li>
             <strong>Primeros Q30,000:</strong> Se paga el <strong>5%</strong>
           </li>
@@ -184,9 +184,9 @@ const ISREmpresaMensualPage: React.FC = () => {
               cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 700,
               fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #10b981, #34d399)",
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
               color: "white",
-              boxShadow: "0 4px 15px rgba(16,185,129,0.3)",
+              boxShadow: "0 4px 15px rgba(14,35,79,0.3)",
               transition: "transform 0.2s",
             }}
             onMouseOver={(e) =>
@@ -219,11 +219,11 @@ const ISREmpresaMensualPage: React.FC = () => {
       {resultado && resultado.datos && (
         <div
           style={{
-            background: "linear-gradient(135deg, #10b981, #34d399)",
+            background: "linear-gradient(135deg, #0E234F, #2252EC)",
             borderRadius: "1rem",
             padding: "2rem",
             color: "white",
-            boxShadow: "0 10px 40px rgba(16,185,129,0.4)",
+            boxShadow: "0 10px 40px rgba(14,35,79,0.4)",
           }}
         >
           <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "1.5rem" }}>

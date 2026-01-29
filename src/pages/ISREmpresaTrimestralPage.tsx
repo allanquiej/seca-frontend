@@ -94,10 +94,10 @@ const ISREmpresaTrimestralPage: React.FC = () => {
           marginBottom: "2rem",
         }}
       >
-        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#1e3a8a" }}>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#0E234F" }}>
           ℹ️ Dos opciones de cálculo disponibles
         </h3>
-        <div style={{ color: "#1e3a8a", lineHeight: 1.8 }}>
+        <div style={{ color: "#0E234F", lineHeight: 1.8 }}>
           <strong>Opción 1 - Acumulado:</strong>
           <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
             <li>Suma ventas acumuladas de todos los trimestres del año</li>
@@ -149,7 +149,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               background: form.usarOpcionAcumulada ? "#dbeafe" : "white",
               cursor: "pointer",
               fontWeight: 600,
-              color: form.usarOpcionAcumulada ? "#1e3a8a" : "#64748b",
+              color: form.usarOpcionAcumulada ? "#0E234F" : "#64748b",
               transition: "all 0.2s",
             }}
           >
@@ -166,7 +166,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               background: !form.usarOpcionAcumulada ? "#dbeafe" : "white",
               cursor: "pointer",
               fontWeight: 600,
-              color: !form.usarOpcionAcumulada ? "#1e3a8a" : "#64748b",
+              color: !form.usarOpcionAcumulada ? "#0E234F" : "#64748b",
               transition: "all 0.2s",
             }}
           >
@@ -326,9 +326,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 700,
               fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #06b6d4, #22d3ee)",
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
               color: "white",
-              boxShadow: "0 4px 15px rgba(6,182,212,0.3)",
+              boxShadow: "0 4px 15px rgba(14,35,79,0.3)",
               transition: "transform 0.2s",
             }}
             onMouseOver={(e) =>
@@ -361,11 +361,11 @@ const ISREmpresaTrimestralPage: React.FC = () => {
       {resultado && resultado.datos && (
         <div
           style={{
-            background: "linear-gradient(135deg, #06b6d4, #22d3ee)",
+            background: "linear-gradient(135deg, #0E234F, #2252EC)",
             borderRadius: "1rem",
             padding: "2rem",
             color: "white",
-            boxShadow: "0 10px 40px rgba(6,182,212,0.4)",
+            boxShadow: "0 10px 40px rgba(14,35,79,0.4)",
           }}
         >
           <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "0.5rem" }}>
