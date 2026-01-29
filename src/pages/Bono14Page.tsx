@@ -6,7 +6,7 @@ import { calcularBono14 } from "../services/calculadorasService";
 import { generateBono14PDF } from "../utils/pdfGenerator";
 
 const Bono14Page: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [showInfo, setShowInfo] = useState(true);
   
   const [form, setForm] = useState<Bono14Request>({
@@ -74,7 +74,7 @@ const Bono14Page: React.FC = () => {
   };
 
   const handleNuevaConsulta = () => {
-    setCurrentStep(1);
+    setCurrentStep(0);
     setResultado(null);
     setError(null);
     setShowInfo(true);
@@ -163,7 +163,10 @@ const Bono14Page: React.FC = () => {
             </div>
 
             <button
-              onClick={() => setShowInfo(false)}
+              onClick={() => {
+                setShowInfo(false);
+                setCurrentStep(1);
+              }}
               style={{
                 marginTop: "1.5rem",
                 padding: "1rem 2rem",

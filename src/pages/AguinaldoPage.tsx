@@ -6,7 +6,7 @@ import { calcularAguinaldo } from "../services/calculadorasService";
 import { generateAguinaldoPDF } from "../utils/pdfGenerator";
 
 const AguinaldoPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [showInfo, setShowInfo] = useState(true);
   
   const [form, setForm] = useState<AguinaldoRequest>({
@@ -74,7 +74,7 @@ const AguinaldoPage: React.FC = () => {
   };
 
   const handleNuevaConsulta = () => {
-    setCurrentStep(1);
+    setCurrentStep(0);
     setResultado(null);
     setError(null);
     setShowInfo(true);
@@ -95,7 +95,7 @@ const AguinaldoPage: React.FC = () => {
   return (
     <div style={{ 
       minHeight: "100vh", 
-      background: "linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%)",
+      background: "linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%)",
       padding: "2rem 1rem"
     }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
@@ -115,7 +115,7 @@ const AguinaldoPage: React.FC = () => {
                 width: "60px",
                 height: "60px",
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+                background: "linear-gradient(135deg, #0E234F, #2252EC)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -139,16 +139,16 @@ const AguinaldoPage: React.FC = () => {
             </div>
 
             <div style={{
-              background: "linear-gradient(135deg, #fef3c7, #fef9c3)",
+              background: "linear-gradient(135deg, #e0f2fe, #dbeafe)",
               borderRadius: "0.75rem",
               padding: "1.5rem",
-              borderLeft: "4px solid #f59e0b"
+              borderLeft: "4px solid #0E234F"
             }}>
               <h3 style={{ 
                 fontSize: "1.25rem", 
                 fontWeight: 700, 
                 marginBottom: "0.75rem",
-                color: "#92400e"
+                color: "#0E234F"
               }}>
                 ℹ️ ¿Qué es el Aguinaldo?
               </h3>
@@ -163,7 +163,10 @@ const AguinaldoPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => setShowInfo(false)}
+              onClick={() => {
+                setShowInfo(false);
+                setCurrentStep(1);
+              }}
               style={{
                 marginTop: "1.5rem",
                 padding: "1rem 2rem",
@@ -172,10 +175,10 @@ const AguinaldoPage: React.FC = () => {
                 cursor: "pointer",
                 fontWeight: 700,
                 fontSize: "1rem",
-                background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+                background: "linear-gradient(135deg, #0E234F, #2252EC)",
                 color: "white",
                 width: "100%",
-                boxShadow: "0 4px 15px rgba(245,158,11,0.3)",
+                boxShadow: "0 4px 15px rgba(14,35,79,0.3)",
                 transition: "transform 0.2s"
               }}
               onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
@@ -196,7 +199,7 @@ const AguinaldoPage: React.FC = () => {
           }}>
             {/* Header del paso */}
             <div style={{
-              background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
               padding: "1.5rem 2rem",
               color: "white"
             }}>
@@ -230,11 +233,11 @@ const AguinaldoPage: React.FC = () => {
               {currentStep === 1 && (
                 <>
                   <div style={{
-                    background: "#fef9c3",
+                    background: "#dbeafe",
                     borderRadius: "0.75rem",
                     padding: "1rem 1.25rem",
                     marginBottom: "1.5rem",
-                    borderLeft: "4px solid #f59e0b"
+                    borderLeft: "4px solid #0E234F"
                   }}>
                     <p style={{ 
                       fontSize: "0.95rem", 
@@ -278,11 +281,11 @@ const AguinaldoPage: React.FC = () => {
               {currentStep === 2 && (
                 <>
                   <div style={{
-                    background: "#fef9c3",
+                    background: "#dbeafe",
                     borderRadius: "0.75rem",
                     padding: "1rem 1.25rem",
                     marginBottom: "1.5rem",
-                    borderLeft: "4px solid #f59e0b"
+                    borderLeft: "4px solid #0E234F"
                   }}>
                     <p style={{ 
                       fontSize: "0.95rem", 
@@ -330,21 +333,21 @@ const AguinaldoPage: React.FC = () => {
                       style={{
                         padding: "0.875rem",
                         borderRadius: "0.75rem",
-                        border: "2px solid #f59e0b",
+                        border: "2px solid #0E234F",
                         background: "white",
-                        color: "#f59e0b",
+                        color: "#0E234F",
                         cursor: "pointer",
                         fontWeight: 600,
                         fontSize: "0.95rem",
                         transition: "all 0.2s"
                       }}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.background = "#f59e0b";
+                        e.currentTarget.style.background = "#0E234F";
                         e.currentTarget.style.color = "white";
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background = "white";
-                        e.currentTarget.style.color = "#f59e0b";
+                        e.currentTarget.style.color = "#0E234F";
                       }}
                     >
                       📅 Usar Fecha de Hoy
@@ -356,21 +359,21 @@ const AguinaldoPage: React.FC = () => {
                       style={{
                         padding: "0.875rem",
                         borderRadius: "0.75rem",
-                        border: "2px solid #92400e",
+                        border: "2px solid #0E234F",
                         background: "white",
-                        color: "#92400e",
+                        color: "#0E234F",
                         cursor: "pointer",
                         fontWeight: 600,
                         fontSize: "0.95rem",
                         transition: "all 0.2s"
                       }}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.background = "#92400e";
+                        e.currentTarget.style.background = "#0E234F";
                         e.currentTarget.style.color = "white";
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background = "white";
-                        e.currentTarget.style.color = "#92400e";
+                        e.currentTarget.style.color = "#0E234F";
                       }}
                     >
                       📅 Fin de Año (31/12/2025)
@@ -396,11 +399,11 @@ const AguinaldoPage: React.FC = () => {
               {currentStep === 3 && (
                 <>
                   <div style={{
-                    background: "#fef9c3",
+                    background: "#dbeafe",
                     borderRadius: "0.75rem",
                     padding: "1rem 1.25rem",
                     marginBottom: "1.5rem",
-                    borderLeft: "4px solid #f59e0b"
+                    borderLeft: "4px solid #0E234F"
                   }}>
                     <p style={{ 
                       fontSize: "0.95rem", 
@@ -491,7 +494,7 @@ const AguinaldoPage: React.FC = () => {
                         <p style={{ 
                           fontSize: "0.85rem", 
                           fontWeight: 700, 
-                          color: "#f59e0b",
+                          color: "#0E234F",
                           marginBottom: "0.5rem"
                         }}>
                           Departamento de Guatemala (CE1):
@@ -502,7 +505,7 @@ const AguinaldoPage: React.FC = () => {
                           borderCollapse: "collapse"
                         }}>
                           <thead>
-                            <tr style={{ background: "#f59e0b", color: "white" }}>
+                            <tr style={{ background: "#0E234F", color: "white" }}>
                               <th style={{ padding: "0.4rem", textAlign: "left", fontSize: "0.7rem" }}>Actividad</th>
                               <th style={{ padding: "0.4rem", textAlign: "right", fontSize: "0.7rem" }}>Salario<br/>Base</th>
                             </tr>
@@ -565,14 +568,14 @@ const AguinaldoPage: React.FC = () => {
 
                     <div style={{
                       marginTop: "0.75rem",
-                      background: "#fef9c3",
+                      background: "#dbeafe",
                       borderRadius: "0.5rem",
                       padding: "0.75rem",
-                      border: "1px solid #f59e0b"
+                      border: "1px solid #0E234F"
                     }}>
                       <p style={{ 
                         fontSize: "0.75rem", 
-                        color: "#92400e", 
+                        color: "#0E234F", 
                         margin: 0,
                         lineHeight: 1.5
                       }}>
@@ -608,9 +611,9 @@ const AguinaldoPage: React.FC = () => {
                     style={{
                       padding: "1rem 2rem",
                       borderRadius: "0.75rem",
-                      border: "2px solid #92400e",
+                      border: "2px solid #0E234F",
                       background: "white",
-                      color: "#92400e",
+                      color: "#0E234F",
                       cursor: "pointer",
                       fontWeight: 700,
                       fontSize: "1rem",
@@ -631,7 +634,7 @@ const AguinaldoPage: React.FC = () => {
                       borderRadius: "0.75rem",
                       border: "none",
                       background: canGoNext() 
-                        ? "linear-gradient(135deg, #f59e0b, #fbbf24)" 
+                        ? "linear-gradient(135deg, #0E234F, #2252EC)" 
                         : "#cbd5e1",
                       color: "white",
                       cursor: canGoNext() ? "pointer" : "not-allowed",
@@ -694,7 +697,7 @@ const AguinaldoPage: React.FC = () => {
             boxShadow: "0 10px 40px rgba(0,0,0,0.15)"
           }}>
             <div style={{
-              background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+              background: "linear-gradient(135deg, #0E234F, #2252EC)",
               padding: "2rem",
               color: "white",
               textAlign: "center"
@@ -710,15 +713,15 @@ const AguinaldoPage: React.FC = () => {
 
             <div style={{ padding: "2rem" }}>
               <div style={{
-                background: "linear-gradient(135deg, #fef9c3, #fef3c7)",
+                background: "linear-gradient(135deg, #dbeafe, #e0f2fe)",
                 borderRadius: "1rem",
                 padding: "2rem",
                 marginBottom: "2rem",
-                border: "2px solid #f59e0b"
+                border: "2px solid #0E234F"
               }}>
                 <p style={{ 
                   fontSize: "1rem", 
-                  color: "#92400e", 
+                  color: "#0E234F", 
                   marginBottom: "0.5rem",
                   fontWeight: 600
                 }}>
@@ -775,8 +778,8 @@ const AguinaldoPage: React.FC = () => {
                   style={{
                     padding: "1rem",
                     borderRadius: "0.75rem",
-                    border: "2px solid #f59e0b",
-                    background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+                    border: "2px solid #0E234F",
+                    background: "linear-gradient(135deg, #0E234F, #2252EC)",
                     color: "white",
                     cursor: "pointer",
                     fontWeight: 700,
