@@ -1210,14 +1210,29 @@ export const generateISOTrimestralPDF = async (data: {
   doc.setFontSize(10);
   doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
 
+  // ✅ PROTECCIÓN CONTRA UNDEFINED - Valores con fallback a 0
+  const ingresosBrutos = data.ingresosBrutosAnuales || 0;
+  const baseTrimIngresos = data.baseTrimestralIngresos || 0;
+  const isoIngresos = data.isoSobreIngresos || 0;
+  const activoTot = data.activoTotal || 0;
+  const depreciacion = data.depreciacionAmortizacionAcumulada || 0;
+  const reservaIncob = data.reservaCuentasIncobrables || 0;
+  const creditosReint = data.creditosReinversion || 0;
+  const activoNet = data.activoNeto || 0;
+  const baseTrimActivo = data.baseTrimestralActivo || 0;
+  const isoActivo = data.isoSobreActivoNeto || 0;
+  const iusiPag = data.iusiPagado || 0;
+  const isoActivoFinal = data.isoSobreActivoNetoFinal || 0;
+  const isoPagar = data.isoAPagar || 0;
+
   // Tabla 1: Datos ingresados (Método 1)
   autoTable(doc, {
     startY: 55,
     head: [["Método 1: Ingresos Brutos", "Valor"]],
     body: [
-      ["Ingresos Brutos Anuales", `Q ${data.ingresosBrutosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Base Trimestral (÷4)", `Q ${data.baseTrimestralIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISO sobre Ingresos (1%)", `Q ${data.isoSobreIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Ingresos Brutos Anuales", `Q ${ingresosBrutos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Base Trimestral (÷4)", `Q ${baseTrimIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO sobre Ingresos (1%)", `Q ${isoIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ],
     headStyles: {
       fillColor: [59, 130, 246], // Azul #3b82f6
@@ -1234,15 +1249,15 @@ export const generateISOTrimestralPDF = async (data: {
     startY: finalY1,
     head: [["Método 2: Activo Neto", "Valor"]],
     body: [
-      ["Activo Total", `Q ${data.activoTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Depreciación y Amort. Acum.", `Q ${data.depreciacionAmortizacionAcumulada.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Reserva Cuentas Incobrables", `Q ${data.reservaCuentasIncobrables.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Créditos por Reinversión", `Q ${data.creditosReinversion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(=) Activo Neto", `Q ${data.activoNeto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Base Trimestral (÷4)", `Q ${data.baseTrimestralActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISO sobre Activo (1%)", `Q ${data.isoSobreActivoNeto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) IUSI Pagado", `Q ${data.iusiPagado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(=) ISO Final Activo Neto", `Q ${data.isoSobreActivoNetoFinal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Activo Total", `Q ${activoTot.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Depreciación y Amort. Acum.", `Q ${depreciacion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Reserva Cuentas Incobrables", `Q ${reservaIncob.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Créditos por Reinversión", `Q ${creditosReint.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(=) Activo Neto", `Q ${activoNet.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Base Trimestral (÷4)", `Q ${baseTrimActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO sobre Activo (1%)", `Q ${isoActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) IUSI Pagado", `Q ${iusiPag.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(=) ISO Final Activo Neto", `Q ${isoActivoFinal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ],
     headStyles: {
       fillColor: [59, 130, 246], // Azul #3b82f6
@@ -1265,7 +1280,7 @@ export const generateISOTrimestralPDF = async (data: {
 
   doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.text(`Q ${data.isoAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY2 + 22, {
+  doc.text(`Q ${isoPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY2 + 22, {
     align: "center",
   });
 
@@ -1274,7 +1289,7 @@ export const generateISOTrimestralPDF = async (data: {
   doc.setFontSize(11);
   doc.setFont("helvetica", "bold");
   const yPos = finalY2 + 38;
-  doc.text(`Método seleccionado: ${data.metodoUtilizado}`, 14, yPos);
+  doc.text(`Método seleccionado: ${data.metodoUtilizado || 'No especificado'}`, 14, yPos);
 
   // Detalle del cálculo
   doc.setFontSize(10);
@@ -1287,7 +1302,7 @@ export const generateISOTrimestralPDF = async (data: {
   doc.text("Método 1 (Ingresos):", 14, yText);
   yText += 5;
   doc.setFont("helvetica", "normal");
-  const lineasIngresos = doc.splitTextToSize(data.detalleCalculoIngresos, pageWidth - 28);
+  const lineasIngresos = doc.splitTextToSize(data.detalleCalculoIngresos || 'No disponible', pageWidth - 28);
   doc.text(lineasIngresos, 14, yText);
   yText += lineasIngresos.length * 5 + 3;
 
@@ -1296,7 +1311,7 @@ export const generateISOTrimestralPDF = async (data: {
   doc.text("Método 2 (Activo Neto):", 14, yText);
   yText += 5;
   doc.setFont("helvetica", "normal");
-  const lineasActivo = doc.splitTextToSize(data.detalleCalculoActivo, pageWidth - 28);
+  const lineasActivo = doc.splitTextToSize(data.detalleCalculoActivo || 'No disponible', pageWidth - 28);
   doc.text(lineasActivo, 14, yText);
   yText += lineasActivo.length * 5 + 5;
 
@@ -1305,7 +1320,7 @@ export const generateISOTrimestralPDF = async (data: {
   doc.text("Información Legal:", 14, yText);
   yText += 5;
   doc.setFont("helvetica", "normal");
-  const lineasLegal = doc.splitTextToSize(data.recomendacionLegal, pageWidth - 28);
+  const lineasLegal = doc.splitTextToSize(data.recomendacionLegal || 'Consulte con un profesional.', pageWidth - 28);
   doc.text(lineasLegal, 14, yText);
 
   // Footer
