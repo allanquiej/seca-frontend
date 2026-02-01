@@ -793,27 +793,41 @@ export const generateIVAPDF = async (data: {
  * Genera un PDF con los resultados de la calculadora de ISR Laboral (Asalariados)
  */
 export const generateISRLaboralPDF = async (data: {
-  salariosAnuales: number;
+  // Input
+  salarioOrdinarioMensual: number;
+  bonificacionIncentivo: number;
   bono14: number;
   aguinaldo: number;
   otrosBonos: number;
   esProyectado: boolean;
-  totalIngresos: number;
-  deduccionPersonal: number;
-  baseImponible: number;
-  isrTotal: number;
-  isrMensual: number;
+  // Output
+  salariosAnuales: number;
+  bonificacionAnual: number;
+  totalRentaBruta: number;
+  aguinaldoExento: number;
+  bono14Exento: number;
+  totalRentasExentas: number;
+  rentaNeta: number;
+  gastosPersonales: number;
+  cuotaIGSS: number;
+  totalDeducciones: number;
+  rentaImponible: number;
+  isrAnual: number;
+  retencionMensual: number;
   tipoCalculo: string;
   detalleCalculo: string;
 }) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
+  // Intentar cargar el logo
   const logoData = await loadSECALogo();
 
+  // Header con logo y título
   doc.setFillColor(...SECA_CONFIG.primaryColor);
   doc.rect(0, 0, pageWidth, 35, "F");
 
+  // Logo o texto SECA
   if (logoData) {
     try {
       doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
@@ -838,83 +852,163 @@ export const generateISRLaboralPDF = async (data: {
   doc.setFont("helvetica", "normal");
   doc.text("Cálculo de ISR Asalariados", pageWidth / 2, 25, { align: "center" });
 
+  // Información general
   doc.setTextColor(...SECA_CONFIG.textColor);
   doc.setFontSize(10);
   doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
   doc.text(`Tipo de cálculo: ${data.tipoCalculo}`, 14, 51);
 
+  // Tabla 1: Renta Bruta
   autoTable(doc, {
-    startY: 60,
-    head: [["Concepto", "Monto"]],
+    startY: 58,
+    head: [["1️⃣ Renta Bruta", "Valor"]],
     body: [
-      ["Salarios Anuales", `Q ${data.salariosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Bono 14", `Q ${data.bono14.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Salarios Anuales (12 meses)", `Q ${data.salariosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Bonificación Anual (12 meses)", `Q ${data.bonificacionAnual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Aguinaldo", `Q ${data.aguinaldo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Bono 14", `Q ${data.bono14.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Otros Bonos", `Q ${data.otrosBonos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["TOTAL RENTA BRUTA", `Q ${data.totalRentaBruta.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ],
     headStyles: {
-      fillColor: SECA_CONFIG.primaryColor,
+      fillColor: [14, 35, 79],
       textColor: [255, 255, 255],
       fontStyle: "bold",
     },
-    styles: { fontSize: 11 },
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { cellWidth: 120 },
+      1: { halign: 'right', cellWidth: 60 }
+    }
   });
 
-  let finalY = (doc as any).lastAutoTable.finalY + 10;
-
+  // Tabla 2: Rentas Exentas
+  const finalY1 = (doc as any).lastAutoTable.finalY + 5;
+  
   autoTable(doc, {
-    startY: finalY,
-    head: [["Descripción", "Valor"]],
+    startY: finalY1,
+    head: [["2️⃣ (-) Rentas Exentas", "Valor"]],
     body: [
-      ["Total Ingresos", `Q ${data.totalIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Deducción Personal (Art. 72)", `- Q ${data.deduccionPersonal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Base Imponible", `Q ${data.baseImponible.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISR (5%)", `Q ${data.isrTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Aguinaldo Exento", `Q ${data.aguinaldoExento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Bono 14 Exento", `Q ${data.bono14Exento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["TOTAL RENTAS EXENTAS", `Q ${data.totalRentasExentas.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ],
     headStyles: {
-      fillColor: SECA_CONFIG.secondaryColor,
+      fillColor: [14, 35, 79],
       textColor: [255, 255, 255],
       fontStyle: "bold",
     },
-    styles: { fontSize: 11 },
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { cellWidth: 120 },
+      1: { halign: 'right', cellWidth: 60 }
+    }
   });
 
-  finalY = (doc as any).lastAutoTable.finalY + 10;
+  // Tabla 3: Renta Neta
+  const finalY2 = (doc as any).lastAutoTable.finalY + 5;
+  
+  autoTable(doc, {
+    startY: finalY2,
+    head: [["3️⃣ (=) Renta Neta", "Valor"]],
+    body: [
+      ["RENTA NETA", `Q ${data.rentaNeta.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: [14, 35, 79],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { cellWidth: 120 },
+      1: { halign: 'right', cellWidth: 60 }
+    }
+  });
 
-  doc.setFillColor(...SECA_CONFIG.accentColor);
-  doc.rect(14, finalY, pageWidth - 28, 25, "F");
+  // Tabla 4: Deducciones
+  const finalY3 = (doc as any).lastAutoTable.finalY + 5;
+  
+  autoTable(doc, {
+    startY: finalY3,
+    head: [["4️⃣ (-) Deducciones", "Valor"]],
+    body: [
+      ["Gastos Personales (Art. 72)", `Q ${data.gastosPersonales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Cuota IGSS (4.83%)", `Q ${data.cuotaIGSS.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["TOTAL DEDUCCIONES", `Q ${data.totalDeducciones.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ],
+    headStyles: {
+      fillColor: [14, 35, 79],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { cellWidth: 120 },
+      1: { halign: 'right', cellWidth: 60 }
+    }
+  });
+
+  // Tabla 5: ISR
+  const finalY4 = (doc as any).lastAutoTable.finalY + 5;
+  
+  autoTable(doc, {
+    startY: finalY4,
+    head: [["5️⃣ Cálculo de ISR", "Valor"]],
+    body: [
+      ["Renta Imponible", `Q ${data.rentaImponible.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Anual", `Q ${data.isrAnual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ...(data.retencionMensual > 0 ? [["Retención Mensual", `Q ${data.retencionMensual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`]] : []),
+    ],
+    headStyles: {
+      fillColor: [14, 35, 79],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { cellWidth: 120 },
+      1: { halign: 'right', cellWidth: 60 }
+    }
+  });
+
+  // Resultado Final destacado
+  const finalY5 = (doc as any).lastAutoTable.finalY + 10;
+
+  doc.setFillColor(14, 35, 79);
+  doc.rect(14, finalY5, pageWidth - 28, 30, "F");
 
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text("ISR Anual a Pagar:", pageWidth / 2, finalY5 + 10, { align: "center" });
+
+  doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.text("ISR Total Anual", pageWidth / 2, finalY + 10, { align: "center" });
+  doc.text(`Q ${data.isrAnual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY5 + 22, {
+    align: "center",
+  });
 
-  doc.setFontSize(20);
-  doc.text(`Q ${data.isrTotal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
+  // Nota legal
+  const yNote = finalY5 + 38;
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  const nota = "Cálculo según Decreto 10-2012 (Ley del Impuesto Sobre la Renta). Incluye rentas exentas, cuota IGSS y tabla progresiva.";
+  const lineasNota = doc.splitTextToSize(nota, pageWidth - 28);
+  doc.text(lineasNota, 14, yNote);
 
-  finalY += 30;
-
-  if (data.esProyectado && data.isrMensual > 0) {
-    doc.setFillColor(245, 158, 11);
-    doc.rect(14, finalY, pageWidth - 28, 20, "F");
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("ISR Mensual (Descuento por mes)", pageWidth / 2, finalY + 8, { align: "center" });
-
-    doc.setFontSize(18);
-    doc.text(`Q ${data.isrMensual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 16, { align: "center" });
-  }
-
+  // Footer
   const footerY = doc.internal.pageSize.getHeight() - 20;
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
   doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
-  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+  doc.text("Email: info@seca.gt | Teléfono: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
-  doc.save(`SECA_ISR_Laboral_${data.tipoCalculo}_${new Date().getTime()}.pdf`);
+  // Descargar el PDF
+  doc.save(`SECA_ISR_Asalariados_${new Date().getTime()}.pdf`);
 };
+
 
 /**
  * Genera un PDF con los resultados de la calculadora de ISR Empresa Mensual

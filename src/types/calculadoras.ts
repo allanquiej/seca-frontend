@@ -1,4 +1,5 @@
 // src/types/calculadoras.ts
+// ✅ ARCHIVO COMPLETO - REEMPLAZAR TODO
 
 // Respuesta genérica de la API
 export type RespuestaApi<TDatos> = {
@@ -62,10 +63,11 @@ export type ISRLaboralResponse = {
 };
 
 // ===============================
-// ISR ASALARIADO (NUEVO - CORRECTO)
+// ✅ ISR ASALARIADO (ACTUALIZADO)
 // ===============================
 export type ISRAsalariadoRequest = {
-  salariosAnuales: number;
+  salarioOrdinarioMensual: number;  // ✅ NUEVO
+  bonificacionIncentivo: number;    // ✅ NUEVO
   bono14: number;
   aguinaldo: number;
   otrosBonos: number;
@@ -73,11 +75,34 @@ export type ISRAsalariadoRequest = {
 };
 
 export type ISRAsalariadoResponse = {
-  totalIngresos: number;
-  deduccionPersonal: number;
-  baseImponible: number;
-  isrTotal: number;
-  isrMensual: number;
+  // ✅ ESTRUCTURA NUEVA
+  // Renta Bruta
+  salariosAnuales: number;
+  bonificacionAnual: number;
+  aguinaldo: number;
+  bono14: number;
+  otrosBonos: number;
+  totalRentaBruta: number;
+  
+  // Rentas Exentas
+  aguinaldoExento: number;
+  bono14Exento: number;
+  totalRentasExentas: number;
+  
+  // Renta Neta
+  rentaNeta: number;
+  
+  // Deducciones
+  gastosPersonales: number;
+  cuotaIGSS: number;
+  totalDeducciones: number;
+  
+  // Resultado
+  rentaImponible: number;
+  isrAnual: number;
+  retencionMensual: number;
+  
+  // Metadatos
   tipoCalculo: string;
   detalleCalculo: string;
 };

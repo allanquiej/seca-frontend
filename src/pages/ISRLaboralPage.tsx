@@ -1,4 +1,5 @@
 // src/pages/ISRLaboralPage.tsx
+// ✅ ARCHIVO COMPLETO CORREGIDO - REEMPLAZAR TODO EL CONTENIDO
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
@@ -11,7 +12,8 @@ import { generateISRLaboralPDF } from "../utils/pdfGenerator";
 
 const ISRLaboralPage: React.FC = () => {
   const [form, setForm] = useState<ISRAsalariadoRequest>({
-    salariosAnuales: 0,
+    salarioOrdinarioMensual: 0,
+    bonificacionIncentivo: 0,
     bono14: 0,
     aguinaldo: 0,
     otrosBonos: 0,
@@ -54,19 +56,37 @@ const ISRLaboralPage: React.FC = () => {
 
   const handleDownloadPDF = () => {
     if (resultado && resultado.datos) {
+      // ✅ CORREGIDO: Pasar los datos correctamente a la función PDF
       generateISRLaboralPDF({
-        salariosAnuales: form.salariosAnuales,
+        // Input
+        salarioOrdinarioMensual: form.salarioOrdinarioMensual,
+        bonificacionIncentivo: form.bonificacionIncentivo,
         bono14: form.bono14,
         aguinaldo: form.aguinaldo,
         otrosBonos: form.otrosBonos,
         esProyectado: form.esProyectado,
-        ...resultado.datos,
+        // Output
+        salariosAnuales: resultado.datos.salariosAnuales,
+        bonificacionAnual: resultado.datos.bonificacionAnual,
+        totalRentaBruta: resultado.datos.totalRentaBruta,
+        aguinaldoExento: resultado.datos.aguinaldoExento,
+        bono14Exento: resultado.datos.bono14Exento,
+        totalRentasExentas: resultado.datos.totalRentasExentas,
+        rentaNeta: resultado.datos.rentaNeta,
+        gastosPersonales: resultado.datos.gastosPersonales,
+        cuotaIGSS: resultado.datos.cuotaIGSS,
+        totalDeducciones: resultado.datos.totalDeducciones,
+        rentaImponible: resultado.datos.rentaImponible,
+        isrAnual: resultado.datos.isrAnual,
+        retencionMensual: resultado.datos.retencionMensual,
+        tipoCalculo: resultado.datos.tipoCalculo,
+        detalleCalculo: resultado.datos.detalleCalculo,
       });
     }
   };
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "1rem" }}>
+    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "1rem" }}>
       {/* Header */}
       <div style={{ marginBottom: "2rem" }}>
         <h1
@@ -81,9 +101,8 @@ const ISRLaboralPage: React.FC = () => {
         </h1>
         <p style={{ fontSize: "1.1rem", color: "#64748b", lineHeight: 1.6 }}>
           Calcula el ISR según el{" "}
-          <strong>Artículo 72, Ley ISR Decreto 10-2012</strong>.
-          Incluye todos tus ingresos anuales y la deducción personal de{" "}
-          <strong>Q48,000</strong>.
+          <strong>Decreto 10-2012 (Ley ISR)</strong>.
+          Incluye cálculo de rentas exentas y cuota IGSS.
         </p>
       </div>
 
@@ -98,15 +117,15 @@ const ISRLaboralPage: React.FC = () => {
         }}
       >
         <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#0E234F" }}>
-          ℹ️ ¿Cómo funciona este cálculo?
+          ℹ️ Metodología según SAT
         </h3>
-        <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#0E234F", lineHeight: 1.8 }}>
-          <li>Se suman <strong>todos</strong> tus ingresos anuales (salarios, bono 14, aguinaldo, otros bonos)</li>
-          <li>Se resta la deducción personal de <strong>Q48,000</strong></li>
-          <li>Al resultado se aplica el <strong>5%</strong></li>
-          <li><strong>Proyectado:</strong> El ISR se divide entre 12 meses (descuento mensual)</li>
-          <li><strong>Definitiva:</strong> El ISR se paga completo al año</li>
-        </ul>
+        <ol style={{ margin: 0, paddingLeft: "1.5rem", color: "#0E234F", lineHeight: 1.8 }}>
+          <li>Se calcula la <strong>Renta Bruta</strong> (salarios + bonificación + aguinaldo + bono 14 + otros)</li>
+          <li>Se restan las <strong>Rentas Exentas</strong> (aguinaldo y bono 14 hasta 100% del salario)</li>
+          <li>Se obtiene la <strong>Renta Neta</strong></li>
+          <li>Se restan las <strong>Deducciones</strong> (Q48,000 + IGSS 4.83%)</li>
+          <li>Se aplica la <strong>Tabla Progresiva</strong> (5% hasta Q300k, luego 7%)</li>
+        </ol>
       </div>
 
       {/* Formulario */}
@@ -120,7 +139,8 @@ const ISRLaboralPage: React.FC = () => {
         }}
       >
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {/* Salarios Anuales */}
+          
+          {/* Salario Ordinario Mensual */}
           <div>
             <label
               style={{
@@ -130,13 +150,13 @@ const ISRLaboralPage: React.FC = () => {
                 color: "#0f172a",
               }}
             >
-              Salarios Anuales (Q):
+              Salario Ordinario Mensual (Q):
             </label>
             <input
               type="number"
               step="0.01"
-              value={form.salariosAnuales}
-              onChange={handleChange("salariosAnuales")}
+              value={form.salarioOrdinarioMensual}
+              onChange={handleChange("salarioOrdinarioMensual")}
               required
               style={{
                 width: "100%",
@@ -147,7 +167,38 @@ const ISRLaboralPage: React.FC = () => {
               }}
             />
             <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-              Total de salarios recibidos de enero a diciembre
+              Sueldo base mensual <strong>sin incluir</strong> bonificación incentivo
+            </small>
+          </div>
+
+          {/* Bonificación Incentivo */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontWeight: 600,
+                marginBottom: "0.5rem",
+                color: "#0f172a",
+              }}
+            >
+              Bonificación Incentivo Mensual (Q):
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={form.bonificacionIncentivo}
+              onChange={handleChange("bonificacionIncentivo")}
+              required
+              style={{
+                width: "100%",
+                padding: "0.75rem",
+                borderRadius: "0.5rem",
+                border: "2px solid #e2e8f0",
+                fontSize: "1rem",
+              }}
+            />
+            <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+              Generalmente Q 250.00 mensuales
             </small>
           </div>
 
@@ -161,7 +212,7 @@ const ISRLaboralPage: React.FC = () => {
                 color: "#0f172a",
               }}
             >
-              Bono 14 (Q):
+              Bono 14 Anual (Q):
             </label>
             <input
               type="number"
@@ -177,6 +228,9 @@ const ISRLaboralPage: React.FC = () => {
                 fontSize: "1rem",
               }}
             />
+            <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+              Exento hasta 100% del salario ordinario mensual
+            </small>
           </div>
 
           {/* Aguinaldo */}
@@ -189,7 +243,7 @@ const ISRLaboralPage: React.FC = () => {
                 color: "#0f172a",
               }}
             >
-              Aguinaldo (Q):
+              Aguinaldo Anual (Q):
             </label>
             <input
               type="number"
@@ -205,6 +259,9 @@ const ISRLaboralPage: React.FC = () => {
                 fontSize: "1rem",
               }}
             />
+            <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+              Exento hasta 100% del salario ordinario mensual
+            </small>
           </div>
 
           {/* Otros Bonos */}
@@ -217,7 +274,7 @@ const ISRLaboralPage: React.FC = () => {
                 color: "#0f172a",
               }}
             >
-              Otros Bonos o Aguinaldos (Q):
+              Otros Bonos o Ingresos Anuales (Q):
             </label>
             <input
               type="number"
@@ -248,7 +305,7 @@ const ISRLaboralPage: React.FC = () => {
                 color: "#0f172a",
               }}
             >
-              Tipo de Cálculo:
+              Tipo de Declaración:
             </label>
             <div style={{ display: "flex", gap: "1rem" }}>
               <button
@@ -266,7 +323,7 @@ const ISRLaboralPage: React.FC = () => {
                   transition: "all 0.2s",
                 }}
               >
-                📅 Proyectado (Mensual)
+                📅 Proyectada (Mensual)
               </button>
               <button
                 type="button"
@@ -288,7 +345,7 @@ const ISRLaboralPage: React.FC = () => {
             </div>
             <small style={{ color: "#64748b", fontSize: "0.9rem", display: "block", marginTop: "0.5rem" }}>
               {form.esProyectado
-                ? "El ISR se dividirá entre 12 meses (descuento mensual)"
+                ? "El ISR se dividirá entre 12 meses (retención mensual)"
                 : "El ISR se pagará completo al final del año"}
             </small>
           </div>
@@ -346,93 +403,114 @@ const ISRLaboralPage: React.FC = () => {
             boxShadow: "0 10px 40px rgba(14,35,79,0.4)",
           }}
         >
-          <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "1.5rem" }}>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "0.5rem" }}>
             ✅ Resultado del Cálculo ({resultado.datos.tipoCalculo})
           </h2>
+          <p style={{ fontSize: "1rem", marginBottom: "1.5rem", opacity: 0.95 }}>
+            Cálculo según Decreto 10-2012 (Ley ISR de Guatemala)
+          </p>
 
-          {/* Desglose */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1rem",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                Total Ingresos:
-              </p>
-              <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.totalIngresos.toFixed(2)}
-              </p>
+          {/* Sección 1: Renta Bruta */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", borderBottom: "2px solid rgba(255,255,255,0.3)", paddingBottom: "0.5rem" }}>
+              1️⃣ Renta Bruta
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem" }}>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Salarios (12 meses)</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.salariosAnuales.toFixed(2)}</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Bonificación (12 meses)</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.bonificacionAnual.toFixed(2)}</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Aguinaldo</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.aguinaldo.toFixed(2)}</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Bono 14</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.bono14.toFixed(2)}</p>
+              </div>
             </div>
-
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1rem",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                Deducción Personal:
-              </p>
-              <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                - Q {resultado.datos.deduccionPersonal.toFixed(2)}
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1rem",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                Base Imponible:
-              </p>
-              <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.baseImponible.toFixed(2)}
-              </p>
+            <div style={{ background: "rgba(255,255,255,0.25)", borderRadius: "0.75rem", padding: "1rem", marginTop: "0.75rem" }}>
+              <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>Total Renta Bruta:</p>
+              <p style={{ fontSize: "2rem", fontWeight: 800, margin: 0 }}>Q {resultado.datos.totalRentaBruta.toFixed(2)}</p>
             </div>
           </div>
 
-          {/* ISR Total */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.25)",
-              borderRadius: "0.75rem",
-              padding: "1.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-              ISR Total Anual:
-            </p>
-            <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {resultado.datos.isrTotal.toFixed(2)}
-            </p>
+          {/* Sección 2: Rentas Exentas */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", borderBottom: "2px solid rgba(255,255,255,0.3)", paddingBottom: "0.5rem" }}>
+              2️⃣ (-) Rentas Exentas
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem" }}>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Aguinaldo Exento</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.aguinaldoExento.toFixed(2)}</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Bono 14 Exento</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.bono14Exento.toFixed(2)}</p>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.25)", borderRadius: "0.75rem", padding: "1rem", marginTop: "0.75rem" }}>
+              <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>Total Rentas Exentas:</p>
+              <p style={{ fontSize: "2rem", fontWeight: 800, margin: 0 }}>- Q {resultado.datos.totalRentasExentas.toFixed(2)}</p>
+            </div>
           </div>
 
-          {/* ISR Mensual (si es mayor a 0) */}
-          {resultado.datos.isrMensual > 0 && (
-            <div
-              style={{
-                background: "rgba(255,255,255,0.25)",
-                borderRadius: "0.75rem",
-                padding: "1.5rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                ISR Mensual (Descuento por mes):
-              </p>
-              <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-                Q {resultado.datos.isrMensual.toFixed(2)}
-              </p>
+          {/* Sección 3: Renta Neta */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", borderBottom: "2px solid rgba(255,255,255,0.3)", paddingBottom: "0.5rem" }}>
+              3️⃣ (=) Renta Neta
+            </h3>
+            <div style={{ background: "rgba(255,255,255,0.25)", borderRadius: "0.75rem", padding: "1rem" }}>
+              <p style={{ fontSize: "2rem", fontWeight: 800, margin: 0 }}>Q {resultado.datos.rentaNeta.toFixed(2)}</p>
             </div>
-          )}
+          </div>
+
+          {/* Sección 4: Deducciones */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", borderBottom: "2px solid rgba(255,255,255,0.3)", paddingBottom: "0.5rem" }}>
+              4️⃣ (-) Deducciones
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem" }}>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Gastos Personales</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.gastosPersonales.toFixed(2)}</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "0.5rem", padding: "0.75rem" }}>
+                <p style={{ fontSize: "0.85rem", marginBottom: "0.25rem", opacity: 0.8 }}>Cuota IGSS (4.83%)</p>
+                <p style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>Q {resultado.datos.cuotaIGSS.toFixed(2)}</p>
+              </div>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.25)", borderRadius: "0.75rem", padding: "1rem", marginTop: "0.75rem" }}>
+              <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>Total Deducciones:</p>
+              <p style={{ fontSize: "2rem", fontWeight: 800, margin: 0 }}>- Q {resultado.datos.totalDeducciones.toFixed(2)}</p>
+            </div>
+          </div>
+
+          {/* Sección 5: Renta Imponible e ISR */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", borderBottom: "2px solid rgba(255,255,255,0.3)", paddingBottom: "0.5rem" }}>
+              5️⃣ Cálculo de ISR
+            </h3>
+            <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem", marginBottom: "0.75rem" }}>
+              <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>Renta Imponible:</p>
+              <p style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0 }}>Q {resultado.datos.rentaImponible.toFixed(2)}</p>
+            </div>
+            <div style={{ background: "rgba(255,255,255,0.3)", borderRadius: "0.75rem", padding: "1.5rem", marginBottom: "0.75rem" }}>
+              <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>ISR Anual:</p>
+              <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>Q {resultado.datos.isrAnual.toFixed(2)}</p>
+            </div>
+            {resultado.datos.retencionMensual > 0 && (
+              <div style={{ background: "rgba(255,255,255,0.3)", borderRadius: "0.75rem", padding: "1.5rem" }}>
+                <p style={{ fontSize: "0.9rem", marginBottom: "0.25rem", opacity: 0.9 }}>Retención Mensual:</p>
+                <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>Q {resultado.datos.retencionMensual.toFixed(2)}</p>
+              </div>
+            )}
+          </div>
 
           {/* Detalle */}
           <div
@@ -440,11 +518,12 @@ const ISRLaboralPage: React.FC = () => {
               background: "rgba(255,255,255,0.1)",
               borderRadius: "0.75rem",
               padding: "1rem",
-              fontSize: "0.95rem",
+              fontSize: "0.9rem",
               lineHeight: 1.6,
+              marginBottom: "1rem",
             }}
           >
-            <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
+            <strong>📋 Resumen:</strong> {resultado.datos.detalleCalculo}
           </div>
 
           {/* Botón Descargar PDF */}
