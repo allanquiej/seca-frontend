@@ -1024,30 +1024,61 @@ const ISRLaboralPage: React.FC = () => {
             <strong>📋 Resumen:</strong> {resultado.datos.detalleCalculo}
           </div>
 
-          {/* Botón Descargar PDF */}
-          <button
-            onClick={handleDownloadPDF}
-            style={{
-              width: "100%",
-              padding: "1rem",
-              borderRadius: "0.75rem",
-              border: "2px solid white",
-              background: "rgba(255,255,255,0.2)",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: 700,
-              fontSize: "1rem",
-              transition: "all 0.2s",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.3)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-            }}
-          >
-            📄 Descargar Resultado en PDF
-          </button>
+          {/* Botones: Nueva Consulta + Descargar PDF */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <button
+              type="button"
+              onClick={() => {
+                setResultado(null);
+                setError(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                width: "100%",
+                padding: "1rem",
+                borderRadius: "0.75rem",
+                border: "2px solid white",
+                background: "rgba(255,255,255,0.2)",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: 700,
+                fontSize: "1rem",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+              }}
+            >
+              🔄 Nueva Consulta
+            </button>
+
+            <button
+              onClick={handleDownloadPDF}
+              style={{
+                width: "100%",
+                padding: "1rem",
+                borderRadius: "0.75rem",
+                border: "2px solid white",
+                background: "rgba(255,255,255,0.2)",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: 700,
+                fontSize: "1rem",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+              }}
+            >
+              📄 Descargar Resultado en PDF
+            </button>
+          </div>
 
         </div>
       )}
