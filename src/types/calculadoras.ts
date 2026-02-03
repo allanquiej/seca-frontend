@@ -63,28 +63,91 @@ export type ISRLaboralResponse = {
 };
 
 // ===============================
-// ✅ ISR ASALARIADO (ACTUALIZADO)
+// ✅ ISR ASALARIADO (ACTUALIZADO - SAT-1901 COMPLETO)
 // ===============================
+
 export type ISRAsalariadoRequest = {
-  salarioOrdinarioMensual: number;  // ✅ NUEVO
-  bonificacionIncentivo: number;    // ✅ NUEVO
+  // Sección 1: Identificación
+  nitEmpleado: string;
+  
+  // Sección 2: Período de Imposición
+  anioImposicion: number;
+  
+  // Sección 3: Fecha Inicio de Labores
+  mesInicio: number;  // 1-12
+  anioInicio: number;
+  esProyectado: boolean;
+  
+  // Sección 4: Rentas Brutas
+  numeroPatronos: number;  // 1 o 2+
+  
+  // Si tuvo UN patrono
+  nitPatronoPrincipal?: string;
+  sueldoIgualDurante12Meses: boolean;
+  
+  // Salario ordinario mensual (SIN bonificación)
+  salarioOrdinarioMensual: number;
+  
+  // Bonificación incentivo
+  bonificacionIncentivo: number;
+  
+  // Salarios mensuales individuales (opcionales, si sueldoIgualDurante12Meses = false)
+  salarioEnero?: number;
+  salarioFebrero?: number;
+  salarioMarzo?: number;
+  salarioAbril?: number;
+  salarioMayo?: number;
+  salarioJunio?: number;
+  salarioJulio?: number;
+  salarioAgosto?: number;
+  salarioSeptiembre?: number;
+  salarioOctubre?: number;
+  salarioNoviembre?: number;
+  salarioDiciembre?: number;
+  
+  // Si tuvo DOS O MÁS patronos
+  salariosPatronoPrincipal?: number;
+  salariosOtrosPatronos?: number;
+  
+  // Otros ingresos anuales
   bono14: number;
   aguinaldo: number;
+  horasExtrasAnuales: number;
   otrosBonos: number;
-  esProyectado: boolean;
+  
+  // Sección 5: Rentas Exentas Adicionales
+  indemnizacionesPorMuerteOIncapacidad: number;
+  indemnizacionesPorTiempoServido: number;
+  remuneracionesDiplomaticos: number;
+  gastosRepresentacionYViaticos: number;
+  
+  // Sección 6: Deducciones Adicionales
+  deduccionesPersonalesComprobadas: number;
+  donaciones: number;
+  primasSeguroVida: number;
 };
 
 export type ISRAsalariadoResponse = {
-  // ✅ ESTRUCTURA NUEVA
-  // Renta Bruta
+  // Información general
+  nitEmpleado: string;
+  anioImposicion: number;
+  numeroPatronos: number;
+  salarioOrdinarioMensual: number;
+  
+  // Sección 4: Renta Bruta
   salariosAnuales: number;
   bonificacionAnual: number;
   aguinaldo: number;
   bono14: number;
+  horasExtras: number;
   otrosBonos: number;
   totalRentaBruta: number;
   
-  // Rentas Exentas
+  // Sección 5: Rentas Exentas
+  indemnizacionesPorMuerteOIncapacidad: number;
+  indemnizacionesPorTiempoServido: number;
+  remuneracionesDiplomaticos: number;
+  gastosRepresentacionYViaticos: number;
   aguinaldoExento: number;
   bono14Exento: number;
   totalRentasExentas: number;
@@ -92,13 +155,17 @@ export type ISRAsalariadoResponse = {
   // Renta Neta
   rentaNeta: number;
   
-  // Deducciones
+  // Sección 6: Deducciones
   gastosPersonales: number;
+  deduccionesPersonalesComprobadas: number;
+  donaciones: number;
   cuotaIGSS: number;
+  primasSeguroVida: number;
   totalDeducciones: number;
   
   // Resultado
   rentaImponible: number;
+  excedenteDeducciones: number;
   isrAnual: number;
   retencionMensual: number;
   
@@ -106,7 +173,6 @@ export type ISRAsalariadoResponse = {
   tipoCalculo: string;
   detalleCalculo: string;
 };
-
 // ===============================
 // ISR EMPRESA MENSUAL (VIEJO - mantener)
 // ===============================
