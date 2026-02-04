@@ -221,12 +221,15 @@ export type ISREmpresaTrimestralResponse = {
 
 // ===============================
 // ISR TRIMESTRAL V2 (NUEVO - CORRECTO)
+// ✅ ACTUALIZADO: Agregados rentasExentas, isrPagadoAnteriorTrimestre, isr25Porciento, isr8Porciento
 // ===============================
 export type ISRTrimestralV2Request = {
   ventasAcumuladas: number;
   gastosAcumulados: number;
   ventasTrimestre: number;
+  rentasExentas: number;  // ✅ NUEVO
   isoPendiente: number;
+  isrPagadoAnteriorTrimestre: number;  // ✅ NUEVO
   usarOpcionAcumulada: boolean;
 };
 
@@ -234,16 +237,20 @@ export type ISRTrimestralV2Response = {
   opcionUtilizada: string;
   baseCalculo: number;
   isrCalculado: number;
+  isr25Porciento: number;  // ✅ NUEVO - Para mostrar "Resultado x25%"
+  isr8Porciento: number;   // ✅ NUEVO - Para mostrar "Resultado x8%"
   isoAcreditar: number;
+  isrPagadoAnterior: number;  // ✅ NUEVO - Para mostrar "ISR pagado anterior trimestre"
   isrAPagar: number;
   detalleCalculo: string;
 };
 
 // ===============================
-// ISO TRIMESTRAL - ✅ ACTUALIZADO
+// ISO TRIMESTRAL - ✅ ACTUALIZADO según Video YouTube
 // ===============================
 export type ISOTrimestralRequest = {
   ingresosBrutosAnuales: number;
+  costoDeVentas: number;  // ✅ NUEVO - Para verificar margen 4%
   activoTotal: number;
   depreciacionAmortizacionAcumulada: number;
   reservaCuentasIncobrables: number;
@@ -252,17 +259,30 @@ export type ISOTrimestralRequest = {
 };
 
 export type ISOTrimestralResponse = {
-  // Método 1: Ingresos
-  ingresosBrutosAnuales: number;
-  baseTrimestralIngresos: number;
-  isoSobreIngresos: number;
+  // Paso 1: Verificación margen 4%
+  ingresosBrutos: number;
+  costoDeVentas: number;
+  resultadoBruto: number;
+  margenPorcentaje: number;
+  estaAfectoISO: boolean;  // ✅ NUEVO
   
-  // Método 2: Activo Neto
+  // Paso 2: Activo
   activoTotal: number;
   depreciacionAmortizacionAcumulada: number;
   reservaCuentasIncobrables: number;
   creditosReinversion: number;
   activoNeto: number;
+  
+  // Paso 3: Decisión del método
+  comparacionActivo: number;  // 4×Ingresos
+  metodoSeleccionado: string;
+  razonMetodo: string;  // ✅ NUEVO
+  
+  // Cálculo sobre Ingresos (si aplica)
+  baseTrimestralIngresos: number;
+  isoSobreIngresos: number;
+  
+  // Cálculo sobre Activo (si aplica)
   baseTrimestralActivo: number;
   isoSobreActivoNeto: number;
   iusiPagado: number;
@@ -270,11 +290,9 @@ export type ISOTrimestralResponse = {
   
   // Resultado
   isoAPagar: number;
-  metodoUtilizado: string;
   
   // Detalles
-  detalleCalculoIngresos: string;
-  detalleCalculoActivo: string;
+  detalleCalculo: string;
   mensaje: string;
   recomendacionLegal: string;
 };

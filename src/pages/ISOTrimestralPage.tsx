@@ -1,4 +1,5 @@
 // src/pages/ISOTrimestralPage.tsx
+// ✅ ACTUALIZADO según Video YouTube - Nueva lógica margen 4% + regla activos
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
@@ -12,6 +13,7 @@ import { generateISOTrimestralPDF } from "../utils/pdfGenerator";
 const ISOTrimestralPage: React.FC = () => {
   const [form, setForm] = useState<ISOTrimestralRequest>({
     ingresosBrutosAnuales: 0,
+    costoDeVentas: 0,  // ✅ NUEVO
     activoTotal: 0,
     depreciacionAmortizacionAcumulada: 0,
     reservaCuentasIncobrables: 0,
@@ -79,7 +81,7 @@ const ISOTrimestralPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Información importante */}
+      {/* Información importante - ✅ ACTUALIZADA */}
       <div
         style={{
           background: "#dbeafe",
@@ -90,21 +92,38 @@ const ISOTrimestralPage: React.FC = () => {
         }}
       >
         <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#1e3a8a" }}>
-          ℹ️ Importante - Dos Métodos de Cálculo
+          ℹ️ Nueva Lógica de Cálculo ISO
         </h3>
-        <p style={{ margin: "0.5rem 0", color: "#1e40af", lineHeight: 1.8 }}>
-          La SAT requiere que calcules el ISO de <strong>DOS formas</strong> y pagues el <strong>MAYOR</strong>:
-        </p>
-        <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem", color: "#1e40af", lineHeight: 1.8 }}>
-          <li><strong>Método 1 - Ingresos Brutos:</strong> (Ingresos Anuales ÷ 4) × 1%</li>
-          <li><strong>Método 2 - Activo Neto:</strong> ((Activo Neto ÷ 4) × 1%) - IUSI Pagado</li>
-        </ul>
-        <p style={{ marginTop: "1rem", color: "#1e40af", fontSize: "0.95rem" }}>
-          💡 <strong>Tip:</strong> El ISO pagado puede acreditarse al ISR del mismo período.
+        
+        {/* PASO 1 */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p style={{ margin: "0.5rem 0", color: "#1e40af", fontWeight: 600 }}>
+            📌 Paso 1: Verificar si está afecto al ISO
+          </p>
+          <p style={{ margin: "0.25rem 0 0.25rem 1rem", color: "#1e40af", fontSize: "0.95rem" }}>
+            Margen = (Ingresos - Costo de Ventas) / Ingresos
+          </p>
+          <p style={{ margin: "0.25rem 0 0.5rem 1rem", color: "#dc2626", fontWeight: 600, fontSize: "0.95rem" }}>
+            ⚠️ Si Margen {'<'} 4% → NO paga ISO
+          </p>
+        </div>
+
+        {/* PASO 2 */}
+        <div>
+          <p style={{ margin: "0.5rem 0", color: "#1e40af", fontWeight: 600 }}>
+            📌 Paso 2: Si está afecto, determinar el método:
+          </p>
+          <ul style={{ margin: "0.25rem 0", paddingLeft: "2rem", color: "#1e40af", fontSize: "0.95rem", lineHeight: 1.6 }}>
+            <li>Si <strong>Activo Neto {'>'} 4×Ingresos</strong> → Calcular sobre <strong>Ingresos</strong></li>
+            <li>Si <strong>Activo Neto ≤ 4×Ingresos</strong> → Calcular sobre <strong>1/4 del Activo Neto</strong></li>
+          </ul>
+        </div>
+
+        <p style={{ marginTop: "1rem", color: "#1e40af", fontSize: "0.9rem", fontStyle: "italic" }}>
+          💡 La tasa del ISO es del <strong>1%</strong> sobre la base calculada
         </p>
       </div>
-
-      {/* Formulario */}
+      {/* Formulario - ✅ ACTUALIZADO con Costo de Ventas */}
       <div
         style={{
           background: "white",
@@ -116,39 +135,74 @@ const ISOTrimestralPage: React.FC = () => {
       >
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           
-          {/* SECCIÓN 1: INGRESOS BRUTOS */}
+          {/* SECCIÓN 1: INGRESOS Y COSTOS (para margen 4%) */}
           <div>
             <h3 style={{ fontSize: "1.3rem", fontWeight: 700, marginBottom: "1rem", color: "#3b82f6" }}>
-              📊 Método 1: Ingresos Brutos
+              📊 Paso 1: Verificación de Margen 4%
             </h3>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  marginBottom: "0.5rem",
-                  color: "#0f172a",
-                }}
-              >
-                Ingresos Brutos Anuales (Q):
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                value={form.ingresosBrutosAnuales}
-                onChange={handleChange("ingresosBrutosAnuales")}
-                required
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  borderRadius: "0.5rem",
-                  border: "2px solid #e2e8f0",
-                  fontSize: "1rem",
-                }}
-              />
-              <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                Suma total de todos los ingresos del año (servicios + ventas + otros)
-              </small>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              {/* Ingresos Brutos */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Ingresos Brutos Anuales (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.ingresosBrutosAnuales}
+                  onChange={handleChange("ingresosBrutosAnuales")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Total de ingresos anuales (servicios prestados + ventas)
+                </small>
+              </div>
+
+              {/* ✅ NUEVO: Costo de Ventas */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Costo de Ventas Anual (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.costoDeVentas}
+                  onChange={handleChange("costoDeVentas")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Costo total de ventas del año (necesario para verificar margen 4%)
+                </small>
+              </div>
             </div>
           </div>
 
@@ -161,7 +215,7 @@ const ISOTrimestralPage: React.FC = () => {
             }}
           >
             <h3 style={{ fontSize: "1.3rem", fontWeight: 700, marginBottom: "1rem", color: "#0ea5e9" }}>
-              🏢 Método 2: Activo Neto
+              🏢 Paso 2: Componentes del Activo Neto
             </h3>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -206,7 +260,7 @@ const ISOTrimestralPage: React.FC = () => {
                     color: "#0f172a",
                   }}
                 >
-                  Depreciación y Amortización Acumulada (Q):
+                  (-) Depreciación y Amortización Acumulada (Q):
                 </label>
                 <input
                   type="number"
@@ -237,7 +291,7 @@ const ISOTrimestralPage: React.FC = () => {
                     color: "#0f172a",
                   }}
                 >
-                  Reserva de Cuentas Incobrables (Q):
+                  (-) Reserva de Cuentas Incobrables (Q):
                 </label>
                 <input
                   type="number"
@@ -254,7 +308,7 @@ const ISOTrimestralPage: React.FC = () => {
                   }}
                 />
                 <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                  Provisión para cuentas de dudoso cobro (ingresar 0 si no aplica)
+                  Provisión para cuentas por cobrar de dudoso recaudo
                 </small>
               </div>
 
@@ -268,7 +322,7 @@ const ISOTrimestralPage: React.FC = () => {
                     color: "#0f172a",
                   }}
                 >
-                  Créditos por Reinversión (Q):
+                  (-) Créditos por Reinversión (Q):
                 </label>
                 <input
                   type="number"
@@ -285,7 +339,7 @@ const ISOTrimestralPage: React.FC = () => {
                   }}
                 />
                 <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                  Beneficio fiscal por reinversión (ingresar 0 si no aplica)
+                  Beneficios fiscales por inversión en activos productivos
                 </small>
               </div>
 
@@ -316,13 +370,13 @@ const ISOTrimestralPage: React.FC = () => {
                   }}
                 />
                 <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                  Impuesto Único Sobre Inmuebles pagado (solo deducible en Método 2)
+                  Impuesto Único Sobre Inmuebles pagado (se acredita al ISO sobre Activo)
                 </small>
               </div>
             </div>
           </div>
 
-          {/* Botón */}
+          {/* Botón de Cálculo */}
           <button
             type="submit"
             disabled={loading}
@@ -347,7 +401,6 @@ const ISOTrimestralPage: React.FC = () => {
           </button>
         </form>
       </div>
-
       {/* Error */}
       {error && (
         <div
@@ -364,155 +417,287 @@ const ISOTrimestralPage: React.FC = () => {
         </div>
       )}
 
-      {/* Resultado */}
+      {/* Resultado - ✅ ACTUALIZADO con nueva lógica */}
       {resultado && resultado.datos && (
         <div
           style={{
-            background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+            background: resultado.datos.estaAfectoISO 
+              ? "linear-gradient(135deg, #3b82f6, #2563eb)"
+              : "linear-gradient(135deg, #10b981, #059669)",
             borderRadius: "1rem",
             padding: "2rem",
             color: "white",
-            boxShadow: "0 10px 40px rgba(59,130,246,0.4)",
+            boxShadow: resultado.datos.estaAfectoISO
+              ? "0 10px 40px rgba(59,130,246,0.4)"
+              : "0 10px 40px rgba(16,185,129,0.4)",
           }}
         >
           <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-            ✅ Resultado del Cálculo
+            {resultado.datos.estaAfectoISO ? "✅ Resultado del Cálculo" : "✅ NO Afecto al ISO"}
           </h2>
-          <p style={{ fontSize: "1.1rem", marginBottom: "1.5rem", opacity: 0.95 }}>
-            {resultado.datos.mensaje}
-          </p>
-
-          {/* Comparación de Métodos */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
-            {/* Método 1: Ingresos */}
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1.25rem",
-                border: resultado.datos.metodoUtilizado === "ISO sobre Ingresos Brutos" ? "3px solid #fbbf24" : "none",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                📊 Método 1: Ingresos
-              </p>
-              <p style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0 }}>
-                Q {(resultado.datos.isoSobreIngresos || 0).toFixed(2)}
-              </p>
-              {resultado.datos.metodoUtilizado === "ISO sobre Ingresos Brutos" && (
-                <p style={{ fontSize: "0.85rem", marginTop: "0.5rem", color: "#fbbf24" }}>
-                  ⭐ Método seleccionado
-                </p>
-              )}
-            </div>
-
-            {/* Método 2: Activo Neto */}
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1.25rem",
-                border: resultado.datos.metodoUtilizado === "ISO sobre Activo Neto" ? "3px solid #fbbf24" : "none",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                🏢 Método 2: Activo Neto
-              </p>
-              <p style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0 }}>
-                Q {(resultado.datos.isoSobreActivoNetoFinal || 0).toFixed(2)}
-              </p>
-              {resultado.datos.metodoUtilizado === "ISO sobre Activo Neto" && (
-                <p style={{ fontSize: "0.85rem", marginTop: "0.5rem", color: "#fbbf24" }}>
-                  ⭐ Método seleccionado
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* ISO a Pagar */}
+          
+          {/* PASO 1: Verificación Margen 4% */}
           <div
             style={{
-              background: "rgba(255,255,255,0.25)",
+              background: "rgba(255,255,255,0.15)",
               borderRadius: "0.75rem",
               padding: "1.5rem",
-              marginBottom: "1rem",
+              marginBottom: "1.5rem",
             }}
           >
-            <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-              ISO a Pagar (El mayor de ambos métodos):
-            </p>
-            <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {(resultado.datos.isoAPagar || 0).toFixed(2)}
-            </p>
-          </div>
-
-          {/* Detalles */}
-          <details style={{ marginBottom: "1rem" }}>
-            <summary style={{ 
-              cursor: "pointer", 
-              fontWeight: 600, 
-              padding: "0.5rem",
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "0.5rem",
-            }}>
-              📋 Ver Detalle de Cálculos
-            </summary>
-            <div style={{ 
-              marginTop: "1rem",
-              padding: "1rem",
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "0.5rem",
-              fontSize: "0.9rem",
-              lineHeight: 1.8
-            }}>
-              <p><strong>Método 1 (Ingresos):</strong></p>
-              <p style={{ marginLeft: "1rem" }}>{resultado.datos.detalleCalculoIngresos}</p>
-              <p style={{ marginTop: "1rem" }}><strong>Método 2 (Activo Neto):</strong></p>
-              <p style={{ marginLeft: "1rem" }}>{resultado.datos.detalleCalculoActivo}</p>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "1rem" }}>
+              📊 Paso 1: Verificación de Margen
+            </h3>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
+              <div>
+                <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>Ingresos Brutos</p>
+                <p style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0 }}>
+                  Q {(resultado.datos.ingresosBrutos || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                </p>
+              </div>
+              
+              <div>
+                <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>(-) Costo de Ventas</p>
+                <p style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0 }}>
+                  Q {(resultado.datos.costoDeVentas || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                </p>
+              </div>
+              
+              <div>
+                <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>(=) Resultado</p>
+                <p style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0 }}>
+                  Q {(resultado.datos.resultadoBruto || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                </p>
+              </div>
+              
+              <div>
+                <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>Margen</p>
+                <p style={{ 
+                  fontSize: "1.5rem", 
+                  fontWeight: 800, 
+                  margin: 0,
+                  color: resultado.datos.estaAfectoISO ? "#fbbf24" : "#4ade80"
+                }}>
+                  {(resultado.datos.margenPorcentaje || 0).toFixed(2)}%
+                </p>
+              </div>
             </div>
-          </details>
 
-          {/* Recomendación Legal */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "0.75rem",
-              padding: "1rem",
-              fontSize: "0.9rem",
-              lineHeight: 1.6,
-              marginBottom: "1rem",
-            }}
-          >
-            <strong>ℹ️ Información Legal:</strong>
-            <p style={{ marginTop: "0.5rem", marginBottom: 0 }}>
-              {resultado.datos.recomendacionLegal}
-            </p>
+            <div
+              style={{
+                background: resultado.datos.estaAfectoISO 
+                  ? "rgba(251,191,36,0.2)" 
+                  : "rgba(74,222,128,0.2)",
+                borderRadius: "0.5rem",
+                padding: "0.75rem",
+                border: resultado.datos.estaAfectoISO
+                  ? "2px solid #fbbf24"
+                  : "2px solid #4ade80",
+              }}
+            >
+              <p style={{ fontSize: "1rem", fontWeight: 600, margin: 0 }}>
+                {resultado.datos.estaAfectoISO 
+                  ? `✅ Margen ≥ 4% → SÍ está afecto al ISO`
+                  : `❌ Margen < 4% → NO está afecto al ISO`
+                }
+              </p>
+            </div>
           </div>
 
-          {/* Botón Descargar PDF */}
-          <button
-            onClick={handleDownloadPDF}
-            style={{
-              width: "100%",
-              padding: "1rem",
-              borderRadius: "0.75rem",
-              border: "2px solid white",
-              background: "rgba(255,255,255,0.2)",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: 700,
-              fontSize: "1rem",
-              transition: "all 0.2s",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.3)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-            }}
-          >
-            📄 Descargar Resultado en PDF
-          </button>
+          {/* Si NO está afecto, mostrar solo el mensaje */}
+          {!resultado.datos.estaAfectoISO && (
+            <>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                  fontSize: "1.05rem",
+                  lineHeight: 1.6,
+                  marginBottom: "1rem",
+                }}
+              >
+                {resultado.datos.mensaje}
+              </div>
+
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                  fontSize: "0.95rem",
+                  lineHeight: 1.6,
+                }}
+              >
+                <strong>ℹ️ Información Legal:</strong>
+                <p style={{ marginTop: "0.5rem", marginBottom: 0 }}>
+                  {resultado.datos.recomendacionLegal}
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* Si SÍ está afecto, mostrar PASO 2 y cálculo */}
+          {resultado.datos.estaAfectoISO && (
+            <>
+              {/* PASO 2: Decisión del Método */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "1.5rem",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "1rem" }}>
+                  🎯 Paso 2: Determinación del Método
+                </h3>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
+                  <div>
+                    <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>Activo Neto</p>
+                    <p style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0 }}>
+                      Q {(resultado.datos.activoNeto || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <p style={{ fontSize: "0.85rem", opacity: 0.9, marginBottom: "0.25rem" }}>4 × Ingresos</p>
+                    <p style={{ fontSize: "1.3rem", fontWeight: 700, margin: 0 }}>
+                      Q {(resultado.datos.comparacionActivo || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background: "rgba(251,191,36,0.2)",
+                    borderRadius: "0.5rem",
+                    padding: "0.75rem",
+                    border: "2px solid #fbbf24",
+                  }}
+                >
+                  <p style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0, marginBottom: "0.25rem" }}>
+                    ⭐ Método Seleccionado: {resultado.datos.metodoSeleccionado}
+                  </p>
+                  <p style={{ fontSize: "0.85rem", margin: 0, opacity: 0.9 }}>
+                    {resultado.datos.razonMetodo}
+                  </p>
+                </div>
+              </div>
+
+              {/* PASO 3: Cálculo del ISO */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "1.5rem",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "1rem" }}>
+                  📝 Paso 3: Cálculo del ISO
+                </h3>
+                
+                <div style={{ fontSize: "1rem", lineHeight: 1.8 }}>
+                  {resultado.datos.detalleCalculo}
+                </div>
+              </div>
+
+              {/* ISO a Pagar */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.25)",
+                  borderRadius: "0.75rem",
+                  padding: "1.5rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ fontSize: "1rem", marginBottom: "0.5rem", opacity: 0.9 }}>
+                  ISO a Pagar (Trimestral):
+                </p>
+                <p style={{ fontSize: "3rem", fontWeight: 800, margin: 0 }}>
+                  Q {(resultado.datos.isoAPagar || 0).toLocaleString('es-GT', {minimumFractionDigits: 2})}
+                </p>
+              </div>
+
+              {/* Información Legal */}
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                  fontSize: "0.9rem",
+                  lineHeight: 1.6,
+                  marginBottom: "1rem",
+                }}
+              >
+                <strong>ℹ️ Información Legal:</strong>
+                <p style={{ marginTop: "0.5rem", marginBottom: 0 }}>
+                  {resultado.datos.recomendacionLegal}
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* Botón Nueva Consulta + Descargar PDF */}
+          <div style={{ display: "grid", gridTemplateColumns: resultado.datos.estaAfectoISO ? "1fr 1fr" : "1fr", gap: "1rem" }}>
+            <button
+              type="button"
+              onClick={() => {
+                setResultado(null);
+                setError(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                width: "100%",
+                padding: "1rem",
+                borderRadius: "0.75rem",
+                border: "2px solid white",
+                background: "rgba(255,255,255,0.2)",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: 700,
+                fontSize: "1rem",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+              }}
+            >
+              🔄 Nueva Consulta
+            </button>
+
+            {resultado.datos.estaAfectoISO && (
+              <button
+                onClick={handleDownloadPDF}
+                style={{
+                  width: "100%",
+                  padding: "1rem",
+                  borderRadius: "0.75rem",
+                  border: "2px solid white",
+                  background: "rgba(255,255,255,0.2)",
+                  color: "white",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  transition: "all 0.2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+                }}
+              >
+                📄 Descargar PDF
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

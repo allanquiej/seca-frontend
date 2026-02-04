@@ -1127,11 +1127,16 @@ export const generateISRTrimestralPDF = async (data: {
   ventasAcumuladas: number;
   gastosAcumulados: number;
   ventasTrimestre: number;
+  rentasExentas: number;  // ✅ NUEVO
   isoPendiente: number;
+  isrPagadoAnteriorTrimestre: number;  // ✅ NUEVO
   opcionUtilizada: string;
   baseCalculo: number;
+  isr25Porciento: number;  // ✅ NUEVO
+  isr8Porciento: number;  // ✅ NUEVO
   isrCalculado: number;
   isoAcreditar: number;
+  isrPagadoAnterior: number;  // ✅ NUEVO
   isrAPagar: number;
   detalleCalculo: string;
 }) => {
@@ -1172,16 +1177,20 @@ export const generateISRTrimestralPDF = async (data: {
   doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
   doc.text(`Método: ${data.opcionUtilizada}`, 14, 51);
 
+  // ✅ ACTUALIZADO: Agregar Rentas Exentas e ISR Pagado Anterior
   let bodyData: string[][];
   if (data.usarOpcionAcumulada) {
     bodyData = [
       ["Ventas Acumuladas", `Q ${data.ventasAcumuladas.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Rentas Exentas", `Q ${data.rentasExentas.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Gastos Acumulados", `Q ${data.gastosAcumulados.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["ISO Pendiente", `Q ${data.isoPendiente.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Pagado Anterior Trimestre", `Q ${data.isrPagadoAnteriorTrimestre.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ];
   } else {
     bodyData = [
       ["Ventas del Trimestre", `Q ${data.ventasTrimestre.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Rentas Exentas", `Q ${data.rentasExentas.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["ISO Pendiente", `Q ${data.isoPendiente.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
     ];
   }
@@ -1200,14 +1209,30 @@ export const generateISRTrimestralPDF = async (data: {
 
   let finalY = (doc as any).lastAutoTable.finalY + 10;
 
+  // ✅ ACTUALIZADO: Tabla de resultados con ISR 25%, ISR 8%, e ISR Pagado Anterior
+  let resultadosBody: string[][];
+  if (data.usarOpcionAcumulada) {
+    // Opción 1 - Cierres Parciales
+    resultadosBody = [
+      ["Base de Cálculo (Resultado)", `Q ${data.baseCalculo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Resultado x 25%", `Q ${data.isr25Porciento > 0 ? data.isr25Porciento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : data.isrCalculado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO por Acreditar", `- Q ${data.isoAcreditar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISR Pagado Anterior Trimestre", `- Q ${data.isrPagadoAnterior.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ];
+  } else {
+    // Opción 2 - Trimestre Directo
+    resultadosBody = [
+      ["Base de Cálculo (Resultado)", `Q ${data.baseCalculo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Resultado x 25%", `Q ${data.isr25Porciento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Resultado x 8%", `Q ${data.isr8Porciento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["ISO por Acreditar", `- Q ${data.isoAcreditar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+    ];
+  }
+
   autoTable(doc, {
     startY: finalY,
     head: [["Concepto", "Monto"]],
-    body: [
-      ["Base de Cálculo", `Q ${data.baseCalculo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISR (25%)", `Q ${data.isrCalculado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISO a Acreditar", `- Q ${data.isoAcreditar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-    ],
+    body: resultadosBody,
     headStyles: {
       fillColor: SECA_CONFIG.secondaryColor,
       textColor: [255, 255, 255],
@@ -1224,7 +1249,7 @@ export const generateISRTrimestralPDF = async (data: {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.text("ISR a Pagar", pageWidth / 2, finalY + 10, { align: "center" });
+  doc.text("ISR x Pagar Trimestre", pageWidth / 2, finalY + 10, { align: "center" });
 
   doc.setFontSize(20);
   doc.text(`Q ${data.isrAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 20, { align: "center" });
@@ -1240,27 +1265,34 @@ export const generateISRTrimestralPDF = async (data: {
 
 /**
  * Genera un PDF con los resultados de la calculadora de ISO Trimestral
- * ⚠️ INSTRUCCIÓN: REEMPLAZA la función generateISOTrimestralPDF en pdfGenerator.ts
+ * ✅ ACTUALIZADO: Nueva lógica margen 4% + regla activos
  */
 export const generateISOTrimestralPDF = async (data: {
   // Datos ingresados
   ingresosBrutosAnuales: number;
+  costoDeVentas: number;  // ✅ NUEVO
   activoTotal: number;
   depreciacionAmortizacionAcumulada: number;
   reservaCuentasIncobrables: number;
   creditosReinversion: number;
   iusiPagado: number;
+  
   // Resultados
+  ingresosBrutos: number;
+  resultadoBruto: number;
+  margenPorcentaje: number;
+  estaAfectoISO: boolean;  // ✅ NUEVO
+  activoNeto: number;
+  comparacionActivo: number;  // 4×Ingresos
+  metodoSeleccionado: string;
+  razonMetodo: string;  // ✅ NUEVO
   baseTrimestralIngresos: number;
   isoSobreIngresos: number;
-  activoNeto: number;
   baseTrimestralActivo: number;
   isoSobreActivoNeto: number;
   isoSobreActivoNetoFinal: number;
   isoAPagar: number;
-  metodoUtilizado: string;
-  detalleCalculoIngresos: string;
-  detalleCalculoActivo: string;
+  detalleCalculo: string;
   mensaje: string;
   recomendacionLegal: string;
 }) => {
@@ -1304,118 +1336,138 @@ export const generateISOTrimestralPDF = async (data: {
   doc.setFontSize(10);
   doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
 
-  // ✅ PROTECCIÓN CONTRA UNDEFINED - Valores con fallback a 0
-  const ingresosBrutos = data.ingresosBrutosAnuales || 0;
-  const baseTrimIngresos = data.baseTrimestralIngresos || 0;
-  const isoIngresos = data.isoSobreIngresos || 0;
-  const activoTot = data.activoTotal || 0;
-  const depreciacion = data.depreciacionAmortizacionAcumulada || 0;
-  const reservaIncob = data.reservaCuentasIncobrables || 0;
-  const creditosReint = data.creditosReinversion || 0;
+  // Valores con fallback a 0
+  const ingresos = data.ingresosBrutos || 0;
+  const costos = data.costoDeVentas || 0;
+  const resultado = data.resultadoBruto || 0;
+  const margen = data.margenPorcentaje || 0;
   const activoNet = data.activoNeto || 0;
-  const baseTrimActivo = data.baseTrimestralActivo || 0;
-  const isoActivo = data.isoSobreActivoNeto || 0;
-  const iusiPag = data.iusiPagado || 0;
-  const isoActivoFinal = data.isoSobreActivoNetoFinal || 0;
+  const cuatroIngresos = data.comparacionActivo || 0;
   const isoPagar = data.isoAPagar || 0;
 
-  // Tabla 1: Datos ingresados (Método 1)
+  // ============================================
+  // PASO 1: VERIFICACIÓN MARGEN 4%
+  // ============================================
   autoTable(doc, {
     startY: 55,
-    head: [["Método 1: Ingresos Brutos", "Valor"]],
+    head: [["PASO 1: Verificación de Margen 4%", "Valor"]],
     body: [
-      ["Ingresos Brutos Anuales", `Q ${ingresosBrutos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Base Trimestral (÷4)", `Q ${baseTrimIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISO sobre Ingresos (1%)", `Q ${isoIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Ingresos Brutos Anuales", `Q ${ingresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(-) Costo de Ventas", `Q ${costos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["(=) Resultado", `Q ${resultado.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Margen", `${margen.toFixed(2)}%`],
+      ["Estado", data.estaAfectoISO ? "✓ SÍ está afecto (Margen ≥ 4%)" : "✗ NO está afecto (Margen < 4%)"],
     ],
     headStyles: {
-      fillColor: [59, 130, 246], // Azul #3b82f6
+      fillColor: data.estaAfectoISO ? [59, 130, 246] : [16, 185, 129],
       textColor: [255, 255, 255],
       fontStyle: "bold",
     },
     styles: { fontSize: 10 },
   });
 
-  // Tabla 2: Datos ingresados (Método 2)
-  const finalY1 = (doc as any).lastAutoTable.finalY + 5;
-  
+  let finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  // Si NO está afecto, solo mostrar el mensaje y terminar
+  if (!data.estaAfectoISO) {
+    // Mensaje
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Resultado:", 14, finalY);
+    finalY += 6;
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    const mensajeLineas = doc.splitTextToSize(data.mensaje, pageWidth - 28);
+    doc.text(mensajeLineas, 14, finalY);
+    finalY += mensajeLineas.length * 5 + 10;
+
+    // Recomendación legal
+    doc.setFont("helvetica", "bold");
+    doc.text("Información Legal:", 14, finalY);
+    finalY += 6;
+    
+    doc.setFont("helvetica", "normal");
+    const legalLineas = doc.splitTextToSize(data.recomendacionLegal, pageWidth - 28);
+    doc.text(legalLineas, 14, finalY);
+
+    // Footer
+    const footerY = doc.internal.pageSize.getHeight() - 20;
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+    doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+
+    doc.save(`SECA_ISO_Trimestral_NO_AFECTO_${new Date().getTime()}.pdf`);
+    return;
+  }
+
+  // ============================================
+  // PASO 2: DETERMINACIÓN DEL MÉTODO (si está afecto)
+  // ============================================
   autoTable(doc, {
-    startY: finalY1,
-    head: [["Método 2: Activo Neto", "Valor"]],
+    startY: finalY,
+    head: [["PASO 2: Determinación del Método", "Valor"]],
     body: [
-      ["Activo Total", `Q ${activoTot.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Depreciación y Amort. Acum.", `Q ${depreciacion.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Reserva Cuentas Incobrables", `Q ${reservaIncob.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) Créditos por Reinversión", `Q ${creditosReint.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(=) Activo Neto", `Q ${activoNet.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["Base Trimestral (÷4)", `Q ${baseTrimActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["ISO sobre Activo (1%)", `Q ${isoActivo.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(-) IUSI Pagado", `Q ${iusiPag.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
-      ["(=) ISO Final Activo Neto", `Q ${isoActivoFinal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Activo Neto", `Q ${activoNet.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["4 × Ingresos Brutos", `Q ${cuatroIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
+      ["Método Seleccionado", data.metodoSeleccionado || "No especificado"],
+      ["Razón", data.razonMetodo || ""],
     ],
     headStyles: {
-      fillColor: [59, 130, 246], // Azul #3b82f6
-      textColor: [255, 255, 255],
+      fillColor: [251, 191, 36],
+      textColor: [30, 41, 59],
       fontStyle: "bold",
     },
     styles: { fontSize: 10 },
   });
 
-  // Resultado Final
-  const finalY2 = (doc as any).lastAutoTable.finalY + 10;
+  finalY = (doc as any).lastAutoTable.finalY + 10;
 
-  doc.setFillColor(59, 130, 246); // Azul #3b82f6
-  doc.rect(14, finalY2, pageWidth - 28, 30, "F");
+  // ============================================
+  // PASO 3: CÁLCULO DEL ISO
+  // ============================================
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.text("PASO 3: Cálculo del ISO", 14, finalY);
+  finalY += 6;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  const calculoLineas = doc.splitTextToSize(data.detalleCalculo, pageWidth - 28);
+  doc.text(calculoLineas, 14, finalY);
+  finalY += calculoLineas.length * 5 + 10;
+
+  // ============================================
+  // ISO A PAGAR
+  // ============================================
+  doc.setFillColor(59, 130, 246);
+  doc.rect(14, finalY, pageWidth - 28, 30, "F");
 
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
-  doc.text("ISO a Pagar (El mayor de ambos métodos):", pageWidth / 2, finalY2 + 10, { align: "center" });
+  doc.text("ISO a Pagar (Trimestral):", pageWidth / 2, finalY + 10, { align: "center" });
 
   doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.text(`Q ${isoPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY2 + 22, {
+  doc.text(`Q ${isoPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 22, {
     align: "center",
   });
 
-  // Método utilizado
-  doc.setTextColor(...SECA_CONFIG.textColor);
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  const yPos = finalY2 + 38;
-  doc.text(`Método seleccionado: ${data.metodoUtilizado || 'No especificado'}`, 14, yPos);
-
-  // Detalle del cálculo
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  
-  let yText = yPos + 8;
-  
-  // Método 1
-  doc.setFont("helvetica", "bold");
-  doc.text("Método 1 (Ingresos):", 14, yText);
-  yText += 5;
-  doc.setFont("helvetica", "normal");
-  const lineasIngresos = doc.splitTextToSize(data.detalleCalculoIngresos || 'No disponible', pageWidth - 28);
-  doc.text(lineasIngresos, 14, yText);
-  yText += lineasIngresos.length * 5 + 3;
-
-  // Método 2
-  doc.setFont("helvetica", "bold");
-  doc.text("Método 2 (Activo Neto):", 14, yText);
-  yText += 5;
-  doc.setFont("helvetica", "normal");
-  const lineasActivo = doc.splitTextToSize(data.detalleCalculoActivo || 'No disponible', pageWidth - 28);
-  doc.text(lineasActivo, 14, yText);
-  yText += lineasActivo.length * 5 + 5;
+  finalY += 40;
 
   // Recomendación legal
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("Información Legal:", 14, yText);
-  yText += 5;
+  doc.text("Información Legal:", 14, finalY);
+  finalY += 5;
+  
   doc.setFont("helvetica", "normal");
-  const lineasLegal = doc.splitTextToSize(data.recomendacionLegal || 'Consulte con un profesional.', pageWidth - 28);
-  doc.text(lineasLegal, 14, yText);
+  const lineasLegal = doc.splitTextToSize(data.recomendacionLegal, pageWidth - 28);
+  doc.text(lineasLegal, 14, finalY);
 
   // Footer
   const footerY = doc.internal.pageSize.getHeight() - 20;
@@ -1425,5 +1477,5 @@ export const generateISOTrimestralPDF = async (data: {
   doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   // Descargar el PDF
-  doc.save(`SECA_ISO_Trimestral_${new Date().getTime()}.pdf`);
+  doc.save(`SECA_ISO_Trimestral_${data.metodoSeleccionado.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
 };

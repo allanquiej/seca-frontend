@@ -1,4 +1,5 @@
 // src/pages/ISREmpresaTrimestralPage.tsx
+// ✅ ACTUALIZADO: Agregados rentasExentas, isrPagadoAnteriorTrimestre, y visualización correcta
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
@@ -14,7 +15,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
     ventasAcumuladas: 0,
     gastosAcumulados: 0,
     ventasTrimestre: 0,
+    rentasExentas: 0,  // ✅ NUEVO
     isoPendiente: 0,
+    isrPagadoAnteriorTrimestre: 0,  // ✅ NUEVO
     usarOpcionAcumulada: true,
   });
 
@@ -61,7 +64,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
         ventasAcumuladas: form.ventasAcumuladas,
         gastosAcumulados: form.gastosAcumulados,
         ventasTrimestre: form.ventasTrimestre,
+        rentasExentas: form.rentasExentas,
         isoPendiente: form.isoPendiente,
+        isrPagadoAnteriorTrimestre: form.isrPagadoAnteriorTrimestre,
         ...resultado.datos,
       });
     }
@@ -82,7 +87,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
           📈 Calculadora ISR Empresa Trimestral
         </h1>
         <p style={{ fontSize: "1.1rem", color: "#64748b", lineHeight: 1.6 }}>
-          Calcula el ISR trimestral con el <strong>25%</strong> sobre la base imponible.
+          Calcula el ISR trimestral según tu régimen fiscal.
         </p>
       </div>
 
@@ -100,21 +105,19 @@ const ISREmpresaTrimestralPage: React.FC = () => {
           ℹ️ Dos opciones de cálculo disponibles
         </h3>
         <div style={{ color: "#0E234F", lineHeight: 1.8 }}>
-          <strong>Opción 1 - Acumulado:</strong>
+          <strong>Opción 1 - Cierres Parciales (Acumulado):</strong>
           <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
-            <li>Suma ventas acumuladas de todos los trimestres del año</li>
-            <li>Suma gastos acumulados de todos los trimestres del año</li>
-            <li>ISR = (Ventas - Gastos) × 25%</li>
+            <li>Base = Ventas - Rentas Exentas - Gastos</li>
+            <li>ISR = Base × 25%</li>
+            <li>A Pagar = ISR - ISO - ISR Anterior Trimestre</li>
           </ul>
-          <strong>Opción 2 - Solo Trimestre Actual:</strong>
+          <strong>Opción 2 - Trimestre Directo:</strong>
           <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
-            <li>Solo las ventas del trimestre que estás declarando</li>
-            <li>NO sumas trimestres anteriores</li>
-            <li>ISR = Ventas × 25%</li>
+            <li>Base = Ventas - Rentas Exentas</li>
+            <li>ISR 25% = Base × 25%</li>
+            <li>ISR 8% = ISR 25% × 8%</li>
+            <li>A Pagar = ISR 8% - ISO</li>
           </ul>
-          <p style={{ marginTop: "0.5rem" }}>
-            En ambas opciones puedes acreditar el ISO pendiente
-          </p>
         </div>
       </div>
 
@@ -155,7 +158,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               transition: "all 0.2s",
             }}
           >
-            📊 Opción 1: Acumulado
+            📊 Opción 1: Cierres Parciales
           </button>
           <button
             type="button"
@@ -172,7 +175,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               transition: "all 0.2s",
             }}
           >
-            📅 Opción 2: Solo Trimestre
+            📅 Opción 2: Trimestre Directo
           </button>
         </div>
       </div>
@@ -188,6 +191,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
         }}
       >
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          
           {/* Campos Opción 1 - Acumulado */}
           {form.usarOpcionAcumulada && (
             <>
@@ -200,7 +204,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                     color: "#0f172a",
                   }}
                 >
-                  Ventas Acumuladas (Q):
+                  Ventas o Rentas Brutas (Q):
                 </label>
                 <input
                   type="number"
@@ -233,7 +237,37 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                     color: "#0f172a",
                   }}
                 >
-                  Gastos Acumulados (Q):
+                  Rentas Exentas (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.rentasExentas}
+                  onChange={handleChange("rentasExentas")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Ingresos que no están afectos a ISR (ingresar 0 si no aplica)
+                </small>
+              </div>
+
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Gastos o Gastos Acumulados (Q):
                 </label>
                 <input
                   type="number"
@@ -253,43 +287,105 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                   Suma de gastos de todos los trimestres del año hasta ahora
                 </small>
               </div>
+
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  ISR Pagado Anterior Trimestre (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.isrPagadoAnteriorTrimestre}
+                  onChange={handleChange("isrPagadoAnteriorTrimestre")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Monto de ISR pagado en el trimestre anterior (ingresar 0 si no aplica)
+                </small>
+              </div>
             </>
           )}
 
           {/* Campos Opción 2 - Solo Trimestre */}
           {!form.usarOpcionAcumulada && (
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  marginBottom: "0.5rem",
-                  color: "#0f172a",
-                }}
-              >
-                Ventas del Trimestre (Q):
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                value={form.ventasTrimestre}
-                onChange={handleChange("ventasTrimestre")}
-                required
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  borderRadius: "0.5rem",
-                  border: "2px solid #e2e8f0",
-                  fontSize: "1rem",
-                }}
-              />
-              <small style={{ color: "#64748b", fontSize: "0.9rem", display: "block" }}>
-                Solo las ventas del trimestre actual (NO acumulado)
-              </small>
-              <small style={{ color: "#dc2626", fontSize: "0.9rem", fontWeight: 600, display: "block", marginTop: "0.25rem" }}>
-                ⚠️ Ingrese el total INCLUYENDO IVA
-              </small>
-            </div>
+            <>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Ventas o Rentas Brutas (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.ventasTrimestre}
+                  onChange={handleChange("ventasTrimestre")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem", display: "block" }}>
+                  Solo las ventas del trimestre actual (NO acumulado)
+                </small>
+                <small style={{ color: "#dc2626", fontSize: "0.9rem", fontWeight: 600, display: "block", marginTop: "0.25rem" }}>
+                  ⚠️ Ingrese el total INCLUYENDO IVA
+                </small>
+              </div>
+
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    marginBottom: "0.5rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Rentas Exentas (Q):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.rentasExentas}
+                  onChange={handleChange("rentasExentas")}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "0.5rem",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "1rem",
+                  }}
+                />
+                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Ingresos que no están afectos a ISR (ingresar 0 si no aplica)
+                </small>
+              </div>
+            </>
           )}
 
           {/* ISO Pendiente - Común para ambas opciones */}
@@ -383,8 +479,10 @@ const ISREmpresaTrimestralPage: React.FC = () => {
             {resultado.datos.opcionUtilizada}
           </p>
 
-          {/* Desglose */}
+          {/* Desglose Detallado */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
+            
+            {/* Resultado (Base) */}
             <div
               style={{
                 background: "rgba(255,255,255,0.15)",
@@ -393,28 +491,50 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               }}
             >
               <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                Base de Cálculo:
+                resultado
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
                 Q {(resultado.datos.baseCalculo || 0).toFixed(2)}
               </p>
             </div>
 
-            <div
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                borderRadius: "0.75rem",
-                padding: "1rem",
-              }}
-            >
-              <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                ISR (25%):
-              </p>
-              <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                Q {(resultado.datos.isrCalculado || 0).toFixed(2)}
-              </p>
-            </div>
+            {/* Resultado x25% */}
+            {resultado.datos.isr25Porciento > 0 && (
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                }}
+              >
+                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
+                  Resultado x25%
+                </p>
+                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
+                  Q {(resultado.datos.isr25Porciento || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
 
+            {/* Resultado x8% (solo para Opción 2) */}
+            {!form.usarOpcionAcumulada && resultado.datos.isr8Porciento > 0 && (
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                }}
+              >
+                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
+                  Resultado x8%
+                </p>
+                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
+                  Q {(resultado.datos.isr8Porciento || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
+
+            {/* ISO a Acreditar */}
             <div
               style={{
                 background: "rgba(255,255,255,0.15)",
@@ -423,12 +543,30 @@ const ISREmpresaTrimestralPage: React.FC = () => {
               }}
             >
               <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-                ISO a Acreditar:
+                ISO por acreditar
               </p>
               <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
                 - Q {(resultado.datos.isoAcreditar || 0).toFixed(2)}
               </p>
             </div>
+
+            {/* ISR Pagado Anterior (solo para Opción 1) */}
+            {form.usarOpcionAcumulada && resultado.datos.isrPagadoAnterior > 0 && (
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                }}
+              >
+                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
+                  ISR pagado anterior trimestre
+                </p>
+                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
+                  - Q {(resultado.datos.isrPagadoAnterior || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* ISR A Pagar */}
@@ -441,7 +579,7 @@ const ISREmpresaTrimestralPage: React.FC = () => {
             }}
           >
             <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-              ISR a Pagar:
+              ISR x pagar Trimestre
             </p>
             <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
               Q {((resultado.datos as any).israPagar || (resultado.datos as any).isrAPagar || 0).toFixed(2)}
