@@ -861,7 +861,7 @@ export const generateISRLaboralPDF = async (data: {
  // Tabla 1: Renta Bruta
  autoTable(doc, {
  startY: 58,
- head: [["1️⃣ Renta Bruta", "Valor"]],
+ head: [["1. Renta Bruta", "Valor"]],
  body: [
  ["Salarios Anuales (12 meses)", `Q ${data.salariosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
  ["Bonificación Anual (12 meses)", `Q ${data.bonificacionAnual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
@@ -887,7 +887,7 @@ export const generateISRLaboralPDF = async (data: {
  
  autoTable(doc, {
  startY: finalY1,
- head: [["2️⃣ (-) Rentas Exentas", "Valor"]],
+ head: [["2. (-) Rentas Exentas", "Valor"]],
  body: [
  ["Aguinaldo Exento", `Q ${data.aguinaldoExento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
  ["Bono 14 Exento", `Q ${data.bono14Exento.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
@@ -910,7 +910,7 @@ export const generateISRLaboralPDF = async (data: {
  
  autoTable(doc, {
  startY: finalY2,
- head: [["3️⃣ (=) Renta Neta", "Valor"]],
+ head: [["3. (=) Renta Neta", "Valor"]],
  body: [
  ["RENTA NETA", `Q ${data.rentaNeta.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
  ],
@@ -931,7 +931,7 @@ export const generateISRLaboralPDF = async (data: {
  
  autoTable(doc, {
  startY: finalY3,
- head: [["4️⃣ (-) Deducciones", "Valor"]],
+ head: [["4. (-) Deducciones", "Valor"]],
  body: [
  ["Gastos Personales (Art. 72)", `Q ${data.gastosPersonales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
  ["Cuota IGSS (4.83%)", `Q ${data.cuotaIGSS.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
@@ -954,7 +954,7 @@ export const generateISRLaboralPDF = async (data: {
  
  autoTable(doc, {
  startY: finalY4,
- head: [["5️⃣ Cálculo de ISR", "Valor"]],
+ head: [["5. Cálculo de ISR", "Valor"]],
  body: [
  ["Renta Imponible", `Q ${data.rentaImponible.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
  ["ISR Anual", `Q ${data.isrAnual.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
@@ -1267,12 +1267,6 @@ export const generateISRTrimestralPDF = async (data: {
  * Genera un PDF con los resultados de la calculadora de ISO Trimestral
  * MEJORADO: Mejor formato visual y sin emojis
  */
-
-/**
- * Genera un PDF con los resultados de la calculadora de ISO Trimestral
- * MEJORADO: Mejor formato visual y sin emojis
- */
-
 /**
  * Genera un PDF con los resultados de la calculadora de ISO Trimestral
  * VERSION 2 PAGINAS: Diseño espacioso y profesional
