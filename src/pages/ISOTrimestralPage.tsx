@@ -92,7 +92,7 @@ const ISOTrimestralPage: React.FC = () => {
         }}
       >
         <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#1e3a8a" }}>
-          ℹ️ Nueva Lógica de Cálculo ISO
+          ℹ️ Cálculo ISO
         </h3>
         
         {/* PASO 1 */}
