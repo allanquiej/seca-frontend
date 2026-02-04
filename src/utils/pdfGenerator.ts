@@ -1272,6 +1272,11 @@ export const generateISRTrimestralPDF = async (data: {
  * Genera un PDF con los resultados de la calculadora de ISO Trimestral
  * MEJORADO: Mejor formato visual y sin emojis
  */
+
+/**
+ * Genera un PDF con los resultados de la calculadora de ISO Trimestral
+ * VERSION 2 PAGINAS: Diseño espacioso y profesional
+ */
 export const generateISOTrimestralPDF = async (data: {
   // Datos ingresados
   ingresosBrutosAnuales: number;
@@ -1303,6 +1308,7 @@ export const generateISOTrimestralPDF = async (data: {
 }) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
   // Intentar cargar el logo
   const logoData = await loadSECALogo();
@@ -1353,8 +1359,10 @@ export const generateISOTrimestralPDF = async (data: {
   // ============================================
   // PASO 1: VERIFICACIÓN MARGEN 4%
   // ============================================
+  let startY = 55;
+  
   autoTable(doc, {
-    startY: 55,
+    startY: startY,
     head: [["PASO 1: Verificacion de Margen 4%", "Valor"]],
     body: [
       ["Ingresos Brutos Anuales", `Q ${ingresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
@@ -1369,39 +1377,46 @@ export const generateISOTrimestralPDF = async (data: {
       fontStyle: "bold",
       fontSize: 11,
     },
-    styles: { fontSize: 10, cellPadding: 3 },
+    styles: { 
+      fontSize: 10, 
+      cellPadding: 4,
+      minCellHeight: 8
+    },
     columnStyles: {
-      0: { cellWidth: 110 },
+      0: { cellWidth: 100 },
       1: { cellWidth: 'auto', halign: 'right' }
     }
   });
 
-  let finalY = (doc as any).lastAutoTable.finalY + 10;
+  let finalY = (doc as any).lastAutoTable.finalY + 15;
 
   // Si NO está afecto, mostrar mensaje y terminar
   if (!data.estaAfectoISO) {
-    // Mensaje
+    // Mensaje en caja verde
     doc.setFillColor(240, 253, 244);
-    doc.rect(14, finalY, pageWidth - 28, 25, "F");
+    doc.rect(14, finalY, pageWidth - 28, 30, "F");
+    doc.setDrawColor(34, 197, 94);
+    doc.setLineWidth(0.5);
+    doc.rect(14, finalY, pageWidth - 28, 30, "S");
     
     doc.setTextColor(22, 101, 52);
-    doc.setFontSize(11);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("Resultado:", 18, finalY + 8);
+    doc.text("Resultado:", 18, finalY + 10);
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     const mensajeLineas = doc.splitTextToSize(data.mensaje, pageWidth - 36);
-    doc.text(mensajeLineas, 18, finalY + 15);
+    doc.text(mensajeLineas, 18, finalY + 18);
     
-    finalY += 30;
+    finalY += 40;
 
     // Recomendación legal
     doc.setTextColor(...SECA_CONFIG.textColor);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
+    doc.setFontSize(11);
     doc.text("Informacion Legal:", 14, finalY);
-    finalY += 5;
+    finalY += 7;
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
@@ -1409,7 +1424,7 @@ export const generateISOTrimestralPDF = async (data: {
     doc.text(legalLineas, 14, finalY);
 
     // Footer
-    const footerY = doc.internal.pageSize.getHeight() - 20;
+    const footerY = pageHeight - 20;
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
     doc.text("SECA - 18 anos de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
@@ -1429,7 +1444,6 @@ export const generateISOTrimestralPDF = async (data: {
       ["Activo Neto", `Q ${activoNet.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["4 x Ingresos Brutos", `Q ${cuatroIngresos.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
       ["Metodo Seleccionado", data.metodoSeleccionado || "No especificado"],
-      ["Razon", data.razonMetodo || ""],
     ],
     headStyles: {
       fillColor: [251, 191, 36],
@@ -1437,14 +1451,43 @@ export const generateISOTrimestralPDF = async (data: {
       fontStyle: "bold",
       fontSize: 11,
     },
-    styles: { fontSize: 10, cellPadding: 3 },
+    styles: { 
+      fontSize: 10, 
+      cellPadding: 4,
+      minCellHeight: 8
+    },
     columnStyles: {
-      0: { cellWidth: 110 },
-      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+      0: { cellWidth: 100 },
+      1: { cellWidth: 'auto', halign: 'right' }
     }
   });
 
   finalY = (doc as any).lastAutoTable.finalY + 10;
+
+  // Razón del método en caja
+  doc.setFillColor(254, 252, 232);
+  const razonHeight = 20;
+  doc.rect(14, finalY, pageWidth - 28, razonHeight, "F");
+  doc.setDrawColor(251, 191, 36);
+  doc.setLineWidth(0.3);
+  doc.rect(14, finalY, pageWidth - 28, razonHeight, "S");
+  
+  doc.setTextColor(120, 53, 15);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("Razon:", 18, finalY + 7);
+  
+  doc.setFont("helvetica", "normal");
+  const razonLineas = doc.splitTextToSize(data.razonMetodo || "", pageWidth - 36);
+  doc.text(razonLineas, 18, finalY + 14);
+  
+  finalY += razonHeight + 15;
+
+  // Verificar si necesitamos nueva página
+  if (finalY > pageHeight - 100) {
+    doc.addPage();
+    finalY = 20;
+  }
 
   // ============================================
   // PASO 3: CÁLCULO DEL ISO
@@ -1465,7 +1508,7 @@ export const generateISOTrimestralPDF = async (data: {
       ["Ingresos Brutos Anuales", `Q ${baseAnual.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
       ["Base Trimestral (/ 4)", `Q ${baseTrim.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
       ["ISO 1%", `Q ${iso.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
-      ["IUSI", "Q 0.00"],
+      ["(-) IUSI Pagado", "Q 0.00"],
       ["ISO a Pagar", `Q ${iso.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
     ];
   } else {
@@ -1480,7 +1523,7 @@ export const generateISOTrimestralPDF = async (data: {
       ["Activo Neto", `Q ${baseAnual.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
       ["Base Trimestral (/ 4)", `Q ${baseTrim.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
       ["ISO 1%", `Q ${iso.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
-      ["(-) IUSI", `Q ${iusi.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+      ["(-) IUSI Pagado", `Q ${iusi.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
       ["ISO a Pagar", `Q ${isoFinal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
     ];
   }
@@ -1495,54 +1538,70 @@ export const generateISOTrimestralPDF = async (data: {
       fontStyle: "bold",
       fontSize: 11,
     },
-    styles: { fontSize: 10, cellPadding: 3 },
+    styles: { 
+      fontSize: 10, 
+      cellPadding: 4,
+      minCellHeight: 8
+    },
     columnStyles: {
-      0: { cellWidth: 110 },
-      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold' }
+      0: { cellWidth: 100 },
+      1: { cellWidth: 'auto', halign: 'right' }
     }
   });
 
-  finalY = (doc as any).lastAutoTable.finalY + 10;
+  finalY = (doc as any).lastAutoTable.finalY + 15;
 
   // ============================================
   // ISO A PAGAR (DESTACADO)
   // ============================================
   doc.setFillColor(59, 130, 246);
-  doc.rect(14, finalY, pageWidth - 28, 28, "F");
+  doc.rect(14, finalY, pageWidth - 28, 35, "F");
 
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(11);
+  doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
-  doc.text("ISO a Pagar (Trimestral):", pageWidth / 2, finalY + 9, { align: "center" });
+  doc.text("ISO a Pagar (Trimestral):", pageWidth / 2, finalY + 12, { align: "center" });
 
-  doc.setFontSize(20);
+  doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.text(`Q ${isoPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 21, {
+  doc.text(`Q ${isoPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, pageWidth / 2, finalY + 26, {
     align: "center",
   });
 
-  finalY += 35;
+  finalY += 45;
 
   // ============================================
   // INFORMACIÓN LEGAL
   // ============================================
+  
+  // Verificar si necesitamos nueva página para info legal
+  if (finalY > pageHeight - 60) {
+    doc.addPage();
+    finalY = 20;
+  }
+  
   doc.setTextColor(...SECA_CONFIG.textColor);
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setFont("helvetica", "bold");
   doc.text("Informacion Legal:", 14, finalY);
-  finalY += 5;
+  finalY += 7;
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   const lineasLegal = doc.splitTextToSize(data.recomendacionLegal, pageWidth - 28);
   doc.text(lineasLegal, 14, finalY);
 
-  // Footer
-  const footerY = doc.internal.pageSize.getHeight() - 20;
-  doc.setFontSize(9);
-  doc.setTextColor(100, 100, 100);
-  doc.text("SECA - 18 anos de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
-  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+  // Footer en la última página
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    const footerY = pageHeight - 20;
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text("SECA - 18 anos de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+    doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+    doc.text(`Pagina ${i} de ${totalPages}`, pageWidth - 20, footerY, { align: "right" });
+  }
 
   // Descargar el PDF
   doc.save(`SECA_ISO_Trimestral_${new Date().getTime()}.pdf`);
