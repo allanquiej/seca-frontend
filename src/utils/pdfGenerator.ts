@@ -624,24 +624,26 @@ export const generatePrestacionesCompletasPDF = async (data: {
 };
 /**
 /**
- * Genera PDF con cálculo de IVA
- * ACTUALIZADO: 3 deducciones separadas
+/**
+/**
+ * Genera PDF con cálculo de IVA - SIN ERRORES TYPESCRIPT
+ * Versión simplificada y funcional
  */
 export const generateIVAPDF = async (data: {
   regimen: string;
   ventasMes: number;
   comprasMes: number;
-  ivaCredito: number;      // ACTUALIZADO
-  ivaRetenido: number;     // ACTUALIZADO
-  ivaExento: number;       // ACTUALIZADO
+  ivaCredito: number;
+  ivaRetenido: number;
+  ivaExento: number;
   ingresosAnuales: number;
   regimenNombre: string;
-  baseVentas: number;      // ACTUALIZADO
-  baseCompras: number;     // ACTUALIZADO
+  baseVentas: number;
+  baseCompras: number;
   debitoFiscal: number;
   creditoFiscal: number;
   ivaBruto: number;
-  totalDeducciones: number;  // ACTUALIZADO
+  totalDeducciones: number;
   ivaAPagar: number;
   cuotaFija: number;
   aplica: boolean;
@@ -651,11 +653,15 @@ export const generateIVAPDF = async (data: {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
+  // Convertir colores a tuplas
+  const primaryColor = SECA_CONFIG.primaryColor as [number, number, number];
+  const textColor = SECA_CONFIG.textColor as [number, number, number];
+
   // Intentar cargar el logo
   const logoData = await loadSECALogo();
 
   // Header
-  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.setFillColor(...primaryColor);
   doc.rect(0, 0, pageWidth, 35, "F");
 
   if (logoData) {
@@ -683,7 +689,7 @@ export const generateIVAPDF = async (data: {
   doc.text("Calculo de IVA", pageWidth / 2, 25, { align: "center" });
 
   // Información general
-  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setTextColor(...textColor);
   doc.setFontSize(10);
   doc.text(`Fecha de emision: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
   doc.text(`Regimen: ${data.regimenNombre}`, 14, 52);
@@ -692,10 +698,10 @@ export const generateIVAPDF = async (data: {
 
   // Régimen General
   if (data.regimen === "general") {
-    // SEGÚN EL MAYOR ENTRE DÉBITO Y CRÉDITO
+    // Título
     autoTable(doc, {
       startY: startY,
-      head: [["SEGUN EL MAYOR ENTRE EL DEBITO Y CREDITO", ""]],
+      head: [["SEGUN EL MAYOR ENTRE EL DEBITO Y CREDITO"]],
       body: [],
       headStyles: {
         fillColor: [30, 58, 138],
@@ -704,74 +710,133 @@ export const generateIVAPDF = async (data: {
         fontSize: 11,
         halign: "center",
       },
-      styles: { fontSize: 10, cellPadding: 3 },
+      margin: { left: 14, right: 14 },
     });
 
     startY = (doc as any).lastAutoTable.finalY + 5;
 
-    // Tabla de cálculo
-    const bodyRows: string[][] = [
-      ["", "TOTAL /1.12", "BASE *0.12", "IVA"],
-      ["VENTAS", `Q ${data.ventasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.baseVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.debitoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
-      ["COMPRAS", `Q ${data.comprasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.baseCompras.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.creditoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
-      ["", "", "Debito - Credito", `Q ${data.ivaBruto.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+    // Tabla principal simplificada
+    const tableData: string[][] = [
+      ["", "TOTAL", "BASE", "IVA"],
+      ["", "/1.12", "*0.12", ""],
+      [
+        "VENTAS", 
+        `Q ${data.ventasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`,
+        `Q ${data.baseVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}`,
+        `Q ${data.debitoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`
+      ],
+      [
+        "COMPRAS",
+        `Q ${data.comprasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`,
+        `Q ${data.baseCompras.toLocaleString('es-GT', {minimumFractionDigits: 2})}`,
+        `Q ${data.creditoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`
+      ],
+      ["", "", "", ""],
+      ["", "", "Debito - Credito", `Q ${data.ivaBruto.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]
     ];
 
-    // Agregar deducciones si existen
+    // Agregar deducciones
     if (data.ivaCredito > 0) {
-      bodyRows.push(["", "", "(-) IVA Credito", `Q ${data.ivaCredito.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+      tableData.push(["", "", "(-) IVA Credito", `Q ${data.ivaCredito.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
     }
     if (data.ivaRetenido > 0) {
-      bodyRows.push(["", "", "(-) IVA Retenido", `Q ${data.ivaRetenido.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+      tableData.push(["", "", "(-) IVA Retenido", `Q ${data.ivaRetenido.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
     }
     if (data.ivaExento > 0) {
-      bodyRows.push(["", "", "(-) IVA Exento", `Q ${data.ivaExento.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+      tableData.push(["", "", "(-) IVA Exento", `Q ${data.ivaExento.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
     }
 
-    // Fila final
-    const esPorPagar = data.ivaBruto - data.totalDeducciones >= 0;
-    const tipoResultado = esPorPagar ? "DEBITO FISCAL" : "CREDITO FISCAL";
-    const colorResultado: [number, number, number] = esPorPagar ? [59, 130, 246] : [16, 185, 129];
+    // Calcular resultado
+    const resultadoFinal = data.ivaBruto - data.totalDeducciones;
     
-    bodyRows.push(["", "", "", `Q ${data.ivaAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+    // Fila de resultado
+    tableData.push(["", "", "", ""]);
+    tableData.push(["", "", "RESULTADO:", `Q ${Math.abs(resultadoFinal).toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
 
     autoTable(doc, {
       startY: startY,
-      body: bodyRows,
+      body: tableData,
       styles: { 
         fontSize: 10, 
-        cellPadding: 3,
+        cellPadding: 4,
         halign: 'right'
       },
       columnStyles: {
-        0: { halign: 'left', fontStyle: 'bold' },
-        1: { halign: 'right' },
-        2: { halign: 'right', fontStyle: 'bold' },
-        3: { halign: 'right', fontStyle: 'bold' }
+        0: { halign: 'left', fontStyle: 'bold', cellWidth: 30 },
+        1: { halign: 'right', cellWidth: 45 },
+        2: { halign: 'right', fontStyle: 'bold', cellWidth: 50 },
+        3: { halign: 'right', fontStyle: 'bold', cellWidth: 45 }
+      },
+      margin: { left: 14, right: 14 },
+      theme: 'grid',
+      didParseCell: function(data) {
+        // Fila de headers (0 y 1)
+        if (data.row.index === 0) {
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.halign = 'center';
+          data.cell.styles.fillColor = [240, 240, 240];
+        }
+        if (data.row.index === 1) {
+          data.cell.styles.fontSize = 8;
+          data.cell.styles.textColor = [100, 100, 100];
+          data.cell.styles.halign = 'center';
+        }
+        // Fila de separador
+        if (data.row.index === 4) {
+          data.cell.styles.minCellHeight = 2;
+          data.cell.styles.fillColor = [200, 200, 200];
+        }
+        // IVA Bruto
+        if (data.row.index === 5 && data.column.index === 3) {
+          data.cell.styles.fillColor = [255, 250, 205];
+        }
+        // Deducciones en rojo
+        if (data.row.index >= 6 && data.row.index <= 8 && data.column.index === 3) {
+          data.cell.styles.textColor = [185, 28, 28];
+        }
+        // Resultado final
+        const lastIndex = tableData.length - 1;
+        if (data.row.index === lastIndex && data.column.index === 3) {
+          data.cell.styles.fillColor = [220, 252, 231];
+          data.cell.styles.fontSize = 12;
+          data.cell.styles.fontStyle = 'bold';
+        }
       }
     });
 
     startY = (doc as any).lastAutoTable.finalY + 10;
 
-    // Resultado final
+    // Caja de resultado final
+    const esPorPagar = resultadoFinal >= 0;
+    const tipoResultado = esPorPagar ? "IVA POR PAGAR" : "IVA CREDITO";
+    const colorResultado: [number, number, number] = esPorPagar ? [30, 58, 138] : [16, 185, 129];
+    const textoExplicacion = esPorPagar 
+      ? "SI DEBITO MAYOR QUE CREDITO ES IVA POR PAGAR" 
+      : "SI CREDITO ES MAYOR QUE DEBITO ES IVA CREDITO";
+
     autoTable(doc, {
       startY: startY,
       head: [[tipoResultado, ""]],
       body: [
-        [esPorPagar ? "SI DEBITO MAYOR QUE CREDITO ES IVA POR PAGAR" : "SI CREDITO ES MAYOR QUE DEBITO ES IVA CREDITO", 
-         `Q ${data.ivaAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]
+        [textoExplicacion, `Q ${Math.abs(resultadoFinal).toLocaleString('es-GT', {minimumFractionDigits: 2})}`]
       ],
       headStyles: {
         fillColor: colorResultado,
         textColor: [255, 255, 255],
         fontStyle: "bold",
-        fontSize: 11,
+        fontSize: 12,
+        halign: "center",
+        cellPadding: 5
       },
-      styles: { fontSize: 10, cellPadding: 3 },
+      bodyStyles: {
+        fillColor: [245, 245, 245],
+        cellPadding: 8
+      },
       columnStyles: {
-        0: { cellWidth: 130 },
-        1: { halign: 'right', fontStyle: 'bold' }
-      }
+        0: { cellWidth: 120, fontSize: 9 },
+        1: { cellWidth: 60, halign: 'right', fontStyle: 'bold', fontSize: 14 }
+      },
+      margin: { left: 14, right: 14 }
     });
 
   } else if (data.regimen === "pequeno") {
@@ -789,11 +854,12 @@ export const generateIVAPDF = async (data: {
         fontStyle: "bold",
         fontSize: 11,
       },
-      styles: { fontSize: 10, cellPadding: 3 },
+      styles: { fontSize: 10, cellPadding: 4 },
       columnStyles: {
         0: { cellWidth: 100 },
         1: { halign: 'right', fontStyle: 'bold' }
-      }
+      },
+      margin: { left: 14, right: 14 }
     });
 
   } else {
@@ -810,18 +876,19 @@ export const generateIVAPDF = async (data: {
         fontStyle: "bold",
         fontSize: 11,
       },
-      styles: { fontSize: 10, cellPadding: 3 },
+      styles: { fontSize: 10, cellPadding: 4 },
       columnStyles: {
         0: { cellWidth: 100 },
         1: { halign: 'right', fontStyle: 'bold' }
-      }
+      },
+      margin: { left: 14, right: 14 }
     });
   }
 
   startY = (doc as any).lastAutoTable.finalY + 15;
 
   // Mensaje
-  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setTextColor(...textColor);
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text("Informacion:", 14, startY);
@@ -837,10 +904,11 @@ export const generateIVAPDF = async (data: {
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
   doc.text("SECA - 18 anos de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
-  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+  doc.text("Email: info@seca.gt | Telefono: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
 
   doc.save(`SECA_IVA_${new Date().getTime()}.pdf`);
 };
+
 /**
  * Genera un PDF con los resultados de la calculadora de ISR Laboral (Asalariados)
  */
