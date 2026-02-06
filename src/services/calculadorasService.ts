@@ -145,31 +145,54 @@ export function calcularPrestacionesCompletas(data: PrestacionesCompletasRequest
  * ACTUALIZADO: Envía 3 deducciones separadas
  */
 export function calcularIVA(data: IVARequest) {
-  // Mapeo correcto - Coincide con el enum del backend
   const REGIMEN_IVA_MAP: Record<string, number> = {
-    general: 1,   // RegimenIVA.General = 1
-    pequeno: 2,   // RegimenIVA.PequenoContribuyente = 2
-    exento: 3,    // RegimenIVA.Exento = 3
+    general: 1,
+    pequeno: 2,
+    exento: 3,
   };
 
-  // Transformar al formato que espera el backend (PascalCase + Enum)
   const payload = {
     Regimen: REGIMEN_IVA_MAP[data.regimen],
     VentasMes: data.ventasMes,
     ComprasMes: data.comprasMes,
-    
-    // ACTUALIZADO: 3 deducciones separadas
     IVACredito: data.ivaCredito,
     IVARetenido: data.ivaRetenido,
     IVAExento: data.ivaExento,
-    
     IngresosAnuales: data.ingresosAnuales,
   };
 
   console.log('Enviando payload IVA al backend:', payload);
 
-  return apiPostJson<any, RespuestaApi<IVAResponse>>(
+  return apiPostJson<any, RespuestaApi<any>>(
     "/api/calculadoras/iva",
     payload
-  );
+  ).then(response => {
+    // Mapear PascalCase a camelCase
+    if (response.datos) {
+      const mapped: IVAResponse = {
+        regimenNombre: response.datos.RegimenNombre || response.datos.regimenNombre || '',
+        baseVentas: response.datos.BaseVentas || response.datos.baseVentas || 0,
+        baseCompras: response.datos.BaseCompras || response.datos.baseCompras || 0,
+        debitoFiscal: response.datos.DebitoFiscal || response.datos.debitoFiscal || 0,
+        creditoFiscal: response.datos.CreditoFiscal || response.datos.creditoFiscal || 0,
+        ivaBruto: response.datos.IVABruto || response.datos.ivaBruto || 0,
+        ivaCredito: response.datos.IVACredito || response.datos.ivaCredito || 0,
+        ivaRetenido: response.datos.IVARetenido || response.datos.ivaRetenido || 0,
+        ivaExento: response.datos.IVAExento || response.datos.ivaExento || 0,
+        totalDeducciones: response.datos.TotalDeducciones || response.datos.totalDeducciones || 0,
+        ivaAPagar: response.datos.IVAAPagar || response.datos.ivaAPagar || 0,
+        cuotaFija: response.datos.CuotaFija || response.datos.cuotaFija || 0,
+        aplica: response.datos.Aplica ?? response.datos.aplica ?? false,
+        mensaje: response.datos.Mensaje || response.datos.mensaje || '',
+        detalleCalculo: response.datos.DetalleCalculo || response.datos.detalleCalculo || '',
+      };
+      
+      return {
+        ...response,
+        datos: mapped
+      };
+    }
+    
+    return response;
+  });
 }
