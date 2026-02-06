@@ -1,4 +1,6 @@
 // src/pages/IVAPage.tsx
+// ACTUALIZADO: 3 deducciones separadas (IVA Crédito, IVA Retenido, IVA Exento)
+
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type {
@@ -16,7 +18,9 @@ const IVAPage: React.FC = () => {
     regimen: "general",
     ventasMes: 0,
     comprasMes: 0,
-    retenciones: 0,
+    ivaCredito: 0,     // Actualizado
+    ivaRetenido: 0,    // Actualizado
+    ivaExento: 0,      // Actualizado
     ingresosAnuales: 0,
   });
 
@@ -49,10 +53,10 @@ const IVAPage: React.FC = () => {
 
     try {
       const res = await calcularIVA(form);
-      console.log('✅ Respuesta recibida del backend:', res);
+      console.log('Respuesta recibida del backend:', res);
       setResultado(res);
     } catch (err: any) {
-      console.error('❌ Error al calcular IVA:', err);
+      console.error('Error al calcular IVA:', err);
       setError(err.message ?? "Ocurrió un error al calcular el IVA.");
     } finally {
       setLoading(false);
@@ -60,17 +64,30 @@ const IVAPage: React.FC = () => {
   };
 
   const handleDescargarPDF = () => {
-    if (resultado && resultado.datos) {
-      generateIVAPDF({
-        regimen: form.regimen,
-        ventasMes: form.ventasMes,
-        comprasMes: form.comprasMes,
-        retenciones: form.retenciones,
-        ingresosAnuales: form.ingresosAnuales,
-        ...resultado.datos,
-      });
-    }
-  };
+  if (resultado && resultado.datos) {
+    generateIVAPDF({
+      regimen: form.regimen,
+      ventasMes: form.ventasMes,
+      comprasMes: form.comprasMes,
+      ivaCredito: form.ivaCredito,
+      ivaRetenido: form.ivaRetenido,
+      ivaExento: form.ivaExento,
+      ingresosAnuales: form.ingresosAnuales,
+      regimenNombre: resultado.datos.regimenNombre,
+      baseVentas: resultado.datos.baseVentas,
+      baseCompras: resultado.datos.baseCompras,
+      debitoFiscal: resultado.datos.debitoFiscal,
+      creditoFiscal: resultado.datos.creditoFiscal,
+      ivaBruto: resultado.datos.ivaBruto,
+      totalDeducciones: resultado.datos.totalDeducciones,
+      ivaAPagar: resultado.datos.ivaAPagar,
+      cuotaFija: resultado.datos.cuotaFija,
+      aplica: resultado.datos.aplica,
+      mensaje: resultado.datos.mensaje,
+      detalleCalculo: resultado.datos.detalleCalculo,
+    });
+  }
+};
 
   return (
     <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "1rem" }}>
@@ -84,7 +101,7 @@ const IVAPage: React.FC = () => {
             color: "#0f172a",
           }}
         >
-          🧾 Calculadora de IVA
+          Calculadora de IVA
         </h1>
         <p style={{ fontSize: "1.1rem", color: "#64748b", lineHeight: 1.6 }}>
           Calcula el <strong>Impuesto al Valor Agregado</strong> según tu régimen tributario.
@@ -102,10 +119,10 @@ const IVAPage: React.FC = () => {
         }}
       >
         <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem", color: "#1e3a8a" }}>
-          ℹ️ Regímenes de IVA en Guatemala
+          Regímenes de IVA en Guatemala
         </h3>
         <ul style={{ margin: 0, paddingLeft: "1.5rem", color: "#1e3a8a", lineHeight: 1.8 }}>
-          <li><strong>Régimen General (12%):</strong> Débito fiscal (ventas) - Crédito fiscal (compras) = IVA a pagar</li>
+          <li><strong>Régimen General (12%):</strong> Débito fiscal (ventas) - Crédito fiscal (compras) - Deducciones = IVA a pagar</li>
           <li><strong>Pequeño Contribuyente:</strong> Cuota fija de Q150/mes (ingresos ≤ Q150,000/año)</li>
           <li><strong>Exento:</strong> Ciertas actividades no pagan IVA</li>
         </ul>
@@ -148,7 +165,7 @@ const IVAPage: React.FC = () => {
               transition: "all 0.2s",
             }}
           >
-            📊 Régimen General (12%)
+            Régimen General (12%)
           </button>
           <button
             type="button"
@@ -165,7 +182,7 @@ const IVAPage: React.FC = () => {
               transition: "all 0.2s",
             }}
           >
-            🏪 Pequeño Contribuyente
+            Pequeño Contribuyente
           </button>
           <button
             type="button"
@@ -182,7 +199,7 @@ const IVAPage: React.FC = () => {
               transition: "all 0.2s",
             }}
           >
-            ✅ Exento de IVA
+            Exento de IVA
           </button>
         </div>
       </div>
@@ -208,6 +225,7 @@ const IVAPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   value={form.ventasMes}
                   onChange={handleChange("ventasMes")}
                   required
@@ -231,6 +249,7 @@ const IVAPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   value={form.comprasMes}
                   onChange={handleChange("comprasMes")}
                   required
@@ -247,27 +266,88 @@ const IVAPage: React.FC = () => {
                 </small>
               </div>
 
-              <div>
-                <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem", color: "#0f172a" }}>
-                  Retenciones de IVA (Q):
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={form.retenciones}
-                  onChange={handleChange("retenciones")}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    borderRadius: "0.5rem",
-                    border: "2px solid #e2e8f0",
-                    fontSize: "1rem",
-                  }}
-                />
-                <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                  Ingresar 0 si no tienes retenciones
-                </small>
+              {/* NUEVO: 3 Deducciones Separadas */}
+              <div style={{
+                background: "#fef3c7",
+                border: "2px solid #f59e0b",
+                borderRadius: "0.75rem",
+                padding: "1.5rem",
+                marginTop: "1rem"
+              }}>
+                <h4 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem", color: "#92400e" }}>
+                  Deducciones (Opcional)
+                </h4>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem", color: "#0f172a" }}>
+                      IVA Crédito del Mes Anterior (Q):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.ivaCredito}
+                      onChange={handleChange("ivaCredito")}
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        borderRadius: "0.5rem",
+                        border: "2px solid #e2e8f0",
+                        fontSize: "1rem",
+                      }}
+                    />
+                    <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                      Saldo a favor del mes anterior que deseas acreditar
+                    </small>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem", color: "#0f172a" }}>
+                      IVA Retenido (Q):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.ivaRetenido}
+                      onChange={handleChange("ivaRetenido")}
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        borderRadius: "0.5rem",
+                        border: "2px solid #e2e8f0",
+                        fontSize: "1rem",
+                      }}
+                    />
+                    <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                      Retenciones de IVA que te hicieron durante el mes
+                    </small>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem", color: "#0f172a" }}>
+                      IVA Exento (Q):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.ivaExento}
+                      onChange={handleChange("ivaExento")}
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        borderRadius: "0.5rem",
+                        border: "2px solid #e2e8f0",
+                        fontSize: "1rem",
+                      }}
+                    />
+                    <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                      IVA de operaciones exentas del mes
+                    </small>
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -276,11 +356,12 @@ const IVAPage: React.FC = () => {
           {regimen === "pequeno" && (
             <div>
               <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem", color: "#0f172a" }}>
-                Ingresos Anuales Estimados (Q):
+                Ingresos Anuales (Q):
               </label>
               <input
                 type="number"
                 step="0.01"
+                min="0"
                 value={form.ingresosAnuales}
                 onChange={handleChange("ingresosAnuales")}
                 required
@@ -293,49 +374,35 @@ const IVAPage: React.FC = () => {
                 }}
               />
               <small style={{ color: "#64748b", fontSize: "0.9rem" }}>
-                Suma de tus ingresos de todo el año (debe ser ≤ Q150,000 para aplicar)
+                Total de ingresos anuales (debe ser ≤ Q150,000)
               </small>
             </div>
           )}
 
-          {/* Mensaje para Exento */}
+          {/* Para Exento no hay campos adicionales */}
           {regimen === "exento" && (
-            <div
-              style={{
-                background: "#ede9fe",
-                border: "2px solid #8b5cf6",
-                borderRadius: "0.75rem",
-                padding: "1.5rem",
-                textAlign: "center",
-              }}
-            >
-              <p style={{ color: "#5b21b6", fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>
-                Si tu actividad está exenta de IVA, no debes realizar cálculos.
-              </p>
-              <p style={{ color: "#7c3aed", marginTop: "0.5rem" }}>
-                Haz clic en "Calcular IVA" para confirmar.
+            <div style={{ background: "#f0fdf4", padding: "1.5rem", borderRadius: "0.75rem", border: "2px solid #10b981" }}>
+              <p style={{ color: "#065f46", fontSize: "1rem", margin: 0 }}>
+                Las actividades exentas no requieren cálculo de IVA. Presiona "Calcular" para ver la información.
               </p>
             </div>
           )}
 
-          {/* Botón */}
+          {/* Botón de envío */}
           <button
             type="submit"
             disabled={loading}
             style={{
-              padding: "1rem 2rem",
+              padding: "1rem",
               borderRadius: "0.75rem",
               border: "none",
-              cursor: loading ? "not-allowed" : "pointer",
+              background: loading ? "#94a3b8" : "#3b82f6",
+              color: "white",
               fontWeight: 700,
               fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #3b82f6, #2563eb)",
-              color: "white",
-              boxShadow: "0 4px 15px rgba(59,130,246,0.3)",
-              transition: "transform 0.2s",
+              cursor: loading ? "not-allowed" : "pointer",
+              transition: "all 0.2s",
             }}
-            onMouseOver={(e) => !loading && (e.currentTarget.style.transform = "scale(1.02)")}
-            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             {loading ? "Calculando..." : "Calcular IVA"}
           </button>
@@ -346,119 +413,180 @@ const IVAPage: React.FC = () => {
       {error && (
         <div
           style={{
-            padding: "1rem",
-            borderRadius: "0.75rem",
             background: "#fee2e2",
-            border: "2px solid #fca5a5",
-            color: "#991b1b",
+            border: "2px solid #dc2626",
+            borderRadius: "1rem",
+            padding: "1.5rem",
             marginBottom: "2rem",
+            color: "#991b1b",
           }}
         >
           <strong>Error:</strong> {error}
         </div>
       )}
 
-      {/* Resultado */}
+      {/* Resultados */}
       {resultado && resultado.datos && (
         <div
           style={{
-            background: resultado.datos.aplica
-              ? "linear-gradient(135deg, #3b82f6, #2563eb)"
-              : "linear-gradient(135deg, #ef4444, #dc2626)",
+            background: "white",
             borderRadius: "1rem",
             padding: "2rem",
-            color: "white",
-            boxShadow: "0 10px 40px rgba(59,130,246,0.4)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           }}
         >
-          <h2 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "1rem" }}>
-            {resultado.datos.aplica ? "✅" : "⚠️"} {resultado.datos.regimenNombre}
+          <h2 style={{ fontSize: "1.8rem", fontWeight: 700, marginBottom: "1.5rem", color: "#0f172a" }}>
+            Resultados - {resultado.datos.regimenNombre}
           </h2>
 
-          <p style={{ fontSize: "1rem", marginBottom: "1.5rem", opacity: 0.95 }}>
-            {resultado.datos.mensaje}
-          </p>
+          {resultado.datos.aplica ? (
+            <>
+              {regimen === "general" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+                  {/* Ventas y Débito Fiscal */}
+                  <div style={{ padding: "1rem", background: "#f0f9ff", borderRadius: "0.5rem", border: "2px solid #3b82f6" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                      <span style={{ fontWeight: 600 }}>Ventas del Mes:</span>
+                      <span>Q {form.ventasMes.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                      <span style={{ fontWeight: 600 }}>Base (sin IVA):</span>
+                      <span>Q {resultado.datos.baseVentas.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem" }}>
+                      <span style={{ fontWeight: 700, color: "#1e40af" }}>Débito Fiscal (12%):</span>
+                      <span style={{ fontWeight: 700, color: "#1e40af" }}>
+                        Q {resultado.datos.debitoFiscal.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
 
-          {/* Desglose para Régimen General */}
-          {regimen === "general" && resultado.datos.aplica && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
-              <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
-                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>Débito Fiscal:</p>
-                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  Q {(resultado.datos.debitoFiscal || 0).toFixed(2)}
+                  {/* Compras y Crédito Fiscal */}
+                  <div style={{ padding: "1rem", background: "#f0fdf4", borderRadius: "0.5rem", border: "2px solid #10b981" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                      <span style={{ fontWeight: 600 }}>Compras del Mes:</span>
+                      <span>Q {form.comprasMes.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                      <span style={{ fontWeight: 600 }}>Base (sin IVA):</span>
+                      <span>Q {resultado.datos.baseCompras.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem" }}>
+                      <span style={{ fontWeight: 700, color: "#065f46" }}>Crédito Fiscal (12%):</span>
+                      <span style={{ fontWeight: 700, color: "#065f46" }}>
+                        Q {resultado.datos.creditoFiscal.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* IVA Bruto */}
+                  <div style={{ padding: "1rem", background: "#fef3c7", borderRadius: "0.5rem", border: "2px solid #f59e0b" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.2rem" }}>
+                      <span style={{ fontWeight: 700, color: "#92400e" }}>IVA Bruto (Débito - Crédito):</span>
+                      <span style={{ fontWeight: 700, color: "#92400e" }}>
+                        Q {resultado.datos.ivaBruto.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Deducciones */}
+                  {(resultado.datos.ivaCredito > 0 || resultado.datos.ivaRetenido > 0 || resultado.datos.ivaExento > 0) && (
+                    <div style={{ padding: "1rem", background: "#fef2f2", borderRadius: "0.5rem", border: "2px solid #dc2626" }}>
+                      <h4 style={{ fontWeight: 700, marginBottom: "0.75rem", color: "#991b1b" }}>Deducciones:</h4>
+                      {resultado.datos.ivaCredito > 0 && (
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                          <span>(-) IVA Crédito:</span>
+                          <span>Q {resultado.datos.ivaCredito.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      )}
+                      {resultado.datos.ivaRetenido > 0 && (
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                          <span>(-) IVA Retenido:</span>
+                          <span>Q {resultado.datos.ivaRetenido.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      )}
+                      {resultado.datos.ivaExento > 0 && (
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                          <span>(-) IVA Exento:</span>
+                          <span>Q {resultado.datos.ivaExento.toLocaleString("es-GT", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      )}
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem", marginTop: "0.5rem", paddingTop: "0.5rem", borderTop: "2px solid #dc2626" }}>
+                        <span style={{ fontWeight: 700, color: "#991b1b" }}>Total Deducciones:</span>
+                        <span style={{ fontWeight: 700, color: "#991b1b" }}>
+                          Q {resultado.datos.totalDeducciones.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* IVA a Pagar */}
+                  <div style={{ padding: "1.5rem", background: "#1e3a8a", borderRadius: "0.75rem", textAlign: "center" }}>
+                    <div style={{ color: "white", fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+                      {resultado.datos.ivaBruto - resultado.datos.totalDeducciones < 0 ? "IVA CRÉDITO (Saldo a Favor)" : "IVA A PAGAR"}
+                    </div>
+                    <div style={{ color: "white", fontSize: "2.5rem", fontWeight: 800 }}>
+                      Q {resultado.datos.ivaAPagar.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {regimen === "pequeno" && (
+                <div style={{ padding: "1.5rem", background: "#d1fae5", borderRadius: "0.75rem", textAlign: "center", border: "2px solid #10b981" }}>
+                  <div style={{ color: "#065f46", fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+                    Cuota Fija Mensual
+                  </div>
+                  <div style={{ color: "#065f46", fontSize: "2.5rem", fontWeight: 800 }}>
+                    Q {resultado.datos.cuotaFija.toLocaleString("es-GT", { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              )}
+
+              {regimen === "exento" && (
+                <div style={{ padding: "1.5rem", background: "#ede9fe", borderRadius: "0.75rem", textAlign: "center", border: "2px solid #8b5cf6" }}>
+                  <div style={{ color: "#5b21b6", fontSize: "1.5rem", fontWeight: 700 }}>
+                    Actividad Exenta de IVA
+                  </div>
+                  <div style={{ color: "#5b21b6", fontSize: "1.1rem", marginTop: "0.5rem" }}>
+                    Q 0.00
+                  </div>
+                </div>
+              )}
+
+              {/* Mensaje */}
+              <div style={{ marginTop: "1.5rem", padding: "1rem", background: "#f1f5f9", borderRadius: "0.5rem" }}>
+                <p style={{ margin: 0, color: "#0f172a", lineHeight: 1.6 }}>
+                  {resultado.datos.mensaje}
                 </p>
               </div>
-              <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
-                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>Crédito Fiscal:</p>
-                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  - Q {(resultado.datos.creditoFiscal || 0).toFixed(2)}
-                </p>
-              </div>
-              <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "0.75rem", padding: "1rem" }}>
-                <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>IVA Bruto:</p>
-                <p style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
-                  Q {(resultado.datos.ivaBruto || 0).toFixed(2)}
-                </p>
-              </div>
+
+              {/* Botón de descargar PDF */}
+              <button
+                onClick={handleDescargarPDF}
+                style={{
+                  marginTop: "1rem",
+                  width: "100%",
+                  padding: "1rem",
+                  borderRadius: "0.75rem",
+                  border: "none",
+                  background: "#10b981",
+                  color: "white",
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                Descargar PDF
+              </button>
+            </>
+          ) : (
+            <div style={{ padding: "1.5rem", background: "#fee2e2", borderRadius: "0.75rem", border: "2px solid #dc2626" }}>
+              <p style={{ margin: 0, color: "#991b1b", fontSize: "1.1rem", fontWeight: 600 }}>
+                {resultado.datos.mensaje}
+              </p>
             </div>
-          )}
-
-          {/* IVA a Pagar o Cuota Fija */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.25)",
-              borderRadius: "0.75rem",
-              padding: "1.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <p style={{ fontSize: "0.9rem", marginBottom: "0.5rem", opacity: 0.9 }}>
-              {regimen === "pequeno" ? "Cuota Fija Mensual:" : "IVA a Pagar:"}
-            </p>
-            <p style={{ fontSize: "2.5rem", fontWeight: 800, margin: 0 }}>
-              Q {(resultado.datos.ivaAPagar || 0).toFixed(2)}
-            </p>
-          </div>
-
-          {/* Detalle */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "0.75rem",
-              padding: "1rem",
-              fontSize: "0.95rem",
-              lineHeight: 1.6,
-              marginBottom: "1rem",
-            }}
-          >
-            <strong>Detalle:</strong> {resultado.datos.detalleCalculo}
-          </div>
-
-          {/* Botón Descargar PDF */}
-          {resultado.datos.aplica && (
-            <button
-              onClick={handleDescargarPDF}
-              style={{
-                width: "100%",
-                padding: "1rem",
-                borderRadius: "0.75rem",
-                border: "2px solid white",
-                background: "rgba(255,255,255,0.2)",
-                color: "white",
-                cursor: "pointer",
-                fontWeight: 700,
-                fontSize: "1rem",
-                transition: "all 0.2s",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.3)";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-              }}
-            >
-              📄 Descargar Resultado en PDF
-            </button>
           )}
         </div>
       )}

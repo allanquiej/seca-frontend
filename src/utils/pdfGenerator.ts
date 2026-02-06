@@ -623,171 +623,223 @@ export const generatePrestacionesCompletasPDF = async (data: {
  doc.save(`SECA_Prestaciones_Laborales_${new Date().getTime()}.pdf`);
 };
 /**
- * Genera un PDF con los resultados de la calculadora de IVA
+/**
+ * Genera PDF con cálculo de IVA
+ * ACTUALIZADO: 3 deducciones separadas
  */
 export const generateIVAPDF = async (data: {
- regimen: string;
- ventasMes: number;
- comprasMes: number;
- retenciones: number;
- ingresosAnuales: number;
- regimenNombre: string;
- debitoFiscal: number;
- creditoFiscal: number;
- ivaBruto: number;
- ivaAPagar: number;
- cuotaFija: number;
- aplica: boolean;
- mensaje: string;
- detalleCalculo: string;
+  regimen: string;
+  ventasMes: number;
+  comprasMes: number;
+  ivaCredito: number;      // ACTUALIZADO
+  ivaRetenido: number;     // ACTUALIZADO
+  ivaExento: number;       // ACTUALIZADO
+  ingresosAnuales: number;
+  regimenNombre: string;
+  baseVentas: number;      // ACTUALIZADO
+  baseCompras: number;     // ACTUALIZADO
+  debitoFiscal: number;
+  creditoFiscal: number;
+  ivaBruto: number;
+  totalDeducciones: number;  // ACTUALIZADO
+  ivaAPagar: number;
+  cuotaFija: number;
+  aplica: boolean;
+  mensaje: string;
+  detalleCalculo: string;
 }) => {
- const doc = new jsPDF();
- const pageWidth = doc.internal.pageSize.getWidth();
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
 
- // Intentar cargar el logo
- const logoData = await loadSECALogo();
+  // Intentar cargar el logo
+  const logoData = await loadSECALogo();
 
- // Header con logo y título
- doc.setFillColor(...SECA_CONFIG.primaryColor);
- doc.rect(0, 0, pageWidth, 35, "F");
+  // Header
+  doc.setFillColor(...SECA_CONFIG.primaryColor);
+  doc.rect(0, 0, pageWidth, 35, "F");
 
- // Logo o texto SECA
- if (logoData) {
- try {
- doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
- doc.setTextColor(255, 255, 255);
- doc.setFontSize(14);
- doc.setFont("helvetica", "normal");
- doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
- } catch (error) {
- doc.setTextColor(255, 255, 255);
- doc.setFontSize(22);
- doc.setFont("helvetica", "bold");
- doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
- }
- } else {
- doc.setTextColor(255, 255, 255);
- doc.setFontSize(22);
- doc.setFont("helvetica", "bold");
- doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
- }
+  if (logoData) {
+    try {
+      doc.addImage(logoData, 'PNG', 14, 8, 35, 13);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "normal");
+      doc.text("Servicios Contables", pageWidth / 2, 18, { align: "center" });
+    } catch (error) {
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+    }
+  } else {
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SECA - Servicios Contables", pageWidth / 2, 15, { align: "center" });
+  }
 
- doc.setFontSize(14);
- doc.setFont("helvetica", "normal");
- doc.text("Cálculo de IVA", pageWidth / 2, 25, { align: "center" });
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Calculo de IVA", pageWidth / 2, 25, { align: "center" });
 
- // Información general
- doc.setTextColor(...SECA_CONFIG.textColor);
- doc.setFontSize(10);
- doc.text(`Fecha de emisión: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
- doc.text(`Régimen: ${data.regimenNombre}`, 14, 51);
+  // Información general
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.text(`Fecha de emision: ${new Date().toLocaleDateString("es-GT")}`, 14, 45);
+  doc.text(`Regimen: ${data.regimenNombre}`, 14, 52);
 
- let finalY = 55;
+  let startY = 60;
 
- // Tabla de datos según régimen
- if (data.regimen === "general") {
- autoTable(doc, {
- startY: finalY,
- head: [["Datos Ingresados", "Valor"]],
- body: [
- ["Total Ventas del Mes", `Q ${data.ventasMes.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["Total Compras del Mes", `Q ${data.comprasMes.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["Retenciones de IVA", `Q ${data.retenciones.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ],
- headStyles: {
- fillColor: SECA_CONFIG.primaryColor,
- textColor: [255, 255, 255],
- fontStyle: "bold",
- },
- styles: { fontSize: 11 },
- });
+  // Régimen General
+  if (data.regimen === "general") {
+    // SEGÚN EL MAYOR ENTRE DÉBITO Y CRÉDITO
+    autoTable(doc, {
+      startY: startY,
+      head: [["SEGUN EL MAYOR ENTRE EL DEBITO Y CREDITO", ""]],
+      body: [],
+      headStyles: {
+        fillColor: [30, 58, 138],
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 11,
+        halign: "center",
+      },
+      styles: { fontSize: 10, cellPadding: 3 },
+    });
 
- finalY = (doc as any).lastAutoTable.finalY + 10;
+    startY = (doc as any).lastAutoTable.finalY + 5;
 
- // Desglose del cálculo
- autoTable(doc, {
- startY: finalY,
- head: [["Concepto", "Monto"]],
- body: [
- ["Débito Fiscal (IVA en ventas)", `Q ${data.debitoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["Crédito Fiscal (IVA en compras)", `- Q ${data.creditoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["IVA Bruto", `Q ${data.ivaBruto.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["Retenciones", `- Q ${data.retenciones.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ],
- headStyles: {
- fillColor: SECA_CONFIG.secondaryColor,
- textColor: [255, 255, 255],
- fontStyle: "bold",
- },
- styles: { fontSize: 11 },
- });
+    // Tabla de cálculo
+    const bodyRows: string[][] = [
+      ["", "TOTAL /1.12", "BASE *0.12", "IVA"],
+      ["VENTAS", `Q ${data.ventasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.baseVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.debitoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+      ["COMPRAS", `Q ${data.comprasMes.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.baseCompras.toLocaleString('es-GT', {minimumFractionDigits: 2})}`, `Q ${data.creditoFiscal.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+      ["", "", "Debito - Credito", `Q ${data.ivaBruto.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+    ];
 
- finalY = (doc as any).lastAutoTable.finalY + 10;
- } else if (data.regimen === "pequeno") {
- autoTable(doc, {
- startY: finalY,
- head: [["Datos Ingresados", "Valor"]],
- body: [
- ["Ingresos Anuales", `Q ${data.ingresosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`],
- ["Límite para Pequeño Contribuyente", "Q 150,000.00"],
- ],
- headStyles: {
- fillColor: SECA_CONFIG.primaryColor,
- textColor: [255, 255, 255],
- fontStyle: "bold",
- },
- styles: { fontSize: 11 },
- });
+    // Agregar deducciones si existen
+    if (data.ivaCredito > 0) {
+      bodyRows.push(["", "", "(-) IVA Credito", `Q ${data.ivaCredito.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+    }
+    if (data.ivaRetenido > 0) {
+      bodyRows.push(["", "", "(-) IVA Retenido", `Q ${data.ivaRetenido.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+    }
+    if (data.ivaExento > 0) {
+      bodyRows.push(["", "", "(-) IVA Exento", `Q ${data.ivaExento.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
+    }
 
- finalY = (doc as any).lastAutoTable.finalY + 10;
- }
+    // Fila final
+    const esPorPagar = data.ivaBruto - data.totalDeducciones >= 0;
+    const tipoResultado = esPorPagar ? "DEBITO FISCAL" : "CREDITO FISCAL";
+    const colorResultado: [number, number, number] = esPorPagar ? [59, 130, 246] : [16, 185, 129];
+    
+    bodyRows.push(["", "", "", `Q ${data.ivaAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]);
 
- // Resultado
- doc.setFillColor(...SECA_CONFIG.secondaryColor);
- doc.rect(14, finalY, pageWidth - 28, 25, "F");
+    autoTable(doc, {
+      startY: startY,
+      body: bodyRows,
+      styles: { 
+        fontSize: 10, 
+        cellPadding: 3,
+        halign: 'right'
+      },
+      columnStyles: {
+        0: { halign: 'left', fontStyle: 'bold' },
+        1: { halign: 'right' },
+        2: { halign: 'right', fontStyle: 'bold' },
+        3: { halign: 'right', fontStyle: 'bold' }
+      }
+    });
 
- doc.setTextColor(255, 255, 255);
- doc.setFontSize(16);
- doc.setFont("helvetica", "bold");
- doc.text(
- data.regimen === "pequeno" ? "Cuota Fija Mensual" : "IVA a Pagar",
- pageWidth / 2,
- finalY + 10,
- { align: "center" }
- );
+    startY = (doc as any).lastAutoTable.finalY + 10;
 
- doc.setFontSize(20);
- doc.text(
- `Q ${data.ivaAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
- pageWidth / 2,
- finalY + 20,
- { align: "center" }
- );
+    // Resultado final
+    autoTable(doc, {
+      startY: startY,
+      head: [[tipoResultado, ""]],
+      body: [
+        [esPorPagar ? "SI DEBITO MAYOR QUE CREDITO ES IVA POR PAGAR" : "SI CREDITO ES MAYOR QUE DEBITO ES IVA CREDITO", 
+         `Q ${data.ivaAPagar.toLocaleString('es-GT', {minimumFractionDigits: 2})}`]
+      ],
+      headStyles: {
+        fillColor: colorResultado,
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 11,
+      },
+      styles: { fontSize: 10, cellPadding: 3 },
+      columnStyles: {
+        0: { cellWidth: 130 },
+        1: { halign: 'right', fontStyle: 'bold' }
+      }
+    });
 
- // Mensaje
- if (data.mensaje) {
- doc.setTextColor(...SECA_CONFIG.textColor);
- doc.setFontSize(11);
- doc.setFont("helvetica", "normal");
- 
- const mensajeLines = doc.splitTextToSize(data.mensaje, pageWidth - 28);
- let yPos = finalY + 35;
- 
- mensajeLines.forEach((line: string) => {
- doc.text(line, 14, yPos);
- yPos += 5;
- });
- }
+  } else if (data.regimen === "pequeno") {
+    // Pequeño Contribuyente
+    autoTable(doc, {
+      startY: startY,
+      head: [["Concepto", "Valor"]],
+      body: [
+        ["Ingresos Anuales", `Q ${data.ingresosAnuales.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+        ["Cuota Fija Mensual", `Q ${data.cuotaFija.toLocaleString('es-GT', {minimumFractionDigits: 2})}`],
+      ],
+      headStyles: {
+        fillColor: [16, 185, 129],
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 11,
+      },
+      styles: { fontSize: 10, cellPadding: 3 },
+      columnStyles: {
+        0: { cellWidth: 100 },
+        1: { halign: 'right', fontStyle: 'bold' }
+      }
+    });
 
- // Footer
- const footerY = doc.internal.pageSize.getHeight() - 20;
- doc.setFontSize(9);
- doc.setTextColor(100, 100, 100);
- doc.text("SECA - 18 años de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
- doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+  } else {
+    // Exento
+    autoTable(doc, {
+      startY: startY,
+      head: [["Estado", "Valor"]],
+      body: [
+        ["IVA a Pagar", "Q 0.00"],
+      ],
+      headStyles: {
+        fillColor: [139, 92, 246],
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 11,
+      },
+      styles: { fontSize: 10, cellPadding: 3 },
+      columnStyles: {
+        0: { cellWidth: 100 },
+        1: { halign: 'right', fontStyle: 'bold' }
+      }
+    });
+  }
 
- // Descargar el PDF
- doc.save(`SECA_IVA_${data.regimenNombre.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`);
+  startY = (doc as any).lastAutoTable.finalY + 15;
+
+  // Mensaje
+  doc.setTextColor(...SECA_CONFIG.textColor);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("Informacion:", 14, startY);
+  startY += 5;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  const mensajeLineas = doc.splitTextToSize(data.mensaje, pageWidth - 28);
+  doc.text(mensajeLineas, 14, startY);
+
+  // Footer
+  const footerY = doc.internal.pageSize.getHeight() - 20;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text("SECA - 18 anos de experiencia en servicios contables", pageWidth / 2, footerY, { align: "center" });
+  doc.text("Email.: info@seca.gt | Telefono.: 3639 - 3647", pageWidth / 2, footerY + 5, { align: "center" });
+
+  doc.save(`SECA_IVA_${new Date().getTime()}.pdf`);
 };
 /**
  * Genera un PDF con los resultados de la calculadora de ISR Laboral (Asalariados)

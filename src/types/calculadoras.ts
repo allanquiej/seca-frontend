@@ -353,30 +353,49 @@ export type PrestacionesCompletasResponse = {
 };
 
 // ===============================
-// 🆕 IVA (Impuesto al Valor Agregado)
+// IVA (Impuesto al Valor Agregado)
+// ACTUALIZADO: 3 deducciones separadas
 // ===============================
 
 export type RegimenIVA = "general" | "pequeno" | "exento";
 
 export type IVARequest = {
   regimen: RegimenIVA;
+  
   // Para Régimen General
   ventasMes: number;
   comprasMes: number;
-  retenciones: number;
+  
+  // ACTUALIZADO: 3 deducciones separadas
+  ivaCredito: number;    // IVA crédito del mes anterior
+  ivaRetenido: number;   // Retenciones que te hicieron
+  ivaExento: number;     // IVA de ventas exentas
+  
   // Para Pequeño Contribuyente
   ingresosAnuales: number;
 };
 
 export type IVAResponse = {
   regimenNombre: string;
+  
   // Para Régimen General
-  debitoFiscal: number;
-  creditoFiscal: number;
-  ivaBruto: number;
-  ivaAPagar: number;
+  baseVentas: number;          // Base de ventas sin IVA
+  baseCompras: number;         // Base de compras sin IVA
+  debitoFiscal: number;        // IVA en ventas (Débito Fiscal)
+  creditoFiscal: number;       // IVA en compras (Crédito Fiscal)
+  ivaBruto: number;            // Débito - Crédito
+  
+  // ACTUALIZADO: Deducciones separadas
+  ivaCredito: number;          // IVA crédito del mes anterior
+  ivaRetenido: number;         // Retenciones
+  ivaExento: number;           // IVA exento
+  totalDeducciones: number;    // Suma de las 3 deducciones
+  
+  ivaAPagar: number;           // IVA Bruto - Total Deducciones
+  
   // Para Pequeño Contribuyente
   cuotaFija: number;
+  
   // Para todos
   aplica: boolean;
   mensaje: string;
