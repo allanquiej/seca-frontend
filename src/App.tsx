@@ -1,6 +1,7 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 import HomePage from "./pages/HomePage";
 import ServiciosPage from "./pages/ServiciosPage";
 import PrincipiosPage from "./pages/PrincipiosPage";
@@ -19,6 +20,7 @@ import IVAPage from "./pages/IVAPage";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
