@@ -1,0 +1,75 @@
+/* =========================================
+   FUENTE GLOBAL - ROBOTO
+   ========================================= */
+
+/* Importar Roboto desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap');
+
+/* =========================================
+   ESTILOS GLOBALES
+   ========================================= */
+
+:root {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
+               'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(15, 23, 42, 0.87);
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Aplicar Roboto a todos los elementos */
+* {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Estilos para títulos */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+/* Estilos para botones */
+button {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Estilos para inputs */
+input, textarea, select {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Permitir que elementos con monospace lo mantengan */
+code, pre, .monospace {
+  font-family: 'Courier New', monospace;
+}
+
+/* =========================================
+   NOTA: Los siguientes elementos YA usan
+   monospace en AguinaldoPage y Bono14Page
+   y seguirán usándolo correctamente.
+   ========================================= */
