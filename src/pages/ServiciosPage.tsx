@@ -25,7 +25,7 @@ const Card = ({ children }: { children: React.ReactNode }) => (
 
 const ServiciosPage: React.FC = () => {
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "3rem 2rem" }}>
       <div
         style={{
           background: `linear-gradient(135deg, ${SECA.navy2}, ${SECA.blue})`,
