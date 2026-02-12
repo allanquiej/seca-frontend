@@ -128,8 +128,9 @@ const ISREmpresaMensualPage: React.FC = () => {
             <input
               type="number"
               step="0.01"
-              value={form.totalFacturacionMes}
+              value={form.totalFacturacionMes || ""}
               onChange={handleChange("totalFacturacionMes")}
+              placeholder="0"
               required
               style={{
                 width: "100%",
@@ -159,8 +160,9 @@ const ISREmpresaMensualPage: React.FC = () => {
             <input
               type="number"
               step="0.01"
-              value={form.totalRetenciones}
+              value={form.totalRetenciones || ""}
               onChange={handleChange("totalRetenciones")}
+              placeholder="0"
               required
               style={{
                 width: "100%",

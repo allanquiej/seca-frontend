@@ -249,7 +249,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
               </label>
               <input
                 type="date"
-                value={form.fechaInicio}
+                value={form.fechaInicio || ""}
                 onChange={(e) => setForm((prev) => ({ ...prev, fechaInicio: e.target.value }))}
                 required
                 style={{
@@ -268,7 +268,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
               </label>
               <input
                 type="date"
-                value={form.fechaFin}
+                value={form.fechaFin || ""}
                 onChange={(e) => setForm((prev) => ({ ...prev, fechaFin: e.target.value }))}
                 required
                 style={{
@@ -449,7 +449,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
               <input
                 type="number"
                 step="0.01"
-                value={form.salarioOrdinario}
+                value={form.salarioOrdinario || ""}
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, salarioOrdinario: parseFloat(e.target.value) || 0 }))
                 }
@@ -527,7 +527,7 @@ const PrestacionesLaboralesPage: React.FC = () => {
               </label>
               <input
                 type="number"
-                value={form.diasVacacionesPendientes}
+                value={form.diasVacacionesPendientes || ""}
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, diasVacacionesPendientes: parseInt(e.target.value) || 0 }))
                 }

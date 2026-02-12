@@ -226,8 +226,9 @@ const IVAPage: React.FC = () => {
                   type="number"
                   step="0.01"
                   min="0"
-                  value={form.ventasMes}
+                  value={form.ventasMes || ""}
                   onChange={handleChange("ventasMes")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -250,8 +251,9 @@ const IVAPage: React.FC = () => {
                   type="number"
                   step="0.01"
                   min="0"
-                  value={form.comprasMes}
+                  value={form.comprasMes || ""}
                   onChange={handleChange("comprasMes")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -287,8 +289,9 @@ const IVAPage: React.FC = () => {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={form.ivaCredito}
+                      value={form.ivaCredito || ""}
                       onChange={handleChange("ivaCredito")}
+              placeholder="0"
                       style={{
                         width: "100%",
                         padding: "0.75rem",
@@ -310,8 +313,9 @@ const IVAPage: React.FC = () => {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={form.ivaRetenido}
+                      value={form.ivaRetenido || ""}
                       onChange={handleChange("ivaRetenido")}
+              placeholder="0"
                       style={{
                         width: "100%",
                         padding: "0.75rem",
@@ -333,8 +337,9 @@ const IVAPage: React.FC = () => {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={form.ivaExento}
+                      value={form.ivaExento || ""}
                       onChange={handleChange("ivaExento")}
+              placeholder="0"
                       style={{
                         width: "100%",
                         padding: "0.75rem",
@@ -362,8 +367,9 @@ const IVAPage: React.FC = () => {
                 type="number"
                 step="0.01"
                 min="0"
-                value={form.ingresosAnuales}
+                value={form.ingresosAnuales || ""}
                 onChange={handleChange("ingresosAnuales")}
+              placeholder="0"
                 required
                 style={{
                   width: "100%",

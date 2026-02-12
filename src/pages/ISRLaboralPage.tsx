@@ -427,8 +427,9 @@ const ISRLaboralPage: React.FC = () => {
                     <input
                       type="number"
                       step="0.01"
-                      value={form.bonificacionIncentivo}
+                      value={form.bonificacionIncentivo || ""}
                       onChange={handleChange("bonificacionIncentivo")}
+                      placeholder="250"
                       style={{
                         width: "100%",
                         padding: "0.75rem",
@@ -471,8 +472,9 @@ const ISRLaboralPage: React.FC = () => {
                           <input
                             type="number"
                             step="0.01"
-                            value={(form[fieldName] as number) || 0}
+                            value={(form[fieldName] as number) || ""}
                             onChange={handleChange(fieldName)}
+                            placeholder="0"
                             style={{
                               width: "100%",
                               padding: "0.5rem",
@@ -493,8 +495,9 @@ const ISRLaboralPage: React.FC = () => {
                     <input
                       type="number"
                       step="0.01"
-                      value={form.bonificacionIncentivo}
+                      value={form.bonificacionIncentivo || ""}
                       onChange={handleChange("bonificacionIncentivo")}
+                      placeholder="250"
                       style={{
                         width: "100%",
                         padding: "0.75rem",

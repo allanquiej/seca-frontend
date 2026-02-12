@@ -263,7 +263,7 @@ const AguinaldoPage: React.FC = () => {
                   </label>
                   <input
                     type="date"
-                    value={form.fechaInicio}
+                    value={form.fechaInicio || ""}
                     onChange={handleDateChange("fechaInicio")}
                     style={{
                       width: "100%",
@@ -309,7 +309,7 @@ const AguinaldoPage: React.FC = () => {
                   </label>
                   <input
                     type="date"
-                    value={form.fechaFin}
+                    value={form.fechaFin || ""}
                     onChange={handleDateChange("fechaFin")}
                     style={{
                       width: "100%",

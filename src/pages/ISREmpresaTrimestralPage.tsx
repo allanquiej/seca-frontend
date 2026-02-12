@@ -209,8 +209,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.ventasAcumuladas}
+                  value={form.ventasAcumuladas || ""}
                   onChange={handleChange("ventasAcumuladas")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -242,8 +243,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.rentasExentas}
+                  value={form.rentasExentas || ""}
                   onChange={handleChange("rentasExentas")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -272,8 +274,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.gastosAcumulados}
+                  value={form.gastosAcumulados || ""}
                   onChange={handleChange("gastosAcumulados")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -302,8 +305,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.isrPagadoAnteriorTrimestre}
+                  value={form.isrPagadoAnteriorTrimestre || ""}
                   onChange={handleChange("isrPagadoAnteriorTrimestre")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -337,8 +341,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.ventasTrimestre}
+                  value={form.ventasTrimestre || ""}
                   onChange={handleChange("ventasTrimestre")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -370,8 +375,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.rentasExentas}
+                  value={form.rentasExentas || ""}
                   onChange={handleChange("rentasExentas")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -403,8 +409,9 @@ const ISREmpresaTrimestralPage: React.FC = () => {
             <input
               type="number"
               step="0.01"
-              value={form.isoPendiente}
+              value={form.isoPendiente || ""}
               onChange={handleChange("isoPendiente")}
+              placeholder="0"
               required
               style={{
                 width: "100%",

@@ -157,8 +157,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.ingresosBrutosAnuales}
+                  value={form.ingresosBrutosAnuales || ""}
                   onChange={handleChange("ingresosBrutosAnuales")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -188,8 +189,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.costoDeVentas}
+                  value={form.costoDeVentas || ""}
                   onChange={handleChange("costoDeVentas")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -234,8 +236,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.activoTotal}
+                  value={form.activoTotal || ""}
                   onChange={handleChange("activoTotal")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -265,8 +268,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.depreciacionAmortizacionAcumulada}
+                  value={form.depreciacionAmortizacionAcumulada || ""}
                   onChange={handleChange("depreciacionAmortizacionAcumulada")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -296,8 +300,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.reservaCuentasIncobrables}
+                  value={form.reservaCuentasIncobrables || ""}
                   onChange={handleChange("reservaCuentasIncobrables")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -327,8 +332,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.creditosReinversion}
+                  value={form.creditosReinversion || ""}
                   onChange={handleChange("creditosReinversion")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
@@ -358,8 +364,9 @@ const ISOTrimestralPage: React.FC = () => {
                 <input
                   type="number"
                   step="0.01"
-                  value={form.iusiPagado}
+                  value={form.iusiPagado || ""}
                   onChange={handleChange("iusiPagado")}
+              placeholder="0"
                   required
                   style={{
                     width: "100%",
